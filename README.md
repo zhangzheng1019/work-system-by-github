@@ -6,6 +6,7 @@
 * master: 发布代码
 
 ## 补充：
-[Markdown使用文档](http://wowubuntu.com/markdown/)  
-[压缩图片jpg/png/jpeg](https://tinypng.com/)单张图片最大5M，一次性最多20个图片
+1. [Markdown使用文档](http://wowubuntu.com/markdown/)  
+2. [压缩图片jpg/png/jpeg](https://tinypng.com/)单张图片最大5M，一次性最多20个图片 
 
+![TinyPNG](/docs/tinypng.jpg "TinyPNG")
