@@ -26,7 +26,7 @@
                 height="250"
                 border>
                 <el-table-column
-                  prop="name"
+                  prop="realname"
                   label="姓名"
                   width="100">
                 </el-table-column>
@@ -44,9 +44,7 @@
                   prop="thumb"
                   label="头像"
                   width="200">
-                  <template>
-                      <img :src="thumb" />
-                  </template>
+                  <!-- <img :src="row.thumb" /> -->
                 </el-table-column>
                 <el-table-column
                   prop="createtime"
@@ -67,41 +65,38 @@
     </div>
 </template>
 <script>
-    import addTc from  "./teacher/addTea.vue"
+    import {fetch, post} from '../utils'
+    import addTc from  "./teacher/addTea"
+
     export default {
         data () {
             return {
-              teacherList: [{
-                'id':1,
-                'name':"张政",
-                'mail': '447590461@qq.com',
-                'mobile': 15533986116,
-                'thumb': 15533986116,
-                'createtime': '2018-01-14',
-              },{
-                'id':1,
-                'name':"张政",
-                'mail': '447590461@qq.com',
-                'mobile': 15533986116,
-                'thumb': 15533986116,
-                'createtime': '2018-01-14',
-              }],
+              teacherList: [],
               tclist:""
             }
         },
         components: {
             "add-teacher" : addTc
         },
-        create() {
-            
-        },
         methods: {
-            addtc(){
+          getList() {
+            fetch({
+              url: '/teacher/getInfo',
+              cb: (data, msg) => {
+                this.teacherList = data
+                this.$message.success(msg);
+              }
+            });
+          },
+          addtc(){
 
-            }
+          }
+        },
+        created() {
+            this.getList();
         }
     }
 </script>
-<style type="text/css">
+<style scoped>
     
 </style>

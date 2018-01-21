@@ -1,21 +1,16 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class main extends CI_Controller 
+class Student extends CI_Controller 
 {
 	public function __construct()
     {
         parent::__construct();
         $this->DB = $this->load->database("default",true);
+        $this->load->model("student_model");
 	}
 
 
-	public function index()
-	{
-		$this->load->view('main/index.html');
-	}
-	public function error()
-	{
-		$this->load->view('errors/html/error_404');
-	}
+
+
 }
