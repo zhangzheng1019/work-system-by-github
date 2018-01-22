@@ -1,6 +1,6 @@
-# advert
+# wg
 
-> advert douguo
+> work-system-by-github
 
 ## Build Setup
 
