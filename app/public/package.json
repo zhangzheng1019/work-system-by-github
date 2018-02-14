@@ -1,8 +1,8 @@
 {
-  "name": "advert",
+  "name": "wg",
   "version": "1.0.0",
-  "description": "advert douguo",
-  "author": "kokiers <956341948@qq.com>",
+  "description": "wg",
+  "author": "zz <447590461@qq.com>",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",

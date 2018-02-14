@@ -1,7 +1,7 @@
-<?php 
+<?php
 
 class Teacher_model extends CI_Model {
-	const WG_TEACHERS_TABLE 		= 'wg_teachers';
+	const WG_TEACHERS_TABLE = 'wg_teachers';
 
 	public function __construct() {
 		parent::__construct();
@@ -16,8 +16,7 @@ class Teacher_model extends CI_Model {
 	 * @param  string  $order  [排序方式]
 	 * @return [array]          [description]
 	 */
-	public function getBasicInfo($where = array(),$offset= 0,$limit=0, $order='id desc')
-	{
+	public function getBasicInfo($where = array(), $offset = 0, $limit = 0, $order = 'id desc') {
 		$result = array();
 		$this->DB->from(self::WG_TEACHERS_TABLE);
 		if (!empty($where)) {
@@ -31,36 +30,36 @@ class Teacher_model extends CI_Model {
 		$this->DB->order_by($order);
 		$query = $this->DB->get();
 		if ($query && $query->num_rows() > 0) {
-			$result = $query->result_array();
+			$result['total'] = $query->num_rows();
+			$result['list'] = $query->result_array();
 		}
-		return $result;	
+		return $result;
 	}
 
 	/**
 	 * 添加教师信息
 	 * @param array $data [description]
 	 */
-	public function addTeacherInfo($data = array())
-	{
+	public function addTeacherInfo($data = array()) {
 		$result = array();
 
-		if(isset($data['mobile'])){
+		if (isset($data['mobile'])) {
 			$data['mobile'] = $data['mobile'] ? $data['mobile'] : 0;
 		}
- 		$detailData = array(
-			'realname'      => $data['realname'],
-			'mobile'		=> $data['mobile'],
-			'createtime' 	=> date('Y-m-d H:i:s'),
-			'mail'			=> $data['mail'],
-			'password'	    => md5($data['password']),
-			'leavetime'		=> "0000-00-00 00:00:00",
-			'flag'          => 1
+		$detailData = array(
+			'realname' => $data['realname'],
+			'mobile' => $data['mobile'],
+			'createtime' => date('Y-m-d H:i:s'),
+			'mail' => $data['mail'],
+			'password' => md5($data['password']),
+			'leavetime' => "0000-00-00 00:00:00",
+			'flag' => 1,
 		);
 		$this->DB->insert(self::WG_TEACHERS_TABLE, $detailData);
 		if (!$this->DB->affected_rows()) {
 			return false;
 		}
-		if($result['insertId'] = $this->DB->insert_id()){
+		if ($result['insertId'] = $this->DB->insert_id()) {
 			$result['status'] = true;
 		}
 		return $result;
@@ -72,13 +71,12 @@ class Teacher_model extends CI_Model {
 	 * @param  array   $data       [要更新的字段数据]
 	 * @return [boolean]              [返回更新成功、失败]
 	 */
-	public function updateTeacherInfo($teacher_id = 0,$data = array())
-	{
-		if(!$teacher_id){
+	public function updateTeacherInfo($teacher_id = 0, $data = array()) {
+		if (!$teacher_id) {
 			return false;
 		}
 
-		$this->DB->where('id',$teacher_id);
+		$this->DB->where('id', $teacher_id);
 		$this->DB->update(self::WG_TEACHERS_TABLE, $data);
 
 		if ($this->DB->affected_rows() <= 0) {
@@ -94,14 +92,13 @@ class Teacher_model extends CI_Model {
 	 * @param  integer $teacher_id [教师id]
 	 * @return [Boolean]              [删除成功、失败]
 	 */
-	public function deleteTeacherInfo($teacher_id = 0)
-	{
-		if(!$teacher_id){
+	public function deleteTeacherInfo($teacher_id = 0) {
+		if (!$teacher_id) {
 			return false;
 		}
 
 		$data['flag'] = -1;
-		$this->DB->where('id',$teacher_id);
+		$this->DB->where('id', $teacher_id);
 		$this->DB->update(self::WG_TEACHERS_TABLE, $data);
 
 		if ($this->DB->affected_rows() <= 0) {
@@ -112,4 +109,4 @@ class Teacher_model extends CI_Model {
 	}
 
 }
- ?>
+?>
