@@ -117,4 +117,5 @@ export default {
   margin: 20px;
 }
  .title-line{font-size: 18px;font-weight: normal;line-height: 50px;border-bottom:1px solid #ccc;margin-bottom: 20px;}
+ .add{ display:inline-block;float:right; }
 </style>

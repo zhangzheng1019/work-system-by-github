@@ -1,17 +1,20 @@
 <template>
-	<div id="addTeacher" style="display:inline-block;float:right;">
+	<div id="addTeacher" class="add">
 		<el-button type="primary" @click="dialogFormVisible = true">添加</el-button>
 
-		<el-dialog title="添加教师(初始密码：123456)" :visible.sync="dialogFormVisible">
-		  <el-form :model="form">
-		    <el-form-item label="姓名" :label-width="formLabelWidth">
-		      <el-input v-model="form.name" auto-complete="off"></el-input>
+		<el-dialog title="添加教师" :visible.sync="dialogFormVisible">
+		  <el-form :model="form" ref="form" :rules="rulesForm" status-icon >
+		    <el-form-item type="text" label="姓名" :label-width="formLabelWidth" prop="name">
+		      <el-input type="text" v-model="form.name" auto-complete="off"></el-input>
 		    </el-form-item>
-		    <el-form-item label="手机号" :label-width="formLabelWidth">
-		      <el-input v-model="form.mobile" auto-complete="off"></el-input>
+		    <el-form-item type="number" label="手机号" :label-width="formLabelWidth" prop="mobile">
+		      <el-input type="number" v-model="form.mobile" auto-complete="off"></el-input>
 		    </el-form-item>
-		    <el-form-item label="邮箱" :label-width="formLabelWidth">
-		      <el-input v-model="form.mail" auto-complete="off"></el-input>
+		    <el-form-item label="邮箱" :label-width="formLabelWidth" prop="email">
+		      <el-input type="text" v-model="form.email" auto-complete="off"></el-input>
+		    </el-form-item>
+		    <el-form-item label="密码" :label-width="formLabelWidth" prop="password">
+		      <el-input type="password" v-model="form.password" auto-complete="off"></el-input>
 		    </el-form-item>
 		  </el-form>
 		  <div slot="footer" class="dialog-footer">
@@ -24,29 +27,66 @@
 </template>
 <script>
 	import { post } from '../../utils.js'
+	import { check_email, check_phone } from '../../rules.js'
 	export default {
 		data () {
 			return {
 			  formLabelWidth: "120px",
 			  dialogFormVisible: false,
-			  form: { name:"", mobile:"", mail:"",}
+			  form: { name:"", mobile:"", email:"",password:""},
+			  rulesForm: {
+			  	name: [{
+			  		required: true,
+			  		message: '请输入姓名',
+			  		triggle: 'blur'
+			  	}],
+			  	mobile: [{
+			  		required: true,
+			  		validator: check_phone,
+			  		message: '请输入正确的手机号',
+			  		triggle: 'blur'
+			  	}],
+			  	email: [{
+			  		required: true,
+			  		validator: check_email,
+			  		message: '请输入正确的邮箱',
+			  		triggle: 'blur'
+			  	}],
+			  	password: [{
+			  		required: true,
+			  		message: '请输入密码',
+			  		triggle: 'blur'
+			  	}],
+			  }
 			}
-		},
-		components: {
-			
 		},
 		create() {
 
 		},
 		methods: {
 			teacherAdd() {
-				post({
-					url: ""
+				this.$refs.form.validate((valid) => {
+					if(valid){
+						post({
+							url: "/teacher/addTea",
+							data: this.form,
+							dataType: 'json',
+							cb: (data, msg) => {
+								this.dialogFormVisible = false
+								this.$message.success(msg)
+								this.form = {}
+								this.$emit('addtea')
+		          },
+              err: (data, msg) => {
+                this.$message.error(msg);
+              }
+						})
+					}
 				})
 			}
 		}
 	}
 </script>
 <style type="text/css">
-	
+
 </style>
