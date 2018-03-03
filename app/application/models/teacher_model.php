@@ -47,13 +47,14 @@ class Teacher_model extends CI_Model {
 			$data['mobile'] = $data['mobile'] ? $data['mobile'] : 0;
 		}
 		$detailData = array(
-			'realname' => $data['realname'],
-			'mobile' => $data['mobile'],
+			'realname'   => $data['realname'],
+			'mobile'     => $data['mobile'],
 			'createtime' => date('Y-m-d H:i:s'),
-			'mail' => $data['mail'],
-			'password' => md5($data['password']),
-			'leavetime' => "0000-00-00 00:00:00",
-			'flag' => 1,
+			'mail'       => $data['mail'],
+			'password'   => md5($data['password']),
+			'leavetime'  => "0000-00-00 00:00:00",
+			'thumb'      =>$data['thumb'],
+			'flag'       => 1,
 		);
 		$this->DB->insert(self::WG_TEACHERS_TABLE, $detailData);
 		if (!$this->DB->affected_rows()) {

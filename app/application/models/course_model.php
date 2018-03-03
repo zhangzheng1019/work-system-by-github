@@ -46,16 +46,16 @@ class Course_model extends CI_Model {
 
  		$detailData = array(
 			'title'      => $data['title'],
-			'desc'		 => $data['desc'],
+			'desc'       => $data['desc'],
 			'createtime' => date('Y-m-d H:i:s'),
 			'modifytime' => date('Y-m-d H:i:s'),
-			'course_id' => $data['course_id'],
-			'thumb'		 => $data['thumb'],
+			'thumb'      => $data['thumb'],
+			'teacher_id' => $data['teacher_id'],
 			'flag'       => 1
 		);
 		$this->DB->insert(self::WG_COURSE_TABLE, $detailData);
 		if (!$this->DB->affected_rows()) {
-			return false;
+			return [];
 		}
 		if($result['insertId'] = $this->DB->insert_id()){
 			$result['status'] = true;
@@ -108,5 +108,30 @@ class Course_model extends CI_Model {
 		return true;
 	}
 
+	/**
+	 * 根据课程id获取任务列表
+	 * @param  [type] $id [课程id]
+	 * @return [type]     [description]
+	 */
+	public function getTaskByCourseId($id)
+	{
+		if(!$id){
+			return [];
+		}
+		$courseInfo   = $this->getBasicInfo($id);
+        $taskArr = $courseInfo['task_id'];
+        if (!$taskArr) {
+            return [];
+        }
+        $taskId = explode(',', $taskArr);
+        $this->load->model("task_model");
+        $result = array();
+        foreach ($taskId as $key => $value) {
+            $result[$key]['task_info'] = $this->task_model->getBasicInfo(array('id' => $value));
+        }
+
+        return $result;
+
+	}
 }
- ?>
+ 
