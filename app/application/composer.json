@@ -1,0 +1,8 @@
+{
+    "name": "1.0/wgsys2018",
+    "description": "基于github的作业统计系统",
+    "license": "1",
+    "require": {
+    	"yurunsoft/yurun-oauth-login": "1.*"
+    }
+}
