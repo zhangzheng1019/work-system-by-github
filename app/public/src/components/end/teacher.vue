@@ -95,7 +95,6 @@
                 if (data.total == 0) {
                     this.$message.success("没有数据呢，亲！");
                 }else{
-
                   this.$message.success(msg);
                 }
               }
