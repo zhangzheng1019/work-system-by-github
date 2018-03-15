@@ -48,22 +48,22 @@ class Student_model extends CI_Model
 
         // 需要修改teacher_id 和 courser_id
         $detailData = array(
-            'realname'    => $data['realname'],
-            'github_info' => $data['github_info'],
+            'realname'    => $data['realname'] ? $data['realname'] : '',
+            'github_info' => $data['github_info'] ? $data['github_info'] : '',
             'createtime'  => date('Y-m-d H:i:s'),
-            'grade'       => $data['grade'],
-            'class'       => $data['class'],
-            'teacher_id'  => $data['teacher_id'],
-            'course_id'   => $data['course_id'],
+            'grade'       => $data['grade'] ? $data['grade'] : '',
+            'class'       => $data['class'] ? $data['class'] : '',
+            'teacher_id'  => $data['teacher_id'] ? $data['teacher_id'] : 0,
+            'course_id'   => $data['course_id'] ? $data['course_id'] : 0,
             'flag'        => 1,
         );
         $this->DB->insert(self::WG_STUDENTS_TABLE, $detailData);
         if (!$this->DB->affected_rows()) {
             return [];
         }
-        if ($result['insertId'] = $this->DB->insert_id()) {
-            $result['status'] = true;
-        }
+        $result['insertId'] = $this->DB->insert_id();
+        $result['status']   = ($result['insertId'] > 0) ? true : false;
+
         return $result;
     }
 
@@ -148,7 +148,7 @@ class Student_model extends CI_Model
         if (!$id) {
             return [];
         }
-        $stuInfo   = $this->getBasicInfo($id);
+        $stuInfo    = $this->getBasicInfo($id);
         $teacherArr = $stuInfo['teacher_id'];
         if (!$teacherArr) {
             return [];

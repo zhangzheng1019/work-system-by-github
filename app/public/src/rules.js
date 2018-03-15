@@ -71,7 +71,11 @@ var check_phone = (rule, value, callback) => {
         }
     }
 };
-
+/**
+ * 校验手机号
+ * @param  {[type]} value [description]
+ * @return {[type]}       [description]
+ */
 function check_phones(value) {
     let text = false;
     let filter = /^1[34578][0-9]{9}$/;
@@ -99,7 +103,11 @@ var check_telephone = (rule, value, callback) => {
         }
     }, 200);
 };
-
+/**
+ * 校验座机号
+ * @param  {[type]} value [description]
+ * @return {[type]}       [description]
+ */
 function check_telephones(value) {
     let text = false;
     let filter = /^((0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$/;
@@ -114,7 +122,11 @@ function check_telephones(value) {
     }
     return text;
 };
-
+/**
+ * 格式化时间 2018-01-01 00:00:00
+ * @param  {[type]} time [description]
+ * @return {[type]}      [description]
+ */
 function formattime(time) {
     var s = new Date(time);
     var M = (s.getMonth() + 1) < 10 ? '0' + (s.getMonth() + 1) : (s.getMonth() + 1);
@@ -122,7 +134,11 @@ function formattime(time) {
     var time = s.getFullYear() + '-' + M + '-' + D + ' ' + '00' + ':' + '00' + ':' + '00';
     return time;
 };
-
+/**
+ * 格式化时间，2018-01-01
+ * @param  {[type]} time [description]
+ * @return {[type]}      [description]
+ */
 function format(time) {
     if (time != "0000-00-00 00:00:00") {
         var s = new Date(time);
@@ -134,7 +150,12 @@ function format(time) {
     }
     return time;
 };
-
+/**
+ * 从数组arr中移除val
+ * @param  {[type]} arr [description]
+ * @param  {[type]} val [description]
+ * @return {[type]}     [description]
+ */
 function removeArrVal(arr, val) {
     let arlen = arr.length;
     for (let i = 0; i < arlen; i++) {
@@ -144,7 +165,12 @@ function removeArrVal(arr, val) {
         }
     }
 };
-
+/**
+ * 判断数组arr中是否含有val
+ * @param  {[type]} val [description]
+ * @param  {[type]} arr [description]
+ * @return {[type]}     [description]
+ */
 function inArray(val, arr) {
     let arlen = arr.length;
     let test = '';
@@ -171,6 +197,36 @@ function deepCopyObj(obj) {
     }
     return result;
 };
+/**
+ * 密码长度
+ */
+var check_pwdlen = (rule, value, callback) => {
+    if (rule.required === true) {
+        if (!value) {
+            callback(new Error('请输入密码'));
+        } else {
+            setTimeout(() => {
+                if (value.length < 6 || value.length > 20) {
+                    callback(new Error('密码长度需要大于6小于20'));
+                } else {
+                    callback();
+                }
+            }, 200);
+        }
+    } else {
+        if (!value) {
+            callback(new Error('请输入密码'));
+        } else {
+            setTimeout(() => {
+                if (value.length > 6 && value.length < 20) {
+                    callback(new Error('密码长度大于6小于20'));
+                } else {
+                    callback();
+                }
+            }, 200);
+        }
+    }
+};
 export {
     check_email,
     check_phone,
@@ -182,5 +238,6 @@ export {
     format,
     removeArrVal,
     inArray,
-    deepCopyObj
+    deepCopyObj,
+    check_pwdlen
 }

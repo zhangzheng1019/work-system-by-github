@@ -46,8 +46,8 @@ class Stutask_model extends CI_Model
         $result = array();
 
         $detailData = array(
-            'name'       => $data['name'],
-            'desc'       => $data['desc'],
+            'name'       => $data['name'] ? $data['name'] : '',
+            'desc'       => $data['desc'] ? $data['desc'] : '',
             'createtime' => date('Y-m-d H:i:s'),
             'modifytime' => date('Y-m-d H:i:s'),
             'flag'       => 1,
@@ -56,9 +56,9 @@ class Stutask_model extends CI_Model
         if (!$this->DB->affected_rows()) {
             return [];
         }
-        if ($result['insertId'] = $this->DB->insert_id()) {
-            $result['status'] = true;
-        }
+        $result['insertId'] = $this->DB->insert_id();
+        $result['status']   = ($result['insertId'] > 0) ? true : false;
+
         return $result;
     }
 
