@@ -4,16 +4,14 @@ class Email_model extends CI_Model
 {
     /**
      * 发送邮件类
-     * @param  string $emailAccept [接收的邮箱]
-     * @param  string $veriCode    [生成的验证码]
+     * @param  string $to          [地址]
+     * @param  [type] $subject     [邮件主题]
+     * @param  [type] $body        [邮件主体]
      * @return [type]              [description]
      */
-    public function sendEmail($emailAccept = '', $veriCode = '')
+    public function sendEmail($to = '', $subject = '', $body = '')
     {
-        if (!emailAccept) {
-            return false;
-        }
-        if (!$veriCode) {
+        if (!$to) {
             return false;
         }
         $this->config->load('email');
@@ -30,13 +28,18 @@ class Email_model extends CI_Model
         $this->load->library('email'); //加载CI的email类
         $this->email->initialize($emailConf);
 
-        $emailSubject = '您的验证码' . $veriCode;
-        $emailMessage = '<font style="font-size:20px; font-weight:bold;">欢迎使用作业统计系统</font>';
-        $emailAttach  = '';
+        $emailSubject = $subject;
+        $emailMessage = '<html><head><title>' . $subject . '</title></head><body>';
+        $emailMessage .= $body;
+        $emailMessage .= '<p><font color="gray">基于github作业统计系统</font></p>';
+        $emailMessage .= '<p><font color="gray">©github三人组, 2018.</font></p>';
+        $emailMessage .= '<p><font color="gray">此邮件为系统自动发送，请勿回复。</font></p>';
+        $emailMessage .= '</body></html>';
+        $emailAttach = '';
 
         //以下设置Email内容
         $this->email->from($this->config->item('email_path'), $this->config->item('smtp_user'));
-        $this->email->to($emailAccept); // 邮件收件人
+        $this->email->to($to); // 邮件收件人
         $this->email->subject($emailSubject); // 邮件主题
         $this->email->message($emailMessage); // 邮件内容
         if ($emailAttach) {
@@ -44,7 +47,6 @@ class Email_model extends CI_Model
         }
 
         $sendStatus = $this->email->send();
-        dump($sendStatus);
         return $sendStatus;
     }
 }

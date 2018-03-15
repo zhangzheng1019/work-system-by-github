@@ -57,9 +57,9 @@ class Task_model extends CI_Model
         if (!$this->DB->affected_rows()) {
             return [];
         }
-        if ($result['insertId'] = $this->DB->insert_id()) {
-            $result['status'] = true;
-        }
+        $result['insertId'] = $this->DB->insert_id();
+        $result['status']   = ($result['insertId'] > 0) ? true : false;
+
         return $result;
     }
 
