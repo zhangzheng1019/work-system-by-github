@@ -1,16 +1,11 @@
 <template>
     <div class="end-app">
-        <div class="app-side">
             <side-nav :levelBar="levelBar">
             </side-nav>
-        </div>
-        <div class="app-header">
             <nav-header :userInfo='userInfo'>
             </nav-header>
-        </div>
-        <div class="app-content">
-            <router-view :userInfo='userInfo'>
-            </router-view>
+        <div class="content">
+            <transition name="move" mode="out-in"><router-view></router-view></transition>
         </div>
     </div>
 </template>
@@ -28,14 +23,34 @@ export default {
   data () {
     return {
       userInfo:'',
-      levelBar:[],
+      levelBar: [],
     }
   },
   created() {
    var cururl = window.location.href;
    this.levelBar = [
-      {label:'教师管理',url:'/end/teacher',labelIndex:"0"},
-      {label:'学生管理',url:'/end/student',labelIndex:"1"}
+      {
+        icon: 'el-icon-menu',
+        index: '/end/teacher',
+        title: '教师管理'
+      },
+      {
+        icon: 'el-icon-menu',
+        index: '2',
+        title: '学生管理',
+        subs: [
+            {index: '/end/student',title: '名单' }
+        ]
+      },
+      {
+        icon: 'el-icon-menu',
+        index: '3',
+        title: '作业统计',
+        subs: [
+            {index: '/end/course',title: '名单' },
+            {index: '/end/course',title: '' }
+        ]
+      }
    ];
   //  fetch({
   //       url: '/user/menu',
@@ -73,43 +88,15 @@ export default {
 }
 </script>
 <style>
+    @import "../../static/css/main.css";
+    @import "../../static/css/color-dark.css";
 	*{
 	  margin: 0;padding: 0;
-	}
-	.app {
-	  height: 100vh;
-	  position: relative;
-	  width: 100%;
 	}
 	.app-content {
 	  margin-left: 224px;
 	  min-width: 640px;
 	  overflow: scroll;
-	}
-	.app-header {
-	  position: fixed;
-	  left:224px;
-	  top: 0;
-	  right: 0;
-	  z-index:99;
-	  background: #2db7f5;
-	  height: 64px;
-	  border-bottom: 1px solid #e9e9e9;
-	  z-index: 99
-	}
-	.app-side {
-	  position: fixed;
-	  width: 224px;
-	  left: 0;
-	  top: 0;
-	  height: 100vh;
-	  background: #404040;
-	  z-index: 99;
-	}
-	.app  .app-content{
-	     position: relative;
-	     left: 0px;top: 64px;
-	     padding-bottom: 40px;padding-right: 40px;padding-left: 40px;padding-top: 20px;
 	}
 	.header {
 	  border-bottom: 1px solid rgb(233, 233, 233);
@@ -118,6 +105,7 @@ export default {
 	  font-weight: 500;
 	  margin: 20px;
 	}
+
  .title-line{font-size: 18px;font-weight: normal;line-height: 50px;border-bottom:1px solid #ccc;margin-bottom: 20px;}
  .add{ display:inline-block;float:right; }
  .mtb20{ margin: 20px 0; }

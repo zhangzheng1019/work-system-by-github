@@ -1,27 +1,27 @@
 <template>
-    <div>
-        <div class="logo">
-            <span>
-                基于GitHub后台管理系统
-            </span>
-            <!-- <img src=""> -->
-        </div>
-        <el-menu class="app-menu" theme="dark" :default-openeds='active' v-if='levelBar' :unique-opened='true'>
-            <el-menu-item v-for="(levelBar, index) in levelBar" :index='levelBar.labelIndex' :key="levelBar.labelIndex">
-                <router-link :to='levelBar.url'>
-                    <i class="el-icon-menu">
-                    </i>
-                    {{ levelBar.label }}
-                </router-link>
-            </el-menu-item>
-            <!-- <el-submenu v-for="(levelBar,index) in levelBar" :index='levelBar.labelIndex' :key="levelBar.labelIndex" >
-                    <template slot="title"><i class="el-icon-menu"></i>{{levelBar.label}}</template>
-                      <el-menu-item v-for="(levelIn,index) in levelBar.level" :index='levelIn.index' :key="levelIn.index">
-                        <router-link :to='levelIn.url'>
-                            {{levelIn.name}}
-                        </router-link> 
-                      </el-menu-item>
-                  </el-submenu> -->
+    <div class="sidebar">
+        <el-menu :default-active="onRoutes" class="el-menu-vertical-demo" unique-opened router background-color="#324157" text-color="#bfcbd9" active-text-color="#20a0ff">
+            <template v-for="item in levelBar">
+                <template v-if="item.subs">
+                    <el-submenu :index="item.index">
+                        <template slot="title">
+                            <i :class="item.icon">
+                            </i>
+                            {{ item.title }}
+                        </template>
+                        <el-menu-item v-for="(subItem,i) in item.subs" :key="i" :index="subItem.index">
+                            {{ subItem.title }}
+                        </el-menu-item>
+                    </el-submenu>
+                </template>
+                <template v-else>
+                    <el-menu-item :index="item.index">
+                        <i :class="item.icon">
+                        </i>
+                        {{ item.title }}
+                    </el-menu-item>
+                </template>
+            </template>
         </el-menu>
     </div>
 </template>
@@ -35,54 +35,22 @@ export default {
   },
   props:['levelBar'],
   watch: {
-    '$route': function (to, from) {
-      this.activeMenu(to.path)
-    },
+
   },
   created () {
-    this.activeMenu(this.$route.path);
+
   },
   methods: {
-    activeMenu(path) {
-      console.log(path);
-        if (path && path.search(/\/adv\/*/) >= 0) {
-       //   this.active = ["1"]
-        }
-    }
+
+  },
+  computed:{
+      onRoutes(){
+          return this.$route.path.replace('/','');
+      }
   }
 }
 </script>
-<style type="text/css">
-.app-menu {
-  background: #404040;
-  color: #999;
-}
-.logo {
-  width: 100%;
-    height: 64px;
-    background: #2db7f5;
-    text-align: center;
-}
-.logo > img {
-  margin-top: 12px;
-}
-.logo span {
-  color: #fff;
-  line-height: 64px;
-}
-.el-submenu .el-menu-item{
-  padding: 0;
-  cursor: auto;
-}
-.el-menu-item > a{
-  display: block
-}
-.el-menu-item > a:not(.router-link-active)  {
-  color: #c0ccda;
-  text-decoration: none;
-}
-.router-link-active {
-  color: white;
-  text-decoration: none;
-}
+<style scoped>
+  .sidebar{display: block;position: absolute;width: 250px;left: 0;top: 70px;bottom:0;background: #2E363F; } 
+  .sidebar > ul { height:100%; }
 </style>

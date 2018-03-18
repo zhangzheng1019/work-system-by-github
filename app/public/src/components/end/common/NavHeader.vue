@@ -1,55 +1,89 @@
 <template>
-    <div class="user-menu"  v-if='userInfo'>
-        <span class="nick-name">
-            账号类型：{{ userInfo.role }}
-        </span>
-        <span class="nick-name">
-            账号ID：{{ userInfo.id }}
-        </span>
-        <el-dropdown>
-            <span class="el-dropdown-link nick-name">
-                {{ userInfo.name }}
-                <i class="el-icon-caret-bottom el-icon--right">
-                </i>
-            </span>
-            <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>
-                    <a class='logout' href="/login/logout">
+    <div class="app-header">
+        <div class="logo">
+            GitHub作业统计后台系统
+        </div>
+        <div class="user-info">
+            <el-dropdown trigger="click" @command="handleCommand">
+                <span class="el-dropdown-link">
+                    {{ username }}
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="loginout">
                         退出
-                    </a>
-                </el-dropdown-item>
-                <!-- <el-dropdown-item><a class='reset' href='/#/resetpwd'>修改密码</a></el-dropdown-item> -->
-            </el-dropdown-menu>
-        </el-dropdown>
+                    </el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+        </div>
     </div>
 </template>
 <script>
 export default {
-  props: ['userInfo']
+  data() {
+      return {
+          name: 'linxin'
+      }
+  },
+  props: ['userInfo'],
+  computed:{
+      username(){
+          let username = localStorage.getItem('ms_username');
+          return username ? username : this.name;
+      }
+  },
+  methods:{
+      handleCommand(command) {
+          if(command == 'loginout'){
+              localStorage.removeItem('ms_username')
+              this.$router.push('/login');
+          }
+      }
+  }
+
 }
 </script>
 <style>
-.user-menu {
-  float: right;
-}
-.reset, .logout{
-  text-decoration: none;
-  color: #666;
-}
-.nick-name {
-  color: white;
-  font-size: 15px;
-  display: block;
-  margin-right:20px;
-  float: left;
-  padding: 0 20px;
-  line-height: 64px;
-}
-.el-dropdown-menu__item a{
-  display: block;width: 100%;
-}
-a{
-  text-decoration: none;
-  color:#666;
-}
+    .app-header {
+        position: relative;
+        box-sizing: border-box;
+        width: 100%;
+        height: 70px;
+        font-size: 22px;
+        line-height: 70px;
+        color: #fff;
+        background-color: #242f42;
+    }
+    .app-header .logo{
+        float: left;
+        width:250px;
+        text-align: center;
+    }
+    .user-info {
+        float: right;
+        padding-right: 50px;
+        font-size: 16px;
+        color: #fff;
+    }
+    .user-info .el-dropdown-link{
+        position: relative;
+        display: inline-block;
+        padding-left: 50px;
+        color: #fff;
+        cursor: pointer;
+        vertical-align: middle;
+    }
+    .user-info .user-logo{
+        position: absolute;
+        left:0;
+        top:15px;
+        width:40px;
+        height:40px;
+        border-radius: 50%;
+    }
+    .el-dropdown-menu{
+      padding: 0;
+    }
+    .el-dropdown-menu__item{
+        text-align: center;
+    }
 </style>
