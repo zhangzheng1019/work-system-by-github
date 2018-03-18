@@ -118,6 +118,7 @@ class Stutask_model extends CI_Model
         }
 
         $this->DB->select();
+        $this->DB->from(self::WG_STU_TASK_TABLE);
         $this->DB->where('student_id', $stuId);
         $this->DB->where('task_id', $taskId);
         $query = $this->DB->get();

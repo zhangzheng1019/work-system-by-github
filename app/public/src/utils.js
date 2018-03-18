@@ -11,7 +11,7 @@ export function fetch (options) {
 			if (msg.errcode == 0) {
 				options.cb(msg.data,msg.msg)	
 			}else if (msg.errcode == 10000) {
-				window.location = '/login'
+				window.location = '/#/end/login'
 			}else{
 				options.err(msg.data,msg.msg)
 			}			
@@ -30,7 +30,7 @@ export function post (options) {
 			if (msg.errcode == 0) {
 				options.cb(msg.data,msg.msg)	
 			}else if (msg.errcode == 10000) {
-				window.location = '/login'
+				window.location = '/#/end/login'
 			}else{
 				options.err(msg.data,msg.msg)
 			}	

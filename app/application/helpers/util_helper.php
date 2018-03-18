@@ -635,21 +635,6 @@ function auto_charset($fContents, $from = 'gbk', $to = 'utf-8')
     }
 }
 
-if (!function_exists('getimageurl')) {
-    function getimageurl($rdir)
-    {
-        if (!$rdir) {
-            return "";
-        }
-
-        if (strtolower(substr($rdir, 0, 4)) == 'http') {
-            return $rdir;
-        }
-
-        return Yaf_Application::app()->getConfig()->toArray()["upload"]['image_domain'] . $rdir;
-    }
-}
-
 if (!function_exists('mkdirs')) {
     function mkdirs($dir)
     {
@@ -696,71 +681,34 @@ if (!function_exists('uploadimage')) {
     }
 }
 
-function chkUpLoadType($userfile_type)
-{
-    $allowed_image_types = array(
-        'image/pjpeg' => "jpeg",
-        'image/jpeg'  => "jpeg",
-        'image/pjpeg' => "jpg",
-        'image/jpeg'  => "jpg",
-        'image/jpg'   => "jpg",
-        'image/png'   => "png",
-        'image/x-png' => "png",
-        'image/gif'   => "gif",
-    );
-    foreach ($allowed_image_types as $mime_type => $ext) {
-        if ($userfile_type == $mime_type) {
-            return true;
+if (!function_exists("chkUpLoadType")) {
+    function chkUpLoadType($userfile_type)
+    {
+        $allowed_image_types = array(
+            'image/pjpeg' => "jpeg",
+            'image/jpeg'  => "jpeg",
+            'image/pjpeg' => "jpg",
+            'image/jpeg'  => "jpg",
+            'image/jpg'   => "jpg",
+            'image/png'   => "png",
+            'image/x-png' => "png",
+            'image/gif'   => "gif",
+        );
+        foreach ($allowed_image_types as $mime_type => $ext) {
+            if ($userfile_type == $mime_type) {
+                return true;
+            }
         }
-    }
 
-    return false;
+        return false;
+    }
 }
 
-function mkPhotoDir($uid, $type = 'photo')
-{
-    $md5str = md5($uid);
-    $path1  = $md5str{0};
-    $path2  = $md5str{1};
-    $path3  = $md5str{31};
-    //$upload_path    =  SUPERMAN_UPLOAD_PATH . $type;
-    $image_path  = Yaf_Application::app()->getConfig()->toArray()["upload"]['image_path'];
-    $upload_path = $image_path . $type;
-
-    if (!file_exists($image_path)) {
-        mkdir($image_path);
+if (!function_exists("validMobile")) {
+    function validMobile($mobile)
+    {
+        return preg_match('/^(\+?86)?1\d{10}$/', $mobile) ? true : false;
     }
-
-    $rpath = $upload_path . '/' . $path1 . "/" . $path2 . "/" . $path3;
-    if (file_exists($rpath)) {
-        $full_path = $rpath;
-    } else {
-        if (!file_exists($upload_path)) {
-            mkdir($upload_path);
-        }
-        chdir($upload_path);
-        $full_path = $upload_path . '/' . $path1;
-        if (!file_exists($full_path)) {
-            mkdir($path1);
-        }
-        chdir($path1);
-        $full_path .= '/' . $path2;
-        if (!file_exists($full_path)) {
-            mkdir($path2);
-        }
-        chdir($path2);
-        $full_path .= '/' . $path3;
-        if (!file_exists($full_path)) {
-            mkdir($path3);
-        }
-    }
-
-    return array('full' => $full_path . '/', 'path' => $path1 . '/' . $path2 . '/' . $path3 . '/');
-}
-
-function validMobile($mobile)
-{
-    return preg_match('/^(\+?86)?1\d{10}$/', $mobile) ? true : false;
 }
 
 if (!function_exists("is_json")) {
@@ -798,5 +746,46 @@ if (!function_exists("is_ajax_request")) {
     function is_ajax_request()
     {
         return isset($_SERVER["HTTP_X_REQUESTED_WITH"]) && strtolower($_SERVER["HTTP_X_REQUESTED_WITH"]) == "xmlhttprequest" ? true : false;
+    }
+}
+
+if (!function_exists("inArray")) {
+    /**
+     * 判断$val 是否在 $arr中
+     * @param  [type] $val [description]
+     * @param  [type] $arr [description]
+     * @return [type]      [description]
+     */
+    function inArray($val, $arr)
+    {
+        $arrLen = count($arr);
+        $test   = '';
+        for ($s = 0; $s < $arrLen; $s++) {
+            $test = $arr[$s] . '';
+            if ($test == $val) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
+if (!function_exists("filterData")) {
+    /**
+     * 格式化数据，查询出该老师下的学生
+     * @param  array  $param     [数组]
+     * @param  [type] $id [教师id或者课程id]
+     * @param  [type] $field     [字段值]
+     * @return [type]            [格式化之后的数据]
+     */
+    function filterData($param = array(), $id, $field)
+    {
+        foreach ($param as $key => $value) {
+            $ids = explode(',', $value[$field]);
+            if (!inArray($id, $ids)) {
+                unset($param[$key]);
+            }
+        }
+        return $param;
     }
 }

@@ -1,11 +1,11 @@
 <template>
     <div class="end-app">
-            <side-nav :levelBar="levelBar">
-            </side-nav>
-            <nav-header :userInfo='userInfo'>
-            </nav-header>
+        <side-nav :levelBar="levelBar">
+        </side-nav>
+        <nav-header :userInfo='userInfo'>
+        </nav-header>
         <div class="content">
-            <transition name="move" mode="out-in"><router-view></router-view></transition>
+            <transition name="move" mode="out-in"><router-view :userInfo='userInfo'></router-view></transition>
         </div>
     </div>
 </template>
@@ -22,10 +22,10 @@ export default {
   name:'end',
   data () {
     return {
-      userInfo:'',
       levelBar: [],
     }
   },
+  props:['userInfo'],
   created() {
    var cururl = window.location.href;
    this.levelBar = [
@@ -45,10 +45,10 @@ export default {
       {
         icon: 'el-icon-menu',
         index: '3',
-        title: '作业统计',
+        title: '课程管理',
         subs: [
-            {index: '/end/course',title: '名单' },
-            {index: '/end/course',title: '' }
+            {index: '/end/course',title: '课程统计' },
+            {index: '/end/task',title: '任务统计' }
         ]
       }
    ];
@@ -90,9 +90,7 @@ export default {
 <style>
     @import "../../static/css/main.css";
     @import "../../static/css/color-dark.css";
-	*{
-	  margin: 0;padding: 0;
-	}
+	
 	.app-content {
 	  margin-left: 224px;
 	  min-width: 640px;
@@ -106,8 +104,5 @@ export default {
 	  margin: 20px;
 	}
 
- .title-line{font-size: 18px;font-weight: normal;line-height: 50px;border-bottom:1px solid #ccc;margin-bottom: 20px;}
- .add{ display:inline-block;float:right; }
- .mtb20{ margin: 20px 0; }
- .ptb10{ padding: 10px 0; }
+ 
 </style>
