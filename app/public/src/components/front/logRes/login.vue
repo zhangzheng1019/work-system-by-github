@@ -1,53 +1,57 @@
 <template>
     <div id="login" class="clearfloat">
-        <el-button type="primary" class="btn-public" @click.native="dialogSwitch('res')">
-            注册
-        </el-button>
-        <el-button type="primary" class="btn-public" @click.native="dialogSwitch('login')">
-            登录
-        </el-button>
-        <el-dialog :title="dialogStatus=='res' ? '注册' : '登录'" :visible.sync="isDialog" center>
-            <template>
-                <el-tabs v-model="activeName" @tab-click="handleClick">
-                    <el-tab-pane label="我是学生" name="student">
-                        我是学生
-                    </el-tab-pane>
-                    <el-tab-pane label="我是教师" name="teacher">
-                        <template>
-                            <el-form :model="loginForm" ref="loginForm" :rules="rulesForm" status-icon>
-                                <el-form-item type="text" label="邮箱" :label-width="formLabelWidth" prop="email">
-                                    <el-input type="text" v-model="loginForm.email" auto-complete="off">
-                                    </el-input>
-                                </el-form-item>
-                                <el-form-item type="text" label="验证码" :label-width="formLabelWidth" prop="code" v-if="dialogStatus=='res'">
-                                    <el-input type="code" v-model="loginForm.code" auto-complete="off">
-                                    </el-input>
-                                    <el-button type="primary" v-if="dialogStatus=='res'" class="send-code" @click.native="sendCode()">
-                                        发送验证码
-                                    </el-button>
-                                </el-form-item>
-                                <el-form-item type="password" label="密码" :label-width="formLabelWidth" prop="password">
-                                    <el-input type="password" v-model="loginForm.password" auto-complete="off">
-                                    </el-input>
-                                </el-form-item>
-                                <el-form-item type="password" label="确认密码" :label-width="formLabelWidth" prop="respwd" v-if="dialogStatus=='res'">
-                                    <el-input type="password" v-model="loginForm.respwd" auto-complete="off">
-                                    </el-input>
-                                </el-form-item>
-                            </el-form>
-                        </template>
-                    </el-tab-pane>
-                </el-tabs>
-            </template>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click.native="closeDialog()">
-                    取 消
-                </el-button>
-                <el-button type="primary" @click.native="dialogStatus=='res' ? register() : login()">
-                    确 定
-                </el-button>
-            </div>
-        </el-dialog>
+        <div class="login-two">
+            <el-button type="primary" class="btn-public" @click.native="dialogSwitch('res')">
+                注册
+            </el-button>
+            <el-button type="primary" class="btn-public" @click.native="dialogSwitch('login')">
+                登录
+            </el-button>
+        </div>
+        <div class="relative">
+            <el-dialog :title="dialogStatus=='res' ? '注册' : '登录'" :visible.sync="isDialog" center>
+                <template>
+                    <el-tabs v-model="activeName" @tab-click="handleClick">
+                        <el-tab-pane label="我是学生" name="student">
+                            我是学生
+                        </el-tab-pane>
+                        <el-tab-pane label="我是教师" name="teacher">
+                            <template>
+                                <el-form :model="loginForm" ref="loginForm" :rules="rulesForm" status-icon>
+                                    <el-form-item type="text" label="邮箱" :label-width="formLabelWidth" prop="email">
+                                        <el-input type="text" v-model="loginForm.email" auto-complete="off">
+                                        </el-input>
+                                    </el-form-item>
+                                    <el-form-item type="text" label="验证码" :label-width="formLabelWidth" prop="code" v-if="dialogStatus=='res'">
+                                        <el-input type="code" v-model="loginForm.code" auto-complete="off">
+                                        </el-input>
+                                        <el-button type="primary" v-if="dialogStatus=='res'" class="send-code" @click.native="sendCode()">
+                                            发送验证码
+                                        </el-button>
+                                    </el-form-item>
+                                    <el-form-item type="password" label="密码" :label-width="formLabelWidth" prop="password">
+                                        <el-input type="password" v-model="loginForm.password" auto-complete="off">
+                                        </el-input>
+                                    </el-form-item>
+                                    <el-form-item type="password" label="确认密码" :label-width="formLabelWidth" prop="respwd" v-if="dialogStatus=='res'">
+                                        <el-input type="password" v-model="loginForm.respwd" auto-complete="off">
+                                        </el-input>
+                                    </el-form-item>
+                                </el-form>
+                            </template>
+                        </el-tab-pane>
+                    </el-tabs>
+                </template>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click.native="closeDialog()">
+                        取 消
+                    </el-button>
+                    <el-button type="primary" @click.native="dialogStatus=='res' ? register() : login()">
+                        确 定
+                    </el-button>
+                </div>
+            </el-dialog>
+        </div>
     </div>
 </template>
 <script>
@@ -69,7 +73,7 @@
         dialogStatus: 'res',
         isDialog: true,  
         activeName: 'teacher',
-        formLabelWidth: '80px',
+        formLabelWidth: '100px',
         loginForm: { email:"", password:"", respwd:"",code:""},
         returnCode: '',
         rulesForm: {
@@ -164,8 +168,9 @@
   }
 </script>
 <style scoped>
+    .login-two{ position: fixed; right: 8%; }
     .btn-public{ background: transparent; color: #fff; float: right; margin-left: 10px; }
-    .el-input{  width: 75%; }
+    .el-input{  width: 60%; }
     .send-code{ margin-left: 15px; }
     .dialog-footer{ text-align: right; }
 </style>

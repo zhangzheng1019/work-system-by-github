@@ -20,11 +20,9 @@ export default {
 }
 </script>
 <style>
-    @import "../static/css/main.css";
-    @import "../static/css/color-dark.css";
     body{ overflow-y: scroll; }
     .picb{ width: 100%;display: block; }
     .clearfloat{ zoom: 1; }
     .clearfloat:after{ content:"."; display:block; height:0; clear:both; visibility:hidden; }
-
+    .relative{ position: relative; }
 </style>

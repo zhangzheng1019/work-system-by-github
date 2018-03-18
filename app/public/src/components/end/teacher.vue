@@ -6,42 +6,39 @@
             </add-teacher>
         </h1>
         <div class="mtb20">
-            <!-- <el-form :inline="true" :model="formInline" class="demo-form-inline">
-              <el-form-item label="审批人">
-                <el-input v-model="formInline.user" placeholder="审批人"></el-input>
+            <el-form :inline="true" :model="selectForm" class="demo-form-inline">
+              <el-form-item label="姓名">
+                <el-input v-model="selectForm.name" placeholder="姓名"></el-input>
               </el-form-item>
-              <el-form-item label="活动区域">
-                <el-select v-model="formInline.region" placeholder="活动区域">
-                  <el-option label="区域一" value="shanghai"></el-option>
-                  <el-option label="区域二" value="beijing"></el-option>
-                </el-select>
+              <el-form-item label="手机号">
+                <el-input v-model="selectForm.mobile" placeholder="手机号"></el-input>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" @click="onSubmit">查询</el-button>
+                <el-button type="primary" @click="onSubmit()">查询</el-button>
               </el-form-item>
-            </el-form> -->
+            </el-form>
             <template>
-                <el-table :data="teacherList" style="width: 100%" border>
-                    <el-table-column prop="id" label="ID" width="100">
+                <el-table :data="teacherList" style="width: 100%" border :stripe='true'>
+                    <el-table-column prop="id" label="ID">
                     </el-table-column>
-                    <el-table-column prop="realname" label="姓名" width="100">
+                    <el-table-column prop="realname" label="姓名">
                     </el-table-column>
-                    <el-table-column prop="mail" label="邮箱" width="200">
+                    <el-table-column prop="mail" label="邮箱">
                     </el-table-column>
-                    <el-table-column prop="mobile" label="手机号" width="200">
+                    <el-table-column prop="mobile" label="手机号">
                     </el-table-column>
-                    <el-table-column prop="thumb" label="头像" width="100">
+                    <el-table-column prop="thumb" label="头像">
                         <template slot-scope="scope">
                             <div class="tea-thumb">
                                 <img src="../../assets/github3.png" alt=""/>
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="createtime" label="创建时间" width="200">
+                    <el-table-column prop="createtime" label="创建时间">
                     </el-table-column>
                     <el-table-column label="操作" width="180">
                         <template slot-scope="scope">
-                            <el-button @click="handleClick(row)" type="text">
+                            <el-button @click="handleClick(this.row)" type="text">
                                 查看
                             </el-button>
                             <el-button type="text">
@@ -53,8 +50,7 @@
             </template>
         </div>
         <div class="ptb10">
-            <el-pagination v-if='totalPage>
-                0'
+            <el-pagination v-if='totalPage>0'
                 layout="prev, pager, next"
                 background
                 :total="totalPage"
@@ -73,6 +69,7 @@
         data () {
             return {
               teacherList: [],
+              selectForm: { name:'', mobile:''},
               tclist:"",
               totalPage: 0,
               currentPage: 1,
@@ -86,9 +83,29 @@
             let termData = {
               page: this.currentPage,
             };
+            this.ajaxGetInfo(termData)
+          },
+          addtc(){
+
+          },
+          handleClick(row){
+            console.log(row);
+          },
+          changePage(val) {
+            this.currentPage = val
+            this.getList()
+          },
+          onSubmit() {
+            let termData = {
+              select: this.selectForm,
+              page: this.currentPage
+            }
+            this.ajaxGetInfo(termData)
+          },
+          ajaxGetInfo(params) {
             fetch({
               url: '/teacher/getInfo',
-              data: termData,
+              data: params,
               cb: (data, msg) => {
                 this.teacherList = data.list
                 this.totalPage   = data.total
@@ -99,17 +116,8 @@
                 }
               }
             });
-          },
-          addtc(){
-
-          },
-          handleClick(){
-
-          },
-          changePage(val) {
-            this.currentPage = val
-            this.getList()
           }
+
         },
         created() {
             this.getList();
@@ -117,5 +125,5 @@
     }
 </script>
 <style scoped>
-.tea-thumb img{ width: 50px; border-radius: 100%; }
+  .tea-thumb img{ width: 50px; border-radius: 100%; }
 </style>

@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div class="header">
+        <div class="hello-header">
             <h2>
                 欢迎使用{{ msg }}
             </h2>
@@ -43,7 +43,7 @@ export default {
   name: 'hello',
   data:function() {
     return {
-      msg: '后台管理系统'
+      msg: 'GitHub 作业统计后台管理系统'
     }
   }
 }
@@ -54,7 +54,7 @@ h1, h2 {
   font-weight: normal;
 }
 .container{padding:50px;}
-.header{padding-bottom: 20px;}
+.hello-header{padding-bottom: 20px;}
 .hello-info ul{padding-left: 50px;}
 .hello-info{line-height: 34px;}
 </style>
