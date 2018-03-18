@@ -33,11 +33,35 @@ class Student_model extends CI_Model
         $this->DB->order_by($order);
         $query = $this->DB->get();
         if ($query && $query->num_rows() > 0) {
-            $result = $query->result_array();
+            $result['list'] = $query->result_array();
         }
         return $result;
     }
+    /**
+     * 记录总数
+     * @param  array   $where  [description]
+     * @param  integer $offset [description]
+     * @param  integer $limit  [description]
+     * @param  string  $order  [description]
+     * @return [type]          [description]
+     */
+    public function getTotalNum($where = array(), $order = 'id desc')
+    {
+        $total = 0;
+        $this->DB->from(self::WG_STUDENTS_TABLE);
+        if (!empty($where)) {
+            $this->DB->where($where);
+        }
 
+        $this->DB->where("flag >", 0);
+
+        $this->DB->order_by($order);
+        $query = $this->DB->get();
+        if ($query && $query->num_rows() > 0) {
+            $total = $query->num_rows();
+        }
+        return $total;
+    }
     /**
      * 添加学生信息
      * @param array $data [description]
@@ -160,6 +184,28 @@ class Student_model extends CI_Model
             $result[$key]['teacher_info'] = $this->teacher_model->getBasicInfo(array('id' => $value));
         }
 
+        return $result;
+    }   
+    /**
+     * 对某个字段值分组
+     * @param  [type] $field [字段]
+     * @return [type]        [description]
+     */
+    public function studentGroupBy($field = '*')
+    {
+        $result = null;
+        $this->DB->select($field);
+        $this->DB->from(self::WG_STUDENTS_TABLE);
+        $this->DB->where("flag >", 0);
+        $this->DB->group_by($field);
+        $query = $this->DB->get();
+        if ($query && $query->num_rows() > 0) {
+            $data = $query->result_array();
+        }
+        foreach ($data as $key => $value) {
+            $result[$key]['key'] = $key;
+            $result[$key]['value'] = $value[$field];
+        }
         return $result;
     }
 

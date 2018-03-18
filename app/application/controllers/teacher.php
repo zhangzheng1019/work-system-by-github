@@ -33,8 +33,8 @@ class Teacher extends CI_Controller
         $data   = array();
         $id     = $this->input->post('id');
         $status = false;
-        // 修改教师信息
         if ($id) {
+            // 修改教师信息
             $teacherInfo      = $this->teacher_model->getBasicInfo(array('id' => $id));
             $data             = $teacherInfo['list'];
             $data['realname'] = isset($_POST['name']) ? $_POST['name'] : $data['realname'];
@@ -42,7 +42,7 @@ class Teacher extends CI_Controller
             $data['thumb']    = isset($_POST['thumb']) ? $_POST['thumb'] : $data['thumb'];
             $status           = $this->teacher_model->updateTeacherInfo($id, $data);
         } else {
-//添加
+            //添加
             $data['mail']     = isset($_POST['email']) ? $_POST['email'] : '';
             $data['password'] = isset($_POST['password']) ? $_POST['password'] : '';
             $data['realname'] = isset($_POST['name']) ? $_POST['name'] : '';
@@ -58,4 +58,29 @@ class Teacher extends CI_Controller
         }
     }
 
+    public function resetPwd()
+    {
+        $id = $this->input->get('id');
+        if (!$id) {
+            ajax_fail(false,'无效的id');
+        }
+        $teacherInfo  = $this->teacher_model->getBasicInfo(['id' => $id]);
+        $emailAddress = $teacherInfo['list'][0]['mail'];
+        if (!emailAddress) {
+            ajax_fail(false,'无效的邮箱地址');
+        }
+
+        $this->load->model("email_model");
+
+        $code         = '123456';
+        $subject      = 'github作业统计系统-重置密码';
+        $body         = '<p style="font-size:24px">您的新密码为：' . '<font color="#409EFF">' . $code . '</font><p>';
+        $sendStatus   = $this->email_model->sendEmail($emailAddress, $subject, $body);
+        $updateStatus = false;
+        if ($sendStatus) {
+            $updateStatus = $this->teacher_model->updateTeacherInfo($id, ['password' => md5($code)]);
+            ajax_success($updateStatus, '重置成功');
+        }
+
+    }
 }

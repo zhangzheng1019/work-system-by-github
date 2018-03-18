@@ -169,7 +169,8 @@
 </script>
 <style scoped>
     .login-two{ position: fixed; right: 8%; }
-    .btn-public{ background: transparent; color: #fff; float: right; margin-left: 10px; }
+    .btn-public{  color: #fff; float: right; margin-left: 10px; background: transparent;/*border-color: transparent;*/ }
+    .btn-public:hover{ background-color: #409EFF; }
     .el-input{  width: 60%; }
     .send-code{ margin-left: 15px; }
     .dialog-footer{ text-align: right; }

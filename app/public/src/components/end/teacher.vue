@@ -16,6 +16,9 @@
               <el-form-item>
                 <el-button type="primary" @click="onSubmit()">查询</el-button>
               </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="onBreak()">刷新</el-button>
+              </el-form-item>
             </el-form>
             <template>
                 <el-table :data="teacherList" style="width: 100%" border :stripe='true'>
@@ -36,12 +39,9 @@
                     </el-table-column>
                     <el-table-column prop="createtime" label="创建时间">
                     </el-table-column>
-                    <el-table-column label="操作" width="180">
+                    <el-table-column label="操作">
                         <template slot-scope="scope">
-                            <el-button @click="handleClick(this.row)" type="text">
-                                查看
-                            </el-button>
-                            <el-button type="text">
+                            <el-button type="text" @click='resetPwd(scope.row.id)'>
                                 重置密码
                             </el-button>
                         </template>
@@ -85,12 +85,6 @@
             };
             this.ajaxGetInfo(termData)
           },
-          addtc(){
-
-          },
-          handleClick(row){
-            console.log(row);
-          },
           changePage(val) {
             this.currentPage = val
             this.getList()
@@ -102,6 +96,16 @@
             }
             this.ajaxGetInfo(termData)
           },
+          resetPwd(val) {
+            fetch({
+              url: '/teacher/resetPwd',
+              data: {id:val},
+              dataType: 'json',
+              cb: (data,msg) => {
+                this.$message.success(msg);
+              }
+            })
+          },
           ajaxGetInfo(params) {
             fetch({
               url: '/teacher/getInfo',
@@ -110,13 +114,17 @@
                 this.teacherList = data.list
                 this.totalPage   = data.total
                 if (data.total == 0) {
-                    this.$message.success("没有数据呢，亲！");
+                    this.$message.error("没有数据呢，亲！");
                 }else{
                   this.$message.success(msg);
                 }
               }
             });
+          },
+          onBreak() {
+            window.location.reload()
           }
+
 
         },
         created() {
