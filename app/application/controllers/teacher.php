@@ -105,7 +105,7 @@ class Teacher extends CI_Controller
             'mail' => $email,
         );
         $total = $this->teacher_model->getTotalNum($where);
-        ($total > 0) ? ajax_success(false,'该邮箱已经注册过了') : ajax_success(true);
+        ($total > 0) ? ajax_success(false, '该邮箱已经注册过了') : ajax_success(true);
     }
 
 }

@@ -6,7 +6,7 @@
         </div>
     	<el-header class="clearfloat">
             <div class="header-left">
-                <img src="../../assets/github3-white.png" alt="默认头像" class="picb logo"/><span class="web-title">基于GitHub作业统计系统</span>
+                <img src="../../assets/github3-white.png" alt="默认头像" class="picb header-logo"/><span class="header-title">基于GitHub作业统计系统</span>
             </div>
             <login-front>
             </login-front>
@@ -41,8 +41,7 @@
     .main-title{ position: fixed; top: 50%; left: 50%; z-index: 1; -webkit-transform:translate(-50%, -50%); -ms-transform: translate(-50%, -50%); transform: translate(-50%, -50%); height: auto; color: #fff; font-size: 3rem; text-align: center;}
     /*头部*/
     #hello header{ position: relative; }
-    .logo{ width: 40px;  float: left; }
-    .header-left{ position: absolute; left: 2%;color: #fff; font-size: 1.5rem; line-height: 2.5rem;vertical-align: middle;}
-    .web-title{ margin-left: 20px; }
-    .el-header{ padding: 10px 40px; background-color: transparent; color: #333; text-align: center; line-height: 60px; }
+    .header-logo{ width: 40px;  float: left; }
+    .header-left{ position: absolute; color: #fff; font-size: 1.5rem; line-height: 2.5rem;vertical-align: middle;}
+    .header-title{ margin-left: 20px; }
 </style>

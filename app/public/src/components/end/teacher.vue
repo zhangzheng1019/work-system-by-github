@@ -69,7 +69,7 @@
         data () {
             return {
               teacherList: [],
-              selectForm: { name:'', mobile:''},
+              selectForm: { name:'', mobile:'' },
               tclist:"",
               totalPage: 0,
               currentPage: 1,

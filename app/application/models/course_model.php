@@ -135,4 +135,10 @@ class Course_model extends CI_Model
         return $result;
 
     }
+
+    public function getGradeByWhere($where=array())
+    {
+        
+    }
+
 }

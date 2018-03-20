@@ -19,5 +19,9 @@ module.exports = {
     '/login': {
         target: DEVHOST,
         changeOrigin: true
+    },
+    '/upload': {
+        target: DEVHOST,
+        changeOrigin: true
     }
 }
