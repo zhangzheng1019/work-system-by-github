@@ -4,6 +4,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Teacher extends CI_Controller
 {
     const OFFSET = 10;
+
     public function __construct()
     {
         parent::__construct();
@@ -11,7 +12,10 @@ class Teacher extends CI_Controller
         $this->load->model("teacher_model");
 
     }
-
+    /**
+     * 获取教师信息列表
+     * @return [type] [description]
+     */
     public function getInfo()
     {
         $where  = [];
@@ -27,7 +31,9 @@ class Teacher extends CI_Controller
         $data['total'] = $total;
         ajax_success($data, "加载成功");
     }
-
+    /**
+     * 添加、修改教师信息
+     */
     public function addTea()
     {
         $data   = array();
@@ -57,17 +63,20 @@ class Teacher extends CI_Controller
             ajax_fail(false, '操作失败');
         }
     }
-
+    /**
+     * 重置密码
+     * @return [type] [description]
+     */
     public function resetPwd()
     {
         $id = $this->input->get('id');
         if (!$id) {
-            ajax_fail(false,'无效的id');
+            ajax_fail(false, '无效的id');
         }
         $teacherInfo  = $this->teacher_model->getBasicInfo(['id' => $id]);
         $emailAddress = $teacherInfo['list'][0]['mail'];
         if (!emailAddress) {
-            ajax_fail(false,'无效的邮箱地址');
+            ajax_fail(false, '无效的邮箱地址');
         }
 
         $this->load->model("email_model");
@@ -81,6 +90,22 @@ class Teacher extends CI_Controller
             $updateStatus = $this->teacher_model->updateTeacherInfo($id, ['password' => md5($code)]);
             ajax_success($updateStatus, '重置成功');
         }
-
     }
+    /**
+     * 验证邮箱注册时，邮箱唯一性
+     * @return [type] [description]
+     */
+    public function uniqueEmail()
+    {
+        $email = $this->input->get("email") ? $this->input->get("email") : '';
+        if (!$email) {
+            ajax_success(false, '请输入邮箱地址');
+        }
+        $where = array(
+            'mail' => $email,
+        );
+        $total = $this->teacher_model->getTotalNum($where);
+        ($total > 0) ? ajax_success(false,'该邮箱已经注册过了') : ajax_success(true);
+    }
+
 }

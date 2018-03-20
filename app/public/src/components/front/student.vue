@@ -1,6 +1,6 @@
 <template>
     <div id="student">
-        Front student
+        
     </div>
 </template>
 <script>
@@ -12,8 +12,8 @@
 			}
 		},
 		components: {
-
-        },
+			
+    },
 		create() {
 
 		},

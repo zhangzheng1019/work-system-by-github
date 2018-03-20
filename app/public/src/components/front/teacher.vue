@@ -1,9 +1,11 @@
 <template>
     <div id="teacher">
-        Front teacher
+        <index-head :userInfo='userInfo'></index-head>
     </div>
 </template>
 <script>
+    import indexHead  from './comment/indexHead'
+
     export default {
     	name: 'teacher',
 		data () {
@@ -11,9 +13,10 @@
 			  
 			}
 		},
+		props:['userInfo'],
 		components: {
-
-        },
+			'index-head' : indexHead
+    },
 		create() {
 
 		},

@@ -1,16 +1,16 @@
 <template>
     <div class="login-wrap">
         <div class="ms-title">
-            后台管理系统
+            基于GitHub作业统计<br>后台管理系统
         </div>
         <div class="ms-login">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
                 <el-form-item prop="username">
-                    <el-input v-model="ruleForm.username" placeholder="username">
+                    <el-input v-model="ruleForm.username" placeholder="教师登录请输入邮箱">
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                    <el-input type="password" placeholder="password" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')">
+                    <el-input type="password" placeholder="请输入密码" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')">
                     </el-input>
                 </el-form-item>
                 <div class="login-btn">
@@ -19,7 +19,7 @@
                     </el-button>
                 </div>
                 <p class="login-tips">
-                    Tips : 用户名和密码随便填。
+                    Tips : 教师登录同系统密码
                 </p>
             </el-form>
         </div>

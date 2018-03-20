@@ -23,7 +23,7 @@ class Email extends CI_Controller
         );
         $count = $this->teacher_model->getTotalNum($where);
         if($count > 0){
-            ajax_fail($count,"该邮箱已经注册了哈！",false);
+            ajax_fail(false,"该邮箱已经注册了哈！");
         }
         $this->load->model("email_model");
 

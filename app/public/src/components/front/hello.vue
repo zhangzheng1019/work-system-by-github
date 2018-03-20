@@ -5,8 +5,8 @@
             <p class="main-title">技术 · 共享 · 学习</p>
         </div>
     	<el-header class="clearfloat">
-            <div class="pic">
-                <img src="../../assets/github3-white.png" alt="默认头像" class="picb"/>
+            <div class="header-left">
+                <img src="../../assets/github3-white.png" alt="默认头像" class="picb logo"/><span class="web-title">基于GitHub作业统计系统</span>
             </div>
             <login-front>
             </login-front>
@@ -14,7 +14,6 @@
     </div>
 </template>
 <script>
-    import indexHead  from './comment/indexHead'
 	import Login from './logRes/login'
     export default {
     	name: 'hello',
@@ -24,12 +23,13 @@
 			}
 		},
 		components: {
-			'index-head': indexHead,
 			'login-front': Login
         },
 		create() {
-
 		},
+        mounted() {
+            
+        },
 		methods: {
 			
 		}
@@ -38,8 +38,11 @@
 </script>
 <style scoped>
     .main-bg{ position: fixed;top: 0;bottom: 0;left: 0;right: 0; width: 100%; background: url('../../assets/it.jpg') no-repeat; background-size: 100% 100%; -moz-background-size: 100% 100%; -webkit-background-size: 100% 100%;}
+    .main-title{ position: fixed; top: 50%; left: 50%; z-index: 1; -webkit-transform:translate(-50%, -50%); -ms-transform: translate(-50%, -50%); transform: translate(-50%, -50%); height: auto; color: #fff; font-size: 3rem; text-align: center;}
+    /*头部*/
     #hello header{ position: relative; }
-    .pic{ width: 40px;  float: left; }
-    .main-title{ position: fixed; top: 50%; left: 50%; z-index: 1; -webkit-transform:translate(-50%, -50%); -ms-transform: translate(-50%, -50%); transform: translate(-50%, -50%); height: auto; color: #fff; font-size: 4rem; text-align: center;}
+    .logo{ width: 40px;  float: left; }
+    .header-left{ position: absolute; left: 2%;color: #fff; font-size: 1.5rem; line-height: 2.5rem;vertical-align: middle;}
+    .web-title{ margin-left: 20px; }
     .el-header{ padding: 10px 40px; background-color: transparent; color: #333; text-align: center; line-height: 60px; }
 </style>
