@@ -1,6 +1,7 @@
 <template>
     <div id="Front">
         <el-container direction="vertical">
+            <index-head :userInfo='userInfo'></index-head>
             <el-main>
                 <router-view :userInfo='userInfo'>
                 </router-view>
@@ -17,7 +18,7 @@
         name: 'front',
         data () {
             return {
-                
+
             }
         },
         props: ['userInfo'],
@@ -31,13 +32,14 @@
             
         }
 
+
     }
 </script>
 <style scoped>
-    .el-footer { background-color: #c1c7cf; color: #333; text-align: center; line-height: 60px; }
-    .el-aside { background-color: #D3DCE6; color: #333; text-align: center; line-height: 200px; }
-    .el-main { color: #333; text-align: center; }
-  
     body > .el-container { margin-bottom: 40px; }
+    .el-main { color: #333;  }
+    .el-footer { background-color: #c1c7cf; color: #333; text-align: center; line-height: 60px; }
 
+    /*Front 子页面公共样式*/
+    .front-wrap { padding: 10px 5%; }
 </style>

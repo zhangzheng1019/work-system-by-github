@@ -1,19 +1,17 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Course extends CI_Controller 
+class Course extends CI_Controller
 {
-	public function __construct()
+    public function __construct()
     {
         parent::__construct();
-        $this->DB = $this->load->database("default",true);
+        $this->DB = $this->load->database("default", true);
         $this->load->model("course_model");
+    }
 
-	}
-
-
-	
-
-
-	
+    public function getGradeGroup()
+    {
+    		
+    }
 }
