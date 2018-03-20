@@ -56,7 +56,6 @@
 </template>
 <script>
     import { fetch, post } from '../../../utils.js'
-    import { check_email,check_pwdlen } from '../../../rules.js'
     export default {
     data () {
 
@@ -69,6 +68,38 @@
               callback();
           }
       }
+      var validateCode = (rule, value, callback) => {
+          if (value === '') {
+              callback(new Error('请输入验证码'));
+          } else if (value !== this.returnCode) {
+              callback(new Error('验证码不正确'));
+          } else {
+              callback();
+          }
+      }
+      var check_email = (rule, value, callback) => {
+          var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+          if (rule.required === true) {
+              if (!value) {
+                  callback(new Error('请输入邮箱地址'));
+              } else {
+                  setTimeout(() => {
+                      if (!filter.test(value)) {
+                          callback(new Error('请输入正确的邮箱地址'));
+                      } else {
+                          fetch({
+                            url: '/teacher/uniqueEmail',
+                            data: { email:this.loginForm.email },
+                            dataType: 'json',
+                            cb: (data, msg) => {
+                              data ? callback() : callback(new Error('该邮箱已经注册过了'));
+                            }
+                          })
+                      }
+                  }, 200);
+              }
+          } 
+      }
       return {
         dialogStatus: 'res',
         isDialog: true,  
@@ -80,17 +111,20 @@
           email: [{
             required: true,
             validator: check_email,
-            message: '请输入正确的邮箱',
             triggle: 'blur'
           }],
-          password: [{
-            required: true,
-            validator: check_pwdlen,
-            triggle: 'blur'
-          }],
+          password: [
+            { required: true, message: '请输入密码', trigger: 'blur' },
+            { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' }
+          ],
           respwd: [{
             required: true,
             validator: validateResPassword,
+            triggle: 'blur'
+          }],
+          code: [{
+            required: true,
+            validator: validateCode,
             triggle: 'blur'
           }]
         }
@@ -104,7 +138,9 @@
     },
     methods: {
       dialogSwitch(val) {
-        this.$refs['loginForm'].resetFields();
+        if (this.$refs['loginForm']!==undefined) {
+          this.$refs['loginForm'].resetFields();
+        }
         this.activeName   = 'student';
         this.dialogStatus = val;
         this.isDialog     = true;
@@ -113,18 +149,17 @@
         this.isDialog     = false;
       },
       handleClick(tab, event) {
-        this.$refs['loginForm'].resetFields();
-
-        // console.log(tab, event);
+        if (this.$refs['loginForm']!==undefined) {
+          this.$refs['loginForm'].resetFields();
+        }
       },
       sendCode() {
-        // 问题： 如何判断邮箱验证通过，，发送按钮才可点击
         post({
           url: '/email/ajaxSend',
           dataType: 'json',
-          data: {email: this.loginForm.email},
-          cb: (data, msg, errcode) =>  { 
-            if(errcode){
+          data: { email: this.loginForm.email },
+          cb: (data, msg) =>  { 
+            if(data){
               this.returnCode = data
             }else{
               this.$message.error(msg)
@@ -133,43 +168,62 @@
         })
       },
       login() {
-        let userRole = this.activeName
-        if('teacher' == userRole){
-          console.log('teacher')
-        }else if('student' == userRole){
-          console.log('student')
-        }
+        
+          let userRole = this.activeName
+          if('teacher' == userRole){
+            this.$refs['loginForm'].validate((valid) => {
+              if(!valid){
+                this.$message.error("邮箱或者密码不正确");
+                return false
+              }
+            })
+          }else if('student' == userRole){
+
+          }
       },
       register() {
-        let userRole = this.activeName
-        if('teacher' == userRole){
-          console.log('teacher')
-          // if(this.returnCode !== this.loginForm.code){
-          //   this.$message.error("验证码不正确，请确认验证码")
-          //   return false
-          // }
-          post({
-            url:'/teacher/addTea',
-            dataType: 'json',
-            data: this.loginForm,
-            cb: (data,msg) => {
-                this.$message.success("恭喜你，注册成功");
-            },
-            err:(data ,msg) => {
-                this.$message.error(msg);
+          let userRole = this.activeName
+          if('teacher' == userRole){
+            this.$refs['loginForm'].validate((valid) => {
+              if(!valid){
+                this.$message.error("请填写注册信息");
+                return false
               }
-          })
-        }else if('student' == userRole){
-          console.log('student')
-        }
-      }
+              post({
+                url:'/teacher/addTea',
+                dataType: 'json',
+                data: this.loginForm,
+                cb: (data,msg) => {
+                    this.$message.success("恭喜你，注册成功");
+                    this.ajaxSetCookie();
+                    // window.location.href="/#/student"
+                },
+                err:(data ,msg) => {
+                  this.$message.error(msg);
+                }
+              })
+            })
+          }else if('student' == userRole){
+            console.log('student')
+          }
+      },
+      ajaxSetCookie(){
+         post({
+            url:'/login/teacherResigter',
+            dataType: 'json',
+            data: {email: this.loginForm.email},
+            cb: (data,msg) => {
+              alert(msg)
+            }
+        })
+      },
     }
 
   }
 </script>
 <style scoped>
-    .login-two{ position: fixed; right: 8%; }
-    .btn-public{  color: #fff; float: right; margin-left: 10px; background: transparent;/*border-color: transparent;*/ }
+    .login-two{ position: relative; right: 0; }
+    .btn-public{  color: #fff; float: right; margin-left: 10px; background: transparent; }
     .btn-public:hover{ background-color: #409EFF; }
     .el-input{  width: 60%; }
     .send-code{ margin-left: 15px; }

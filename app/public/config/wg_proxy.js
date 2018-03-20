@@ -15,5 +15,9 @@ module.exports = {
     '/teacher': {
         target: DEVHOST,
         changeOrigin: true
+    },
+    '/login': {
+        target: DEVHOST,
+        changeOrigin: true
     }
 }

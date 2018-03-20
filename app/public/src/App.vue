@@ -5,16 +5,20 @@
     </div>
 </template>
 <script>
-
+import $ from 'jquery'
 import { fetch } from './utils'
 export default {
   name:'app',
   data () {
     return {
       userInfo:{
-        id:1
+        id:1,
+        username: '张政'
       },
     }
+  },
+  mounted(){
+    $('html').css('fontSize','16px');
   },
   created() {
     
@@ -22,8 +26,7 @@ export default {
 }
 </script>
 <style>
-  body{ overflow-y: scroll; }
-  #app, .wrapper, body, html{ width: 100%; height: 100%; overflow: hidden;}
+  #app, .wrapper, body, html{ width: 100%; height: 100%; }
   *{ margin: 0;padding: 0; }
   .picb{ width: 100%;display: block; }
   .clearfloat{ zoom: 1; }
