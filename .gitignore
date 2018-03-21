@@ -56,3 +56,10 @@ typings/
 
 # dotenv environment variables file
 .env
+
+# sublime tags function jump
+.tags
+.tags_sorted_by_file
+
+# test uploads img
+uploads

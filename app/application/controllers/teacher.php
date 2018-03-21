@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Teacher extends CI_Controller
 {
-    const OFFSET = 10;
+    const LIMIT = 10;
 
     public function __construct()
     {
@@ -25,9 +25,9 @@ class Teacher extends CI_Controller
             $select['name'] && $where['realname'] = $select['name'];
             $select['mobile'] && $where['mobile'] = $select['mobile'];
         }
-        $limit         = ($page - 1) * self::OFFSET;
+        $offset        = ($page - 1) * self::LIMIT;
         $total         = $this->teacher_model->getTotalNum($where);
-        $data          = $this->teacher_model->getBasicInfo($where, $limit, self::OFFSET);
+        $data          = $this->teacher_model->getBasicInfo($where, $offset, self::LIMIT);
         $data['total'] = $total;
         ajax_success($data, "加载成功");
     }
