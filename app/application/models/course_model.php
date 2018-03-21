@@ -28,7 +28,7 @@ class Course_model extends CI_Model
 
         $this->DB->where("flag >", 0);
         if ($limit) {
-            $this->DB->limit($limit, $offset);
+            $this->DB->limit($limit, $offset);//从$offset开始查$limit条
         }
         $this->DB->order_by($order);
         $query = $this->DB->get();
@@ -37,7 +37,31 @@ class Course_model extends CI_Model
         }
         return $result;
     }
+    /**
+     * 记录总数
+     * @param  array   $where  [description]
+     * @param  integer $offset [description]
+     * @param  integer $limit  [description]
+     * @param  string  $order  [description]
+     * @return [type]          [description]
+     */
+    public function getTotalNum($where = array(), $order = 'id desc')
+    {
+        $total = 0;
+        $this->DB->from(self::WG_COURSE_TABLE);
+        if (!empty($where)) {
+            $this->DB->where($where);
+        }
 
+        $this->DB->where("flag >", 0);
+
+        $this->DB->order_by($order);
+        $query = $this->DB->get();
+        if ($query && $query->num_rows() > 0) {
+            $total = $query->num_rows();
+        }
+        return $total;
+    }
     /**
      * 添加课程信息
      * @param array $data [description]
@@ -50,9 +74,11 @@ class Course_model extends CI_Model
             'title'      => $data['title'] ? $data['title'] : '',
             'desc'       => $data['desc'] ? $data['desc'] : '',
             'createtime' => date('Y-m-d H:i:s'),
-            'modifytime' => date('Y-m-d H:i:s'),
+            'modifytime' => '0000-00-00 00:00:00',
             'thumb'      => $data['thumb'] ? $data['thumb'] : '',
             'teacher_id' => $data['teacher_id'] ? $data['teacher_id'] : 0,
+            'task_id'    => $data['task_id'] ? $data['task_id'] : '',
+            'grade_id'   => $data['grade_id'] ? $data['grade_id'] : 0,
             'flag'       => 1,
         );
         $this->DB->insert(self::WG_COURSE_TABLE, $detailData);
@@ -136,9 +162,37 @@ class Course_model extends CI_Model
 
     }
 
-    public function getGradeByWhere($where=array())
+    /**
+     * 对某个字段值分组
+     * @param  string  $field  [字段]
+     * @param  array   $where  [筛选条件]
+     * @param  integer $limit  [条数]
+     * @param  string  $order  [排序方式]
+     * @return [type]          [description]
+     */
+    public function courseGroupBy($field = '*', $where = array(), $limit = 0, $order = '')
     {
-        
+        $result = null;
+        $this->DB->select($field);
+        $this->DB->from(self::WG_COURSE_TABLE);
+        if ($where) {
+            $this->DB->where($where);
+        }
+        $this->DB->where("flag >", 0);
+        $this->DB->group_by($field);
+        if ($limit) {
+            $this->DB->limit($limit);
+        }
+        $this->DB->order_by($order);
+        $query = $this->DB->get();
+        if ($query && $query->num_rows() > 0) {
+            $data = $query->result_array();
+        }
+        foreach ($data as $key => $value) {
+            $result[$key]['key']   = $key;
+            $result[$key]['value'] = $value[$field];
+        }
+        return $result;
     }
 
 }

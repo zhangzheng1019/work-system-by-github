@@ -146,7 +146,7 @@ class Student_model extends CI_Model
         if (!$id) {
             return [];
         }
-        $stuInfo   = $this->getBasicInfo($id);
+        $stuInfo   = $this->getBasicInfo(array('id' => $id));
         $courseArr = $stuInfo['course_id'];
         if (!$courseArr) {
             return [];
@@ -172,7 +172,7 @@ class Student_model extends CI_Model
         if (!$id) {
             return [];
         }
-        $stuInfo    = $this->getBasicInfo($id);
+        $stuInfo    = $this->getBasicInfo(array('id' => $id));
         $teacherArr = $stuInfo['teacher_id'];
         if (!$teacherArr) {
             return [];
@@ -185,7 +185,7 @@ class Student_model extends CI_Model
         }
 
         return $result;
-    }   
+    }
     /**
      * 对某个字段值分组
      * @param  [type] $field [字段]
@@ -203,7 +203,7 @@ class Student_model extends CI_Model
             $data = $query->result_array();
         }
         foreach ($data as $key => $value) {
-            $result[$key]['key'] = $key;
+            $result[$key]['key']   = $key;
             $result[$key]['value'] = $value[$field];
         }
         return $result;

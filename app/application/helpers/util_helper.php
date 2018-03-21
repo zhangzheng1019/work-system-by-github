@@ -772,11 +772,11 @@ if (!function_exists("inArray")) {
 
 if (!function_exists("filterData")) {
     /**
-     * 格式化数据，查询出该老师下的学生
+     * 格式化数据，一对多的情况，
      * @param  array  $param     [数组]
      * @param  [type] $id [教师id或者课程id]
      * @param  [type] $field     [字段值]
-     * @return [type]            [格式化之后的数据]
+     * @return [type]            [过滤掉不符合条件的数据]
      */
     function filterData($param = array(), $id, $field)
     {

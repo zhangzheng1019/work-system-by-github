@@ -31,6 +31,7 @@ export default {
   #app, .wrapper, body, html{ width: 100%; height: 100%; }
   html{ font-family: "Microsoft YaHei","微软雅黑","Hiragino Sans GB",Arial,sans-serif; }
   *{ margin: 0;padding: 0; }
+  div{ outline: none; }
   .picb{ width: 100%;display: block; }
   .clearfloat{ zoom: 1; }
   .clearfloat:after{ content:"."; display:block; height:0; clear:both; visibility:hidden; }

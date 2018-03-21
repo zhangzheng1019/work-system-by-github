@@ -14,7 +14,7 @@
                     </el-input>
                 </el-form-item>
                 <el-form-item label="封面图" :label-width="formLabelWidth" prop="thumb">
-                    <el-upload class="upload-demo" :multiple='false' action="/upload" :on-preview="handlePreview" :on-remove="handleRemove" :on-success="handleSuccess" :before-upload="beforeAvatarUpload" :file-list="this.addCourseForm.thumb" list-type="picture">
+                    <el-upload class="upload-demo" :multiple='false' action="/upload" :on-preview="handlePreview" :on-remove="handleRemove" :on-success="handleSuccess" :before-upload="beforeAvatarUpload" list-type="picture" :show-file-list="false">
                         <el-button size="small" type="primary">
                             点击上传
                         </el-button>
@@ -22,13 +22,19 @@
                             只能上传jpg/png文件，且不超过1M
                         </div>
                     </el-upload>
+                    <template>
+                        <img :src="uploadImage.path" class="preview-pic"/>
+                        <span class="preview-pic-desc">
+                            {{ uploadImage.name }}
+                        </span>
+                    </template>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">
                     取 消
                 </el-button>
-                <el-button type="primary" @click.navtive="openDialog">
+                <el-button type="primary" @click.native="submitCourse">
                     确 定
                 </el-button>
             </span>
@@ -36,65 +42,96 @@
     </div>
 </template>
 <script>
+    import { post } from '../../../utils.js'
     export default {
-		data () {
-			return {
-				formLabelWidth: "80px",
-				addCourseForm: { name:"", desc:"", thumb:[{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}]},
-			  dialogVisible: true,
-			  grade: '添加 '+2014+' 级课程',
-			  rulesForm: {
-			  	name: [{
-			  		required: true,
-			  		message: '请输入姓名',
-			  		triggle: 'blur'
-			  	}],
-			  	desc: [{
-			  		required: true,
-			  		message: '请输入课程描述',
-			  		triggle: 'blur'
-			  	}],
-			  	thumb: [{
-			  		required: true,
-			  		message: '请上传封面图',
-			  		triggle: 'blur'
-			  	}],
-			  }
-			}
-		},
-		props: ['activeName'],
-		components: {
+    data () {
+      return {
+        formLabelWidth: "80px",
+        addCourseForm: { name:"", desc:"", thumb:"" },
+        uploadImage: { name: '', path:'', width: '', height: ''},
+        dialogVisible: false,
+        grade: '添加 '+2014+' 级课程',
+        rulesForm: {
+          name: [{
+            required: true,
+            message: '请输入姓名',
+            triggle: 'blur'
+          }],
+          desc: [{
+            required: true,
+            message: '请输入课程描述',
+            triggle: 'blur'
+          }],
+          thumb: [{
+            required: true,
+            message: '请上传封面图',
+            triggle: 'blur'
+          }],
+        }
+      }
+    },
+    props: ['activeName','userInfo'],
+    create() {
 
-        },
-		create() {
-
-		},
-		methods: {
-			handleRemove(file, fileList) {
+    },
+    methods: {
+      handleRemove(file, fileList) {
+        // 移除上传图片
         console.log(file, fileList);
       },
       handlePreview(file) {
         console.log(file);
       },
       handleSuccess(file) {
-      	// this.addCourseForm.thumb.push(file)
-      	console.log(file);
+        if(file.data){
+          this.uploadImage.path   = file.data.url
+          this.uploadImage.name   = file.data.origin_name
+          this.uploadImage.width  = file.data.image_width
+          this.uploadImage.height = file.data.image_height
+          this.$message.success(file.msg)
+        }else{
+          this.$message.error(file.msg)
+        }
       },
       beforeAvatarUpload(file){
-      	const isJPG = (file.type === 'image/jpeg')|| (file.type === 'image/png');
-      	const isLt2M = file.size / 1024 / 1024 < 1;
+        const isJPG = (file.type === 'image/jpeg') || (file.type === 'image/png')|| (file.type === 'image/jpg');
+        const isLt2M = file.size / 1024 / 1024 < 1;
         if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!');
+          this.$message.error('上传图片只能是 JPG/JPEG/PNG 格式!');
         }
         if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 1MB!');
+          this.$message.error('上传图片大小不能超过 1MB!');
         }
         return isJPG && isLt2M;
       },
-		}
+      submitCourse() {
+        let postData = {
+          'name' : this.addCourseForm.name,
+          'desc' : this.addCourseForm.desc,
+          'thumb' : this.uploadImage.path,
+          'teacher_id' : this.userInfo.id,
+          'grade_id' : this.activeName
+        }
+        post({
+          url:'/course/addCourse',
+          data: postData,
+          dataType: 'json',
+          cb: (data,msg) => {
+            this.$message.success(msg)
+            this.dialogVisible = false;
+            this.$refs['addCourseForm'].resetFields()
+            this.$emit('addcou')
+          },
+          err:(data,msg) => {
+            this.$message.error(msg)
+          }
+        })
+      }
+    }
 
-	}
+  }
 </script>
 <style scoped>
     #addCourse{ position: absolute;right: 0; top: 0; }
+    .preview-pic{ width: 10%; display: inline-block; margin-right: 10px; }
 </style>
