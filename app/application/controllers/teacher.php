@@ -47,6 +47,7 @@ class Teacher extends CI_Controller
             $data['mobile']   = isset($_POST['mobile']) ? $_POST['mobile'] : $data['mobile'];
             $data['thumb']    = isset($_POST['thumb']) ? $_POST['thumb'] : $data['thumb'];
             $status           = $this->teacher_model->updateTeacherInfo($id, $data);
+            !$status && ajax_fail(false, '你没有修改呦！');
         } else {
             //添加
             $data['mail']     = isset($_POST['email']) ? $_POST['email'] : '';
@@ -55,13 +56,10 @@ class Teacher extends CI_Controller
             $data['mobile']   = isset($_POST['mobile']) ? $_POST['mobile'] : '';
             $status           = $this->teacher_model->addTeacherInfo($data);
             $status           = $status['status'];
+            !$status && ajax_fail(false, '操作失败');
         }
 
-        if ($status) {
-            ajax_success($status, '操作成功');
-        } else {
-            ajax_fail(false, '操作失败');
-        }
+        $status && ajax_success($status, '操作成功');
     }
     /**
      * 重置密码

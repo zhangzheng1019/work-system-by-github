@@ -36,7 +36,7 @@ class Course extends CI_Controller
 
         $total = $this->course_model->getTotalNum($where);
         $data  = $this->course_model->getBasicInfo($where, $offset, self::LIMIT);
-        
+
         $this->load->model("student_model");
         $allStudent = $this->student_model->getBasicInfo();
         foreach ($data as $key => $value) {
@@ -59,12 +59,14 @@ class Course extends CI_Controller
         $status = false;
         if ($id) {
             // 修改
-            $courseInfo    = $this->course_model->getBasicInfo(array('id' => $id));
-            $data          = $courseInfo['list'];
-            $data['title'] = isset($_POST['name']) ? $_POST['name'] : $data['title'];
-            $data['desc']  = isset($_POST['desc']) ? $_POST['desc'] : $data['desc'];
-            $data['thumb'] = isset($_POST['thumb']) ? $_POST['thumb'] : $data['thumb'];
-            $status        = $this->course_model->updateCourseInfo($id, $data);
+            $courseInfo       = $this->course_model->getBasicInfo(array('id' => $id));
+            $data             = $courseInfo['list'];
+            $data['title']    = isset($_POST['name']) ? $_POST['name'] : $data['title'];
+            $data['desc']     = isset($_POST['desc']) ? $_POST['desc'] : $data['desc'];
+            $data['thumb']    = isset($_POST['thumb']) ? $_POST['thumb'] : $data['thumb'];
+            $data['grade_id'] = isset($_POST['grade_id']) ? $_POST['grade_id'] : $data['grade_id'];
+            $status           = $this->course_model->updateCourseInfo($id, $data);
+            !$status && ajax_fail(false, '没有修改呦！');
         } else {
             //添加
             $data['title']      = isset($_POST['name']) ? $_POST['name'] : '';
@@ -74,13 +76,9 @@ class Course extends CI_Controller
             $data['grade_id']   = isset($_POST['grade_id']) ? $_POST['grade_id'] : '';
             $status             = $this->course_model->addCourseInfo($data);
             $status             = $status['status'];
+            !$status && ajax_fail(false, '操作失败');
         }
-
-        if ($status) {
-            ajax_success($status, '操作成功');
-        } else {
-            ajax_fail(false, '操作失败');
-        }
+        $status && ajax_success($status, '操作成功');
     }
 
     /**

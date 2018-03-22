@@ -1,16 +1,22 @@
 <template>
-    <div id="addCourse">
-        <el-button type="primary" icon="el-icon-plus" size="medium" @click.native='dialogVisible=true'>
-            发布课程
+    <div id="editCourse">
+        <el-button type="text" icon="el-icon-edit-outline" size="mini" @click='editDialog=true'>
+            编辑
         </el-button>
-        <el-dialog :title="grade" :visible.sync="dialogVisible">
-            <el-form :model="addCourseForm" ref="addCourseForm" :rules="rulesForm" status-icon>
-                <el-form-item label="课程名称" :label-width="formLabelWidth" prop="name">
-                    <el-input type="text" v-model="addCourseForm.name" pla auto-complete="off">
+        <el-dialog title="编辑课程" :visible.sync="editDialog">
+            <el-form :model="row" ref="row" :rules="rulesForm" status-icon>
+                <el-form-item label="所属年级" :label-width="formLabelWidth" prop="grade">
+                    <el-select v-model="row.grade_id" placeholder="请选择年级">
+                        <el-option v-for="item in gradeGroup" :key="item.key" :label="item.value" :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="课程名称" :label-width="formLabelWidth" prop="title">
+                    <el-input type="text" v-model="row.title" pla auto-complete="off">
                     </el-input>
                 </el-form-item>
                 <el-form-item label="课程描述" :label-width="formLabelWidth" prop="desc">
-                    <el-input type="textarea" v-model="addCourseForm.desc">
+                    <el-input type="textarea" v-model="row.desc">
                     </el-input>
                 </el-form-item>
                 <el-form-item label="封面图" :label-width="formLabelWidth" prop="thumb">
@@ -23,7 +29,8 @@
                         </div>
                     </el-upload>
                     <template>
-                        <img :src="uploadImage.path" class="preview-pic"/>
+                        <img :src="uploadImage.path" class="preview-pic" v-if='uploadImage.path'/>
+                        <img :src="row.thumb" class="preview-pic" v-else/>
                         <span class="preview-pic-desc">
                             {{ uploadImage.name }}
                         </span>
@@ -31,7 +38,7 @@
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">
+                <el-button @click="editDialog = false">
                     取 消
                 </el-button>
                 <el-button type="primary" @click.native="submitCourse">
@@ -47,12 +54,10 @@
     data () {
       return {
         formLabelWidth: "80px",
-        addCourseForm: { name:"", desc:"", thumb:"" },
         uploadImage: { name: '', path:'', width: '', height: ''},
-        dialogVisible: false,
-        grade: '',
+        editDialog: false,
         rulesForm: {
-          name: [{
+          title: [{
             required: true,
             message: '请输入课程名称',
             triggle: 'blur'
@@ -70,12 +75,12 @@
         }
       }
     },
-    props: ['activeName','userInfo'],
+    props: ['gradeGroup','row','userInfo'],
     create() {
 
     },
     mounted() {
-      this.grade = '添加 '+this.activeName+' 级课程'
+
     },
     methods: {
       handleRemove(file, fileList) {
@@ -91,6 +96,7 @@
           this.uploadImage.name   = file.data.origin_name
           this.uploadImage.width  = file.data.image_width
           this.uploadImage.height = file.data.image_height
+          this.row.thumb          = file.data.url
           this.$message.success(file.msg)
         }else{
           this.$message.error(file.msg)
@@ -108,14 +114,15 @@
         return isJPG && isLt2M;
       },
       submitCourse() {
-        this.$refs['addCourseForm'].validate((valid) => {
+        this.$refs['row'].validate((valid) => {
           if(valid){
             let postData = {
-              'name' : this.addCourseForm.name,
-              'desc' : this.addCourseForm.desc,
-              'thumb' : this.uploadImage.path,
+              'id' : this.row.id,
+              'name' : this.row.title,
+              'desc' : this.row.desc,
+              'thumb' : this.row.thumb,
               'teacher_id' : this.userInfo.id,
-              'grade_id' : this.activeName
+              'grade_id' : this.row.grade_id
             }
             post({
               url:'/course/addCourse',
@@ -123,23 +130,22 @@
               dataType: 'json',
               cb: (data,msg) => {
                 this.$message.success(msg)
-                this.dialogVisible = false;
-                this.$refs['addCourseForm'].resetFields()
-                this.$emit('addcou')
+                this.editDialog = false;
+                this.$emit('editcou')
               },
               err:(data,msg) => {
                 this.$message.error(msg)
+                this.editDialog = false;
               }
             })
           }
-        });
+        })
       }
-    },
-
+    }
 
   }
 </script>
 <style scoped>
-    #addCourse{ position: absolute;right: 0; top: 0; }
+    #editCourse{ display: inline-block;float: right; z-index: 1 }
     .preview-pic{ width: 10%; display: inline-block; margin-right: 10px; }
 </style>

@@ -41,6 +41,4 @@ export default {
   .add{ display:inline-block;float:right; }
   .mtb20{ margin: 20px 0; }
   .ptb10{ padding: 10px 0; }
-  .one-line{ overflow:hidden; white-space:nowrap; text-overflow:ellipsis;  }
-  .more-line{  display: -webkit-box !important; overflow:hidden; text-overflow:ellipsis; word-break:break-all; -webkit-box-orient:vertical; -webkit-line-clamp:2;  }
 </style>
