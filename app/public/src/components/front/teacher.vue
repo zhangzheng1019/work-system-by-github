@@ -13,10 +13,10 @@
 	                                        <img :src="val.thumb" class="course-pic" v-if="val.thumb"/>
 	                                        <img src="../../assets/course-default.png" class="course-pic" v-else/>
 	                                        <div class="course-detail">
-	                                            <p class="course-title more-line">
+	                                            <p class="course-title moreline">
 	                                                {{ val.title }}
 	                                            </p>
-	                                            <p class="course-desc more-line" :title="val.desc">
+	                                            <p class="course-desc moreline" :title="val.desc">
 	                                                {{ val.desc }}
 	                                            </p>
 	                                        </div>
