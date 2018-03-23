@@ -208,5 +208,36 @@ class Student_model extends CI_Model
         }
         return $result;
     }
+    /**
+     * 根据课程id 更新学生(学生加入课程操作)
+     * @param  [type] $gradeId [description]
+     * @return [type]          [description]
+     */
+    public function updateStuByStuIdAndCourseId($studentId, $courseId)
+    {
+        if (!$studentId) {
+            return false;
+        }
+        $stuInfo   = $this->getBasicInfo(array('id' => $studentId));
+        $courseIds = $stuInfo['course_id'];
+        if (!$courseArr) {
+            return false;
+        }
+
+        $courseArr = explode(',', $courseIds);
+        if (inArray($courseId, courseArr)) {
+            return false;
+        }
+        $courseIds         = implode(',', $courseArr);
+        $data['course_id'] = $courseIds;
+        $this->DB->where('id', $studentId);
+        $this->DB->update(self::WG_STUDENTS_TABLE, $data);
+
+        if ($this->DB->affected_rows() <= 0) {
+            return false;
+        }
+
+        return true;
+    }
 
 }

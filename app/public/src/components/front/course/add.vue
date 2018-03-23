@@ -50,7 +50,6 @@
         addCourseForm: { name:"", desc:"", thumb:"" },
         uploadImage: { name: '', path:'', width: '', height: ''},
         dialogVisible: false,
-        grade: '',
         rulesForm: {
           name: [{
             required: true,
@@ -74,8 +73,10 @@
     create() {
 
     },
-    mounted() {
-      this.grade = '添加 '+this.activeName+' 级课程'
+    computed: {
+      grade: function() {
+        return '添加 '+this.activeName+' 级课程'
+      }
     },
     methods: {
       handleRemove(file, fileList) {

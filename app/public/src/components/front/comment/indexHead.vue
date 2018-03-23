@@ -7,7 +7,8 @@
           <div class="user-info">
               <el-dropdown @command="handleCommand">
                   <span class="el-dropdown-link">
-                      <img src="../../../assets/github3.png" alt="默认头像"  class="user-logo picb">
+                      <img :src="userInfo.thumb" alt="默认头像"  class="user-logo picb" v-if="userInfo.thumb">
+                      <img src="../../../assets/github3.png" alt="默认头像"  class="user-logo picb" v-else>
                       {{ userInfo.username }}<i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
                   <el-dropdown-menu slot="dropdown">

@@ -15,7 +15,9 @@ export default {
         id:1,
         username: '张政',
         desc: '快去介绍一下自己吧',
-        email: '447590461@qq.com'
+        email: '447590461@qq.com',
+        thumb: './uploads/20180321100316.jpg',
+        role: 'teacher'
       },
     }
   },
@@ -37,6 +39,8 @@ export default {
   .clearfloat:after{ content:"."; display:block; height:0; clear:both; visibility:hidden; }
   .relative{ position: relative; }
   .absolute{ position: absolute; }
+  .one-line { overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical; }
+  .more-line { overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical; }
   .title-line{font-size: 18px;font-weight: normal;line-height: 50px;border-bottom:1px solid #ccc;margin-bottom: 20px;}
   .add{ display:inline-block;float:right; }
   .mtb20{ margin: 20px 0; }
