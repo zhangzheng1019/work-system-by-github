@@ -3,9 +3,9 @@
     	<el-col :span="4">
           <div class="grid-content">
             <img :src="userInfo.thumb" alt="" class="person-pic"/>
-            <p class="person-pub person-name one-line"><i class="el-icon-news">&nbsp;</i>{{ userInfo.username }}</p>
-            <p class="person-pub person-desc more-line" :title="userInfo.desc"><i class="el-icon-edit-outline">&nbsp;</i>{{ userInfo.desc }}</p>
-            <p class="person-pub person-email one-line"><i class="el-icon-message">&nbsp;</i>{{ userInfo.email }}</p>
+            <p class="person-pub person-name oneline"><i class="el-icon-news">&nbsp;</i>{{ userInfo.username }}</p>
+            <p class="person-pub person-desc moreline" :title="userInfo.desc"><i class="el-icon-edit-outline">&nbsp;</i>{{ userInfo.desc }}</p>
+            <p class="person-pub person-email oneline"><i class="el-icon-message">&nbsp;</i>{{ userInfo.email }}</p>
           </div>
           <edit-person :userInfo="userInfo"></edit-person>
       </el-col>
