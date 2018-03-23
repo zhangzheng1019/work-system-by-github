@@ -23,5 +23,9 @@ module.exports = {
     '/upload': {
         target: DEVHOST,
         changeOrigin: true
+    },
+    '/main': {
+        target: DEVHOST,
+        changeOrigin: true
     }
 }
