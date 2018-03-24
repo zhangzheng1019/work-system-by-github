@@ -1,6 +1,6 @@
 <template>
     <div id="personinfo">
-    	<el-col :span="4">
+    	<el-col :span="5">
           <div class="grid-content">
             <img :src="userInfo.thumb" alt="" class="person-pic"/>
             <p class="person-pub person-name oneline"><i class="el-icon-news">&nbsp;</i>{{ userInfo.username }}</p>
@@ -38,7 +38,7 @@
     /*用户*/
   .person-pub{ margin: 10px 0; width: 100%;font-size: 14px; }
   .person-pub i{ font-size: 16px; }
-  .person-pic{ width: 100%;max-width:150px;height: 100%; display: inline-block;vertical-align: middle; border-radius: 6px;border: 1px solid #cdcdcd; }
+  .person-pic{ width: 100%;height: 100%; display: inline-block;vertical-align: middle; border-radius: 6px;border: 1px solid #cdcdcd; }
   .person-name{  }
   .person-desc{  }
   .person-email{  }

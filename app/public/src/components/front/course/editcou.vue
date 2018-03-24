@@ -1,6 +1,6 @@
 <template>
     <div id="editCourse">
-        <el-button type="text" icon="el-icon-edit-outline" size="mini" @click='editDialog=true'>
+        <el-button style="padding: 0" type="text" icon="el-icon-edit-outline" size="mini" @click='editDialog=true'>
             编辑
         </el-button>
         <el-dialog title="编辑课程" :visible.sync="editDialog">
@@ -65,11 +65,6 @@
           desc: [{
             required: true,
             message: '请输入课程描述',
-            triggle: 'blur'
-          }],
-          thumb: [{
-            required: true,
-            message: '请上传封面图',
             triggle: 'blur'
           }],
         }
