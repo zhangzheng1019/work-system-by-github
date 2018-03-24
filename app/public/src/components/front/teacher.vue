@@ -2,7 +2,7 @@
     <div id="teacher" class="front-wrap">
         <el-row :gutter="20" >
         		<person-info :userInfo="userInfo"></person-info>
-            <el-col :span="18" :offset="1">
+            <el-col :span="19">
                 <div class="grid-content relative">
                     <el-tabs v-model="activeName" @tab-click="handleClick">
                         <el-tab-pane v-for="(item, index) in gradeGroup" :key="index" :label="item.value" :name="item.value">
@@ -10,8 +10,8 @@
                                 <el-col :class="(idx%4==3) ? 'mr0 course-item' : 'course-item'" v-for="(val, idx) in courseList" :key="idx" >
                                     <el-card :body-style="{ padding: '0px' }">
                                     		<div @click="courseLink(val.id)">
-	                                        <img :src="val.thumb" class="course-pic" v-if="val.thumb"/>
-	                                        <img src="../../assets/course-default.png" class="course-pic" v-else/>
+	                                        <div class="coursepic-box"><img :src="val.thumb" class="course-pic" v-if="val.thumb"/>
+	                                        <img src="../../assets/course-default.png" class="course-pic" v-else/></div>
 	                                        <div class="course-detail">
 	                                            <p class="course-title moreline">
 	                                                {{ val.title }}
@@ -111,14 +111,11 @@
 	}
 </script>
 <style scoped>
-  
- 	
-
 	.mr0{ margin-right: 0!important; }
   /*课程*/
-	.course-item{ width: 21%;margin-right: 5%; margin-bottom:20px;transition: all 0.2s linear 0s; -webkit-transition: all 0.2s linear 0s; -moz-transition: all 0.2s linear 0s; -ms-transition: all 0.2s linear 0s; cursor: pointer; }
+	.course-item{ width: 23%;margin-right: 2%; margin-bottom:20px;transition: all 0.2s linear 0s; -webkit-transition: all 0.2s linear 0s; -moz-transition: all 0.2s linear 0s; -ms-transition: all 0.2s linear 0s; cursor: pointer; }
   .course-item:hover { box-shadow: 0 5px 10px 3px rgba(0,0,0,.1); -webkit-box-shadow: 0 5px 10px 3px rgba(0,0,0,.1); -moz-box-shadow: 0 5px 10px 3px rgba(0,0,0,.1); -ms-box-shadow: 0 5px 10px 3px rgba(0,0,0,.1); }
-	.course-pic{ width: 100%; display: inline-block;height: 100%; max-height: 100px; }
+	.course-pic{ width: 100%; display: block; height: 100px;}
 	.course-title{ color: #0366d6; font-size: 18px; font-weight: bold; }
 	.course-desc{ margin-top: 5px;font-size: 14px; }
 	.course-detail{ margin: 14px; }

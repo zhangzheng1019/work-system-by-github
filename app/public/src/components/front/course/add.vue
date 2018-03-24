@@ -60,12 +60,7 @@
             required: true,
             message: '请输入课程描述',
             triggle: 'blur'
-          }],
-          thumb: [{
-            required: true,
-            message: '请上传封面图',
-            triggle: 'blur'
-          }],
+          }]
         }
       }
     },

@@ -1,6 +1,6 @@
 <template>
     <div id="editperson">
-    		<el-button type="text" icon="el-icon-edit-outline" size="mini" @click='editDialog=true'>
+    		<el-button type="text" class="editper-btn" icon="el-icon-edit-outline" size="mini" @click='editDialog=true'>
             编辑
         </el-button>
         <el-dialog title="编辑信息" :visible.sync="editDialog">
@@ -129,6 +129,6 @@
 </script>
 
 <style scoped>
-		#editperson{ display: inline-block;float: right;}
+		#editperson{ display: inline-block; float: right;}
     .preview-pic{ width: 10%; display: inline-block; margin-right: 10px; }
 </style>
