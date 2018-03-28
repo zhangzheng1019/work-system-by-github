@@ -63,3 +63,9 @@ typings/
 
 # test uploads img
 uploads
+
+# webStorm 
+.idea
+
+# GitHub secret
+github
