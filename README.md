@@ -5,6 +5,8 @@
 * develop: 程序代码
 * master: 发布代码
 
+## 执行
+npm run dev
 ## 参考：
 1.[Node 下载](https://nodejs.org/en/download/)  
 2.[Markdown使用文档](http://wowubuntu.com/markdown/)  
