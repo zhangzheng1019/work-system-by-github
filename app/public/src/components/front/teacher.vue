@@ -85,14 +85,14 @@
 						grade: this.activeName
 					}
 					post({
-						url:'/course/getList',
+						url:'/course/getTeacherList',
 						data: termData,
 						dataType: 'json',
 						cb: (data,msg) =>{
-							this.activeName = data['currentGrade']
-							this.gradeGroup = data['gradeGroup']
-							this.courseList = data['list']
-							this.totalPage = data['total']
+							this.activeName = data.currentGrade
+							this.gradeGroup = data.gradeGroup
+							this.courseList = data.list
+							this.totalPage = data.total
 						}
 					})
 				},
