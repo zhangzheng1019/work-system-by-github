@@ -8,7 +8,7 @@
             <div class="header-left">
                 <img src="../../assets/github3-white.png" alt="默认头像" class="picb header-logo"/><span class="header-title">基于GitHub作业统计系统</span>
             </div>
-            <login-front>
+            <login-front :userInfo="userInfo">
             </login-front>
         </el-header>
     </div>
@@ -22,6 +22,7 @@
 			  
 			}
 		},
+        props:["userInfo"],
 		components: {
 			'login-front': Login
         },

@@ -19,13 +19,14 @@ export default {
         thumb: './uploads/20180321100316.jpg',
         role: 'teacher'
       },
+
     }
   },
   mounted(){
     $('html').css('fontSize','16px');
   },
   created() {
-    
+
    }
 }
 </script>

@@ -13,7 +13,7 @@
                 <template>
                     <el-tabs v-model="activeName" @tab-click="handleClick">
                         <el-tab-pane label="我是学生" name="student">
-                            我是学生
+                            <stu-github :userInfo="userInfo"></stu-github>
                         </el-tab-pane>
                         <el-tab-pane label="我是教师" name="teacher">
                             <template>
@@ -56,6 +56,7 @@
 </template>
 <script>
     import { fetch, post } from '../../../utils.js'
+    import stuGitHub from '../logRes/stuGithubLogin'
     export default {
     data () {
 
@@ -103,7 +104,7 @@
       return {
         dialogStatus: 'res',
         isDialog: true,  
-        activeName: 'teacher',
+        activeName: 'student',
         formLabelWidth: '100px',
         loginForm: { email:"", password:"", respwd:"",code:""},
         returnCode: '',
@@ -130,8 +131,9 @@
         }
       }
     },
+    props: ["userInfo"],
     components: {
-
+      "stu-github" : stuGitHub
     },
     create() {
 

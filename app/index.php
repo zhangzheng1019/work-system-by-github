@@ -152,15 +152,4 @@
 
 	require_once BASEPATH.'core/CodeIgniter.php';
 	
-	//载入composer
-	require_once './vendor/autoload.php';
-
-	//判断在开发环境时接入
-	if (ENVIRONMENT == 'development' ){
-
-	    //载入whoops
-	    $whoops = new \Whoops\Run;
-	    $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
-	    $whoops->register();
-	}
 

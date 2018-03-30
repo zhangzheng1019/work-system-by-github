@@ -28,7 +28,7 @@ class Course_model extends CI_Model
 
         $this->DB->where("flag >", 0);
         if ($limit) {
-            $this->DB->limit($limit, $offset);//从$offset开始查$limit条
+            $this->DB->limit($limit, $offset); //从$offset开始查$limit条
         }
         $this->DB->order_by($order);
         $query = $this->DB->get();
@@ -195,4 +195,43 @@ class Course_model extends CI_Model
         return $result;
     }
 
+    /**
+     * 得到学生已有课程
+     * @param  [type] $ids [课程id]
+     * @return [type]      [description]
+     */
+    public function getCourseByIds($ids = array(), $field = 'id')
+    {
+        $result = array();
+        $this->DB->from(self::WG_COURSE_TABLE);
+        $this->DB->where('flag >', 0);
+        $this->DB->where_in($field, $ids);
+        $this->DB->order_by('id desc');
+        $query = $this->DB->get();
+        if ($query && $query->num_rows() > 0) {
+            $result = $query->result_array();
+        }
+        return $result;
+    }
+    /**
+     * 得到学生所在年级的课程
+     * @param  array  $ids     [description]
+     * @param  string $field   [字段]
+     * @param  [type] $gradeId [年级id]
+     * @return [type]          [description]
+     */
+    public function getNotCourseByIds($ids = array(), $field = 'id',$gradeId)
+    {
+        $result = array();
+        $this->DB->from(self::WG_COURSE_TABLE);
+        $this->DB->where('flag >', 0);
+        $this->DB->where('grade_id', $gradeId);
+        $this->DB->where_not_in($field, $ids);
+        $this->DB->order_by('id desc');
+        $query = $this->DB->get();
+        if ($query && $query->num_rows() > 0) {
+            $result = $query->result_array();
+        }
+        return $result;
+    }
 }

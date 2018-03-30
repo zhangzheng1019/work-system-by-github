@@ -209,7 +209,7 @@ class Student_model extends CI_Model
         return $result;
     }
     /**
-     * 根据课程id 更新学生(学生加入课程操作)
+     * 根据课程id 更新学生列表(学生加入课程操作)
      * @param  [type] $gradeId [description]
      * @return [type]          [description]
      */
@@ -219,16 +219,18 @@ class Student_model extends CI_Model
             return false;
         }
         $stuInfo   = $this->getBasicInfo(array('id' => $studentId));
-        $courseIds = $stuInfo['course_id'];
-        if (!$courseArr) {
-            return false;
-        }
+        $courseIds = $stuInfo['list'][0]['course_id'];
 
-        $courseArr = explode(',', $courseIds);
-        if (inArray($courseId, courseArr)) {
-            return false;
+        if (empty($courseIds)) {
+            $courseIds = $courseId;
+        } else {
+            $courseArr = explode(',', $courseIds);
+            if (inArray($courseId, $courseArr)) {
+                return false;
+            }
+            array_push($courseArr, $courseId);
+            $courseIds = implode(',', $courseArr);
         }
-        $courseIds         = implode(',', $courseArr);
         $data['course_id'] = $courseIds;
         $this->DB->where('id', $studentId);
         $this->DB->update(self::WG_STUDENTS_TABLE, $data);
@@ -239,5 +241,17 @@ class Student_model extends CI_Model
 
         return true;
     }
-
+    /**
+     * 根据课程Id获取该课程人数
+     * @param  [type] $courseId [description]
+     * @return [type]           [description]
+     */
+    public function getStudentNumByCourseId($courseId)
+    {
+        if (!$courseId) {
+            return 0;
+        }
+        $allStudent = $this->getBasicInfo();
+        return count(filterData($allStudent['list'], $courseId, 'course_id'));
+    }
 }

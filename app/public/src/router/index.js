@@ -9,6 +9,8 @@ import Front from '@/components/Front'
 import Hello from '@/components/front/hello'
 import Teacher from '@/components/front/teacher'
 import Student from '@/components/front/student'
+import Stuselect from '@/components/front/logRes/StuSelect'
+import Course from '@/components/front/student_course'
 Vue.use(Router)
 var menu = [
     {
@@ -19,18 +21,20 @@ var menu = [
             {path: '/end/teacher',component: endTeacher},
             {path: '/end/student',component: endStudent},
         ]
-    }, 
+    },
     {
         path: '/end/login/',
         component: endLogin
-    }, 
+    },
     {
         path: '/',
         component: Front,
         children: [
             {path: '/',component: Hello},
             {path: '/teacher',component: Teacher},
-            {path: '/student',component: Student}
+            {path: '/student',component: Student},
+            {path: '/stuselect',component: Stuselect},
+            {path: '/student_course',component: Course}
         ]
     }
 ];

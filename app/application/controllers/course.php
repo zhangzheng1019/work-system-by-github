@@ -13,10 +13,10 @@ class Course extends CI_Controller
     }
 
     /**
-     * 获取课程列表
+     * 获取教师课程列表
      * @return [type] [description]
      */
-    public function getList()
+    public function getTeacherList()
     {
         $where = [];
 
@@ -38,9 +38,8 @@ class Course extends CI_Controller
         $data  = $this->course_model->getBasicInfo($where, $offset, self::LIMIT);
 
         $this->load->model("student_model");
-        $allStudent = $this->student_model->getBasicInfo();
         foreach ($data as $key => $value) {
-            $data[$key]['stuNumber'] = count(filterData($allStudent['list'], $value['id'], 'course_id'));
+            $data[$key]['stuNumber'] = $this->student_model->getStudentNumByCourseId($value['id']);
         }
 
         $result['total']        = $total;
@@ -95,5 +94,51 @@ class Course extends CI_Controller
         );
         $gradeGroup = $this->course_model->courseGroupBy('grade_id', $where, 4, 'grade_id desc');
         return $gradeGroup;
+    }
+
+    /**
+     * 获取学生课程列表
+     * 展示规则：先展示已加入的课程，后显示该年级且学生所属老师的课程（未加入）
+     * 数据获取规则：获取年级所有课程,再用not_in查询
+     * @return [type] [description]
+     */
+    public function getStudentList()
+    {
+        $courseList = array();
+        $userId     = $this->input->post("id");
+        if (!$userId) {
+            ajax_fail(false, '请登录', 20000);
+        }
+        $userWhere = array(
+            'id' => $userId,
+        );
+        $this->load->model("student_model");
+        $userInfo      = $this->student_model->getBasicInfo($userWhere);
+        $userCourseIds = $userInfo['list'][0]['course_id'];
+        //获取学生所在年级的课程
+        if (!$userCourseIds) {
+            $courseWhere = array(
+                'grade_id' => $userInfo['list'][0]['grade'],
+            );
+            $courseList = $this->course_model->getBasicInfo($courseWhere);
+        } else {
+            // 获取已加入课程
+            $courseIdArr = explode(',', $userInfo['list'][0]['course_id']);
+            $courseList  = $this->course_model->getCourseByIds($courseIdArr, 'id');
+            foreach ($courseList as $key => $value) {
+                $courseList[$key]['addStatus'] = 1;
+            }
+            $courseNotList = $this->course_model->getNotCourseByIds($courseIdArr, 'id', $userInfo['list'][0]['grade']);
+            $courseList    = array_merge($courseList, $courseNotList);
+        }
+        $this->load->model('teacher_model');
+        foreach ($courseList as $key => $value) {
+            $teacherInfo                     = $this->teacher_model->getBasicInfo(array('id' => $value['teacher_id']));
+            $courseList[$key]['teacherInfo'] = $teacherInfo['list'][0];
+            $courseList[$key]['stuNumber']      = $this->student_model->getStudentNumByCourseId($value['id']);
+        }
+        $data['total'] = count($courseList);
+        $data['list']  = $courseList;
+        ajax_success($data, '加载成功');
     }
 }

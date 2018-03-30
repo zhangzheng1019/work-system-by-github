@@ -9,6 +9,7 @@ class Student extends CI_Controller
         parent::__construct();
         $this->DB = $this->load->database("default", true);
         $this->load->model("student_model");
+        $this->config->load("github");
 
         $this->GitHubOAuth = new \Yurun\OAuthLogin\GitHub\OAuth2($this->config->item('appid'), $this->config->item('appSecret'), $callback);
     }
@@ -18,13 +19,10 @@ class Student extends CI_Controller
      */
     public function loginGit()
     {
-        $this->config->load("github");
-
         $url                      = $this->GitHubOAuth->getAuthUrl();
         $_SESSION['GITHUB_STATE'] = $this->GitHubOAuth->state;
-        dump($_SESSION);
-        header('location:' . $url);
-        // dump($url);
+
+        header('Location:' . $url);
     }
     /**
      * 登录返回
@@ -34,23 +32,14 @@ class Student extends CI_Controller
     {
         // 获取accessToken
         $accessToken = $this->GitHubOAuth->getAccessToken($_SESSION['GITHUB_STATE']);
-        dump($accessToken);
-        // 调用过getAccessToken方法后也可这么获取
-        // $accessToken = $this->GitHubOAuth->accessToken;
-        // 这是getAccessToken的api请求返回结果
-        // $result = $this->GitHubOAuth->result;
-
         // 用户资料
-        $userInfo = $this->GitHubOAuth->getUserInfo();
-
-        // 这是getAccessToken的api请求返回结果
-        // $result = $this->GitHubOAuth->result;
-
+        $userInfo = $this->GitHubOAuth->getUserInfo($accessToken);
         // 用户唯一标识
         $openid = $this->GitHubOAuth->openid;
+        var_dump($accessToken, $userInfo, $openid);
     }
     /**
-     * 获取信息
+     * 获取学生信息
      * @return [type] [description]
      */
     public function getInfo()
@@ -64,8 +53,8 @@ class Student extends CI_Controller
             $select['class'] && $where['class']   = $select['class'];
         }
         $teacherId = $this->input->get('teacherId') ? $this->input->get('teacherId') : 0;
-        if(!$teacherId){
-            ajax_fail(false,'请登录',10000);
+        if (!$teacherId) {
+            ajax_fail(false, '请登录', 10000);
         }
         $limit           = ($page - 1) * self::OFFSET;
         $data            = $this->student_model->getBasicInfo($where, $limit, self::OFFSET);
@@ -77,5 +66,23 @@ class Student extends CI_Controller
         $result['class'] = $class;
         $result['list']  = $list;
         ajax_success($result, "加载成功");
+    }
+
+    /**
+     * 学生加入课程
+     * @return [type] [description]
+     */
+    public function studentAddCourse()
+    {
+        $studentId = $this->input->post('studentId');
+        $courseId  = $this->input->post('courseId');
+        if (!$studentId) {
+            ajax_fail(false, '请登录', 20000);
+        }
+        if (!$courseId) {
+            ajax_fail(false, '无效的课程id');
+        }
+        $status = $this->student_model->updateStuByStuIdAndCourseId($studentId, $courseId);
+        $status ? ajax_success($status, '加入成功，开启你的学习之路吧！') : ajax_fail(false, '加入失败了呀！');
     }
 }
