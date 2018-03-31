@@ -27,6 +27,15 @@
                 </el-card>
               </el-col>
             </el-row>
+            <div class="ptb10">
+                <el-pagination v-if='totalPage>0'
+                    layout="prev, pager, next"
+                    background
+                    :total="totalPage"
+                    :current-page='currentPage'
+                    @current-change='changePage'>
+                </el-pagination>
+            </div>
         </el-col>
     </el-row>
   </div>
@@ -63,6 +72,10 @@
           }
         })
       },
+      changePage(val) {
+        this.currentPage = val
+        this.getList()
+      },
       courseLink(id){
         window.location.href = "/#/course/"+id
       },
@@ -98,7 +111,7 @@
   .course-item:hover { box-shadow: 0 5px 10px 3px rgba(0,0,0,.1); -webkit-box-shadow: 0 5px 10px 3px rgba(0,0,0,.1); -moz-box-shadow: 0 5px 10px 3px rgba(0,0,0,.1); -ms-box-shadow: 0 5px 10px 3px rgba(0,0,0,.1); }
   .course-pic{ width: 100%; display: block; height: 100px;}
   .course-title{ color: #0366d6; font-size: 18px; font-weight: bold; }
-  .course-desc{ margin-top: 5px;font-size: 14px; }
+  .course-desc{ margin-top: 5px;font-size: 14px; height: 2.375rem; }
   .course-detail{ margin: 14px; }
   .course-bottom{ margin: 0 14px 14px; }
   .course-number{ display: inline-block; font-size: 12px; color: #666; }

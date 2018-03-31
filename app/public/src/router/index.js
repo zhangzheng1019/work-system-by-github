@@ -27,13 +27,16 @@ var menu = [
         component: endLogin
     },
     {
+        path: '/stuselect',
+        component: Stuselect
+    },
+    {
         path: '/',
         component: Front,
         children: [
             {path: '/',component: Hello},
             {path: '/teacher',component: Teacher},
             {path: '/student',component: Student},
-            {path: '/stuselect',component: Stuselect},
             {path: '/student_course',component: Course}
         ]
     }
