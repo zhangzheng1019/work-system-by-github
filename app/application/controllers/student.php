@@ -12,6 +12,7 @@ class Student extends CI_Controller
         $this->config->load("github");
 
         $this->GitHubOAuth = new \Yurun\OAuthLogin\GitHub\OAuth2($this->config->item('appid'), $this->config->item('appSecret'), $callback);
+        $this->load->library('session');
     }
     /**
      * 关联登录git,
@@ -36,7 +37,10 @@ class Student extends CI_Controller
         $userInfo = $this->GitHubOAuth->getUserInfo($accessToken);
         // 用户唯一标识
         $openid = $this->GitHubOAuth->openid;
-        var_dump($accessToken, $userInfo, $openid);
+        $this->session->set_userdata('gbinfo', $userInfo);
+        if ($userInfo) {
+            header('Location:/#/stuselect');
+        }
     }
     /**
      * 获取学生信息
@@ -85,4 +89,69 @@ class Student extends CI_Controller
         $status = $this->student_model->updateStuByStuIdAndCourseId($studentId, $courseId);
         $status ? ajax_success($status, '加入成功，开启你的学习之路吧！') : ajax_fail(false, '加入失败了呀！');
     }
+
+    /**
+     * 添加学生信息
+     */
+    public function addStu()
+    {
+        $data   = array();
+        $id     = $this->input->post('id');
+        $status = false;
+        // if ($id) {
+        //     // 修改
+        //     $teacherInfo      = $this->student_model->getBasicInfo(array('id' => $id));
+        //     $data             = $teacherInfo['list'];
+        //     $data['realname'] = isset($_POST['name']) ? $_POST['name'] : $data['realname'];
+        //     $data['mobile']   = isset($_POST['mobile']) ? $_POST['mobile'] : $data['mobile'];
+        //     $data['thumb']    = isset($_POST['thumb']) ? $_POST['thumb'] : $data['thumb'];
+        //     $status           = $this->student_model->updateTeacherInfo($id, $data);
+        //     !$status && ajax_fail(false, '你没有修改呦！');
+        // } else {
+        //添加
+        $data['realname']    = isset($_POST['username']) ? $_POST['username'] : '';
+        $data['github_info'] = json_encode($this->session->userdata('gbinfo'));
+        $data['grade']       = isset($_POST['grade']) ? $_POST['grade'] : '';
+        $data['class']       = isset($_POST['class']) ? $_POST['class'] : '';
+        $data['thumb']       = isset($_POST['thumb']) ? $_POST['thumb'] : '';
+        $status              = $this->student_model->addStudentInfo($data);
+        $status              = $status['status'];
+        !$status && ajax_fail(false, '操作失败');
+        // }
+
+        $status && ajax_success($status, '操作成功');
+    }
+
+    /**
+     * 获取年级
+     * @return [type] [description]
+     */
+    public function getGrade()
+    {
+        $this->config->load("classids", true);
+        $ids   = $this->config->item('classids');
+        $i     = 0;
+        $grade = [];
+        foreach ($ids as $key => $value) {
+            $grade['grade'][$i] = $key;
+            $i++;
+        }
+        ajax_success($grade);
+    }
+    /**
+     * 获取班级
+     * @return [type] [description]
+     */
+    public function getClass()
+    {
+        $grade = $this->input->post('grade');
+        if (!$grade) {
+            ajax_fail(false, '无效的年级' . $grade);
+        }
+        $this->config->load("classids", true);
+        $ids = $this->config->item('classids');
+
+        ajax_success($ids[$grade]);
+    }
+
 }

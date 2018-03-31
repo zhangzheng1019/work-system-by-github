@@ -77,6 +77,8 @@ class Student_model extends CI_Model
             'createtime'  => date('Y-m-d H:i:s'),
             'grade'       => $data['grade'] ? $data['grade'] : '',
             'class'       => $data['class'] ? $data['class'] : '',
+            'thumb'       => $data['thumb'] ? $data['thumb'] : '',
+            'desc'        => $data['desc'] ? $data['desc'] : '',
             'teacher_id'  => $data['teacher_id'] ? $data['teacher_id'] : 0,
             'course_id'   => $data['course_id'] ? $data['course_id'] : 0,
             'flag'        => 1,

@@ -1,7 +1,6 @@
 <template>
     <div id="hello">
     	<div class="main-bg">
-       		<!-- <img src="../../assets/it.jpg" alt="" class="picb"> -->
             <p class="main-title">技术 · 共享 · 学习</p>
         </div>
     	<el-header class="clearfloat">
