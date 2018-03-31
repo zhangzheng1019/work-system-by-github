@@ -31,9 +31,11 @@ export default {
 }
 </script>
 <style>
+  @import '../static/css/font-awesome.min.css'
   #app, .wrapper, body, html{ width: 100%; height: 100%; }
   html{ font-family: "Microsoft YaHei","微软雅黑","Hiragino Sans GB",Arial,sans-serif; }
   *{ margin: 0;padding: 0; }
+  [class^="el-icon-fa"], [class*=" el-icon-fa"] { display: inline-block; font: normal normal normal 14px/1 FontAwesome!important; font-size: inherit; text-rendering: auto; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
   div{ outline: none; }
   .picb{ width: 100%;display: block; }
   .clearfloat{ zoom: 1; }
