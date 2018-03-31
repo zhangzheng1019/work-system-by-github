@@ -37,7 +37,7 @@
 </template>
 <script>
   export default {
-    name: 'student',
+    name: 'student_course',
     data () {
       return {
         course:{

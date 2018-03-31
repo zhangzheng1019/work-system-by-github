@@ -3,7 +3,7 @@
         <a class="btn-github" href="/student/loginGit">
             <el-button type="primary">
                 <i class="el-icon-fa-github" aria-hidden="true"></i>
-                关联 GitHub 登录<i class="fa el-icon-fa-firefox" aria-hidden="true"></i>
+                关联 GitHub 
             </el-button>
         </a>
     </div>
