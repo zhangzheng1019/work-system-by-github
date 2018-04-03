@@ -2,7 +2,8 @@
     <div id="personinfo">
     	<el-col :span="5">
           <div class="grid-content">
-            <img :src="userInfo.thumb" alt="" class="person-pic"/>
+            <img :src="userInfo.thumb" alt="" class="person-pic" v-if="userInfo.thumb"/>
+            <img src="../../../assets/github3.png" alt="" class="person-pic" v-else/>
             <p class="person-pub person-name oneline"><i class="el-icon-news">&nbsp;</i>{{ userInfo.username }}</p>
             <p class="person-pub person-desc moreline" :title="userInfo.desc"><i class="el-icon-edit-outline">&nbsp;</i>{{ userInfo.desc }}</p>
             <p class="person-pub person-email oneline"><i class="el-icon-message">&nbsp;</i>{{ userInfo.email }}</p>

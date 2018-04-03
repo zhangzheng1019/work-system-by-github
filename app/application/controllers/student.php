@@ -4,44 +4,15 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Student extends CI_Controller
 {
     const OFFSET = 10;
+    const EXPIRES = 604800; //7天
     public function __construct()
     {
         parent::__construct();
         $this->DB = $this->load->database("default", true);
         $this->load->model("student_model");
-        $this->config->load("github");
-
-        $this->GitHubOAuth = new \Yurun\OAuthLogin\GitHub\OAuth2($this->config->item('appid'), $this->config->item('appSecret'), $callback);
         $this->load->library('session');
     }
-    /**
-     * 关联登录git,
-     * @return [type] [description]
-     */
-    public function loginGit()
-    {
-        $url                      = $this->GitHubOAuth->getAuthUrl();
-        $_SESSION['GITHUB_STATE'] = $this->GitHubOAuth->state;
-
-        header('Location:' . $url);
-    }
-    /**
-     * 登录返回
-     * @return [type] [description]
-     */
-    public function loginCallBack()
-    {
-        // 获取accessToken
-        $accessToken = $this->GitHubOAuth->getAccessToken($_SESSION['GITHUB_STATE']);
-        // 用户资料
-        $userInfo = $this->GitHubOAuth->getUserInfo($accessToken);
-        // 用户唯一标识
-        $openid = $this->GitHubOAuth->openid;
-        $this->session->set_userdata('gbinfo', $userInfo);
-        if ($userInfo) {
-            header('Location:/#/stuselect');
-        }
-    }
+    
     /**
      * 获取学生信息
      * @return [type] [description]
@@ -106,7 +77,7 @@ class Student extends CI_Controller
         //     $data['mobile']   = isset($_POST['mobile']) ? $_POST['mobile'] : $data['mobile'];
         //     $data['thumb']    = isset($_POST['thumb']) ? $_POST['thumb'] : $data['thumb'];
         //     $status           = $this->student_model->updateTeacherInfo($id, $data);
-        //     !$status && ajax_fail(false, '你没有修改呦！');
+        //     $status ? ajax_success($status, '操作成功') : ajax_fail(false, '你没有修改呦！');
         // } else {
         //添加
         $data['realname']    = isset($_POST['username']) ? $_POST['username'] : '';
@@ -115,11 +86,9 @@ class Student extends CI_Controller
         $data['class']       = isset($_POST['class']) ? $_POST['class'] : '';
         $data['thumb']       = isset($_POST['thumb']) ? $_POST['thumb'] : '';
         $status              = $this->student_model->addStudentInfo($data);
-        $status              = $status['status'];
-        !$status && ajax_fail(false, '操作失败');
+        $status['status'] ? ajax_success($status['insertId'], '操作成功') : ajax_fail(false, '操作失败');
         // }
 
-        $status && ajax_success($status, '操作成功');
     }
 
     /**

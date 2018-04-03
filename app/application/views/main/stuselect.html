@@ -1,0 +1,207 @@
+<style type="text/css" media="screen">
+    #indexHead{ height: 0!important; }
+    .main-bg{ position: fixed;top: 0;bottom: 0;left: 0;right: 0; width: 100%; background: url('/style/image/it.jpg') no-repeat; background-size: 100% 100%; -moz-background-size: 100% 100%; -webkit-background-size: 100% 100%;}
+    .main-title{ position: fixed; top: 50%; left: 50%; z-index: 1; -webkit-transform:translate(-50%, -50%); -ms-transform: translate(-50%, -50%); transform: translate(-50%, -50%); height: auto; color: #fff; font-size: 3rem; text-align: center;}
+    /*头部*/
+    #stuSelect header{ padding: 20px 40px 0; }
+    .header-logo{ width: 40px;  float: left; }
+    .header-left{ position: absolute; color: #fff; font-size: 1.5rem; line-height: 2.5rem;vertical-align: middle;}
+    .header-title{ margin-left: 20px; }
+    .preview-pic{ width: 10%; display: inline-block; margin-right: 10px; }
+</style>
+<div id="stuSelect">
+    <div class="main-bg">
+        <p class="main-title">
+            技术 · 共享 · 学习
+        </p>
+    </div>
+    <el-header class="clearfloat">
+        <div class="header-left">
+            <img src="/style/image/github3-white.png" alt="默认头像" class="picb header-logo"/>
+            <span class="header-title">
+                基于GitHub作业统计系统
+            </span>
+        </div>
+    </el-header>
+    <el-dialog title="请填写必要的信息" :visible.sync="stuDialog">
+        <el-form :model="personForm" ref="personForm" :rules="rulesForm" status-icon>
+            <el-form-item label="姓名" :label-width="formLabelWidth" prop="username">
+                <el-input type="text" v-model="personForm.username" pla auto-complete="off">
+                </el-input>
+            </el-form-item>
+            <el-form-item label="个人描述" :label-width="formLabelWidth" prop="desc">
+                <el-input type="textarea" v-model="personForm.desc">
+                </el-input>
+            </el-form-item>
+            <el-form-item label="年级" required>
+                <template>
+                    <el-select v-model="personForm.grade" placeholder="请选择" @change="getClass">
+                        <el-option v-for="item in grades" :key="item" :label="item" :value="item">
+                        </el-option>
+                    </el-select>
+                </template>
+            </el-form-item>
+            <el-form-item label="班级" required v-if="personForm.grade">
+                <template>
+                    <el-select v-model="personForm.class" placeholder="请选择">
+                        <el-option v-for="item in classes" :key="item" :label="item" :value="item">
+                        </el-option>
+                    </el-select>
+                </template>
+            </el-form-item>
+            <el-form-item label="头像" :label-width="formLabelWidth" prop="thumb">
+                <el-upload class="upload-demo" :multiple='false' action="/upload" :on-success="handleSuccess" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
+                    <el-button size="small" type="primary">
+                        点击上传
+                    </el-button>
+                    <div slot="tip" class="el-upload__tip">
+                        只能上传jpg/png文件，且不超过1M
+                        <br/>
+                        <font color="red">
+                            注：默认使用GitHub头像
+                        </font>
+                    </div>
+                </el-upload>
+                <template>
+                    <img :src="uploadImage.path" class="preview-pic" v-if='uploadImage.path'/>
+                    <img :src="personForm.thumb" class="preview-pic" v-else/>
+                    <span class="preview-pic-desc">
+                        {{ uploadImage.name }}
+                    </span>
+                </template>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="stuDialog = false">
+                取 消
+            </el-button>
+            <el-button type="primary" @click.native="submitPerson">
+                确 定
+            </el-button>
+        </span>
+    </el-dialog>
+</div>
+<script>
+
+  var stuthis = new Vue({
+    el: '#stuSelect',
+    data: function() {
+      return { 
+        formLabelWidth: "80px",
+        personForm: { username: '', desc:'', thumb:'',grade: '', class:''},
+        formgrades: [],
+        grades: [],
+        classes: [],
+        uploadImage: { name: '', path:'', width: '', height: ''},
+        stuDialog: true,
+        sid: 0,
+        rulesForm: {
+          username: [{
+            required: true,
+            message: '输入您的姓名，方便沟通呦',
+            triggle: 'blur'
+          }],
+        }
+      }
+    },
+    created() {
+      this.getGrade()
+    },
+    methods: {
+      getGrade: function() {
+        var that = this;
+        $.ajax({
+          type:'get',
+          url: '/student/getGrade',
+          dataType: 'json',
+          success: function(res) {
+            if(res.errcode == 0){
+                that.grades = res.data.grade;
+            }
+          }
+        })
+      },
+      getClass: function() {
+        var that = this;
+        $.ajax({
+          type: 'post',
+          url: '/student/getClass',
+          data: { grade:that.personForm.grade },
+          dataType: 'json',
+          success: function(res) {
+            that.classes = res.data;
+          }
+        })
+      },
+      handleSuccess: function(file) {
+        if(file.data){
+          this.uploadImage.path   = file.data.url
+          this.uploadImage.name   = file.data.origin_name
+          this.uploadImage.width  = file.data.image_width
+          this.uploadImage.height = file.data.image_height
+          this.personForm.thumb   = file.data.url
+          this.$message.success(file.msg)
+        }else{
+          this.$message.error(file.msg)
+        }
+      },
+      beforeUpload: function(file){
+        const isJPG = (file.type === 'image/jpeg') || (file.type === 'image/png')|| (file.type === 'image/jpg');
+        const isLt2M = file.size / 1024 / 1024 < 1;
+        if (!isJPG) {
+          this.$message.error('上传图片只能是 JPG/JPEG/PNG 格式!');
+        }
+        if (!isLt2M) {
+          this.$message.error('上传图片大小不能超过 1MB!');
+        }
+        return isJPG && isLt2M;
+      },
+      submitPerson: function() {
+        var that = this;
+        that.$refs['personForm'].validate(function(valid) {
+          if(valid){
+            let postData = {
+              'username' : that.personForm.username,
+              'desc' : that.personForm.desc,
+              'thumb' : that.personForm.thumb,
+              'grade' : that.personForm.grade,
+              'class' : that.personForm.class,
+              'role' : 'student'
+            }
+            $.ajax({
+              type: 'post',
+              url:'/student/addStu',
+              data: postData,
+              dataType: 'json',
+              success: function(res) {
+                that.$message.success(res.msg)
+                that.sid = res.data
+                that.ajaxSetCookie()
+              },
+              error: function(res) {
+                that.$message.error(res.msg)
+              }
+            })
+          }
+        })
+      },
+      ajaxSetCookie: function(){
+        var that = this;
+         $.ajax({
+            type: 'get',
+            url:'/login/studentLogin',
+            dataType: 'json',
+            data: {id: that.sid},
+            success: function(res) {
+              if(res.msg == 'student'){
+                window.location.href = '/#/student';
+              }
+            },
+            error: function(res) {
+
+            }
+        })
+      },
+    }
+  })
+</script>

@@ -17,6 +17,24 @@ class main extends CI_Controller
     {
         $this->load->view('errors/html/error_404');
     }
+    public function front()
+    {
+        $this->load->view('main/header.html');
+        $this->load->view('main/front.html');
+        $this->load->view('main/footer.html');
+    }
+    public function stuselect()
+    {
+        $this->load->view('main/header.html');
+        $this->load->view('main/stuselect.html');
+        $this->load->view('main/footer.html');
+    }
+    public function admin()
+    {
+        $this->load->view('main/header.html');
+        $this->load->view('main/admin.html');
+        $this->load->view('main/footer.html');
+    }
 
     public function editUserInfo()
     {
