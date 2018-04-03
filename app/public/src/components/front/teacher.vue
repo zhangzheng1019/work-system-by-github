@@ -73,6 +73,20 @@
 				'person-info' : personInfo
 	    },
 			methods: {
+				ajaxGetUsr() {
+	        let date = new Date();
+	        let timer = date.getTime().toString();
+	        fetch({
+	          url: '/login/getInfo?'+timer,
+	          dataType: 'json',
+	          cb:(data, msg) =>{
+	            this.userInfo = data
+	          },
+	          err:(data,msg) => {
+	            this.$message.fail(msg)
+	          }
+	        })
+	      },
 				handleClick(tab, event) {
 					this.activeName = tab.label
 					this.currentPage = 1;
@@ -106,6 +120,7 @@
 			},
 			mounted() {
 				this.getList()
+				this.ajaxGetUsr()
 			}
 
 	}

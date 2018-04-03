@@ -12,12 +12,12 @@ export default {
   data () {
     return {
       userInfo:{
-        id:1,
-        username: '张政',
-        desc: '快去介绍一下自己吧',
-        email: '447590461@qq.com',
-        thumb: './uploads/20180321100316.jpg',
-        role: 'teacher'
+        // id:1,
+        // username: '张政',
+        // desc: '快去介绍一下自己吧',
+        // email: '447590461@qq.com',
+        // thumb: './uploads/20180321100316.jpg',
+        // role: 'teacher'
       },
 
     }
@@ -25,9 +25,30 @@ export default {
   mounted(){
     $('html').css('fontSize','16px');
   },
+  methods: {
+    ajaxGetUsr() {
+      let date = new Date();
+      let timer = date.getTime().toString();
+      fetch({
+        url: '/login/getInfo?'+timer,
+        dataType: 'json',
+        cb:(data, msg) =>{
+          this.userInfo = data
+          // if(msg == 'teacher'){
+          //   window.location.href="/#/teacher"
+          // }else if(msg == 'student') {
+          //   window.location.href="/#/student"
+          // }
+        },
+        err:(data,msg) => {
+          this.$message.error(msg)
+        }
+      })
+    },
+  },
   created() {
-
-   }
+    this.ajaxGetUsr()
+  }
 }
 </script>
 <style>

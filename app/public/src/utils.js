@@ -13,10 +13,14 @@ export function fetch(options) {
             if (msg.errcode == 0) {
                 options.cb(msg.data, msg.msg)
             } else if (msg.errcode == 10000) {
-                window.location = '/#/end/login'
+                window.location.href = '/#/end/login'
             } else if (msg.errcode == 20000) {
-                window.location = '/#/'
-            } else {
+                window.location.href = '/#/'
+            } else if (msg.errcode == 20001) {
+                window.location.href = '/#/teacher'
+            } else if (msg.errcode == 20002) {
+                window.location.href = '/#/student'
+            }  else {
                 options.err(msg.data, msg.msg)
             }
         }
@@ -34,9 +38,13 @@ export function post(options) {
             if (msg.errcode == 0) {
                 options.cb(msg.data, msg.msg)
             } else if (msg.errcode == 10000) {
-                window.location = '/#/end/login'
+                window.location.href = '/#/end/login'
             } else if (msg.errcode == 20000) {
-                window.location = '/#/'
+                window.location.href = '/#/'
+            } else if (msg.errcode == 20001) {
+                window.location.href = '/#/teacher'
+            } else if (msg.errcode == 20002) {
+                window.location.href = '/#/student'
             } else {
                 options.err(msg.data, msg.msg)
             }

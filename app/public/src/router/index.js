@@ -6,7 +6,6 @@ import endTeacher from '@/components/end/Teacher'
 import endStudent from '@/components/end/Student'
 import endLogin from '@/components/end/Login'
 import Front from '@/components/Front'
-import Hello from '@/components/front/hello'
 import Teacher from '@/components/front/teacher'
 import Student from '@/components/front/student'
 import Stuselect from '@/components/front/logRes/StuSelect'
@@ -34,7 +33,6 @@ var menu = [
         path: '/',
         component: Front,
         children: [
-            {path: '/',component: Hello},
             {path: '/teacher',component: Teacher},
             {path: '/student',component: Student},
             {path: '/student_course',component: Course}

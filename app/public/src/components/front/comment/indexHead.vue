@@ -1,6 +1,6 @@
 <template>
     <div id="indexHead">
-      <el-header class="front-head clearfloat" v-if="currentPath() != '/'">
+      <el-header class="front-head clearfloat">
           <div class="header-left">
               <img src="../../../assets/github3.png" alt="logo" class="picb header-logo"/><span class="header-title">基于GitHub作业统计系统</span>
           </div>
@@ -47,7 +47,7 @@
 				console.log(command)
 				if(command == 'loginout'){
 				  localStorage.removeItem('ms_username')
-				  this.$router.push('/login');
+				  this.$router.push('/logout');
 				}
 				else if(command == 'person'){
 					window.location.href = "/#/personinfo"	
