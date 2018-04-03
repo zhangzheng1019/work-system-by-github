@@ -12,7 +12,7 @@
               </el-form-item>
               <el-form-item label="年级">
                 <template>
-								  <el-select v-model="selectForm.grade" placeholder="请选择">
+								  <el-select v-model="selectForm.grade" placeholder="请选择"  @change="getClassArr">
 								    <el-option
 								      v-for="item in grade"
 								      :key="item.key"
@@ -22,7 +22,7 @@
 								  </el-select>
 								</template>
               </el-form-item>
-              <el-form-item label="班级">
+              <el-form-item label="班级" v-if="selectForm.grade">
                 <template>
 								  <el-select v-model="selectForm.class" placeholder="请选择">
 								    <el-option
@@ -109,6 +109,7 @@
         methods: {
           getList() {
             let termData = {
+              select: this.selectForm,
               page: this.currentPage,
             };
             this.ajaxGetInfo(termData)
@@ -132,7 +133,6 @@
               cb: (data, msg) => {
                 this.studentList = data.list
                 this.grade = data.grade
-                this.classes = data.class
                 this.totalPage   = data.total
                 if (data.total == 0) {
                    this.$message.error("没有数据呢，亲！");
@@ -142,12 +142,22 @@
               }
             });
           },
+          getClassArr() {
+            post({
+              url: '/student/getClassArr',
+              data: { grade:this.selectForm.grade },
+              dataType: 'json',
+              cb: (data,msg) => {
+                this.classes = data;
+              }
+            })
+          },
           onBreak() {
           	window.location.reload()
           }
 
         },
-        created() {
+        mounted() {
             this.getList();
         }
     }

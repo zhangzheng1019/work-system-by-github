@@ -11,14 +11,13 @@ export default {
   name:'app',
   data () {
     return {
-      userInfo:{
+      userInfo:[]
         // id:1,
         // username: '张政',
         // desc: '快去介绍一下自己吧',
         // email: '447590461@qq.com',
         // thumb: './uploads/20180321100316.jpg',
         // role: 'teacher'
-      },
 
     }
   },
@@ -27,18 +26,19 @@ export default {
   },
   methods: {
     ajaxGetUsr() {
-      let date = new Date();
-      let timer = date.getTime().toString();
       fetch({
-        url: '/login/getInfo?'+timer,
+        url: '/login/getInfo',
         dataType: 'json',
-        cb:(data, msg) =>{
+        cb:(data, msg) => {
           this.userInfo = data
-          // if(msg == 'teacher'){
-          //   window.location.href="/#/teacher"
-          // }else if(msg == 'student') {
-          //   window.location.href="/#/student"
-          // }
+          console.log(this.userInfo)
+          if(msg == 'teacher'){
+            window.location.href="/#/teacher"
+          }else if(msg == 'student') {
+            window.location.href="/#/student"
+          }else if(msg == 'admin'){
+            window.location.href = '/#/end'
+          }
         },
         err:(data,msg) => {
           this.$message.error(msg)

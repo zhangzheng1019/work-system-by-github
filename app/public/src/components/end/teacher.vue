@@ -81,6 +81,7 @@
         methods: {
           getList() {
             let termData = {
+              select: this.selectForm,
               page: this.currentPage,
             };
             this.ajaxGetInfo(termData)

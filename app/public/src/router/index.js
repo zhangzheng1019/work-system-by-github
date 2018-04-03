@@ -8,7 +8,6 @@ import endLogin from '@/components/end/Login'
 import Front from '@/components/Front'
 import Teacher from '@/components/front/teacher'
 import Student from '@/components/front/student'
-import Stuselect from '@/components/front/logRes/StuSelect'
 import Course from '@/components/front/student_course'
 Vue.use(Router)
 var menu = [
@@ -24,10 +23,6 @@ var menu = [
     {
         path: '/end/login/',
         component: endLogin
-    },
-    {
-        path: '/stuselect',
-        component: Stuselect
     },
     {
         path: '/',

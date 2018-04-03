@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Student extends CI_Controller
 {
-    const OFFSET = 10;
+    const OFFSET  = 10;
     const EXPIRES = 604800; //7天
     public function __construct()
     {
@@ -12,7 +12,7 @@ class Student extends CI_Controller
         $this->load->model("student_model");
         $this->load->library('session');
     }
-    
+
     /**
      * 获取学生信息
      * @return [type] [description]
@@ -28,17 +28,16 @@ class Student extends CI_Controller
             $select['class'] && $where['class']   = $select['class'];
         }
         $teacherId = $this->input->get('teacherId') ? $this->input->get('teacherId') : 0;
-        if (!$teacherId) {
-            ajax_fail(false, '请登录', 10000);
+
+        $limit = ($page - 1) * self::OFFSET;
+        $data  = $this->student_model->getBasicInfo($where, $limit, self::OFFSET);
+        if ($teacherId) {
+            $list = filterData($data['list'], $teacherId, 'teacher_id');
+        } else {
+            $list = $data['list'];
         }
-        $limit           = ($page - 1) * self::OFFSET;
-        $data            = $this->student_model->getBasicInfo($where, $limit, self::OFFSET);
-        $list            = filterData($data['list'], $teacherId, 'teacher_id');
-        $grade           = $this->student_model->studentGroupBy('grade');
-        $class           = $this->student_model->studentGroupBy('class');
-        $result['total'] = count($list);
-        $result['grade'] = $grade;
-        $result['class'] = $class;
+        $result['total'] = $this->student_model->getTotalNum($where);
+        $result['grade'] = $this->getGradeArr();
         $result['list']  = $list;
         ajax_success($result, "加载成功");
     }
@@ -52,7 +51,7 @@ class Student extends CI_Controller
         $studentId = $this->input->post('studentId');
         $courseId  = $this->input->post('courseId');
         if (!$studentId) {
-            ajax_fail(false, '请登录', 20000);
+            redirect('/login', '', 302);
         }
         if (!$courseId) {
             ajax_fail(false, '无效的课程id');
@@ -108,6 +107,23 @@ class Student extends CI_Controller
         ajax_success($grade);
     }
     /**
+     * 获取年级
+     * @return [type] [description]
+     */
+    public function getGradeArr()
+    {
+        $this->config->load("classids", true);
+        $ids   = $this->config->item('classids');
+        $i     = 0;
+        $grade = [];
+        foreach ($ids as $key => $value) {
+            $grade[$i]['key']   = $i;
+            $grade[$i]['value'] = $key;
+            $i++;
+        }
+        return $grade;
+    }
+    /**
      * 获取班级
      * @return [type] [description]
      */
@@ -121,6 +137,25 @@ class Student extends CI_Controller
         $ids = $this->config->item('classids');
 
         ajax_success($ids[$grade]);
+    }
+
+    /**
+     * 获取班级
+     * @return [type] [description]
+     */
+    public function getClassArr()
+    {
+        $grade = $this->input->post('grade');
+        if (!$grade) {
+            ajax_fail(false, '无效的年级' . $grade);
+        }
+        $this->config->load("classids", true);
+        $ids = $this->config->item('classids');
+        foreach ($ids[$grade] as $key => $value) {
+            $class[$key]['key']   = $key;
+            $class[$key]['value'] = $value;
+        }
+        ajax_success($class);
     }
 
 }
