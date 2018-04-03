@@ -4,10 +4,10 @@
         		<person-info :userInfo="userInfo"></person-info>
             <el-col :span="19">
                 <div class="grid-content relative">
-                    <el-tabs v-model="activeName" @tab-click="handleClick">
+                    <el-tabs v-model="activeName" @tab-click="handleClick"  v-if="courseList">
                         <el-tab-pane v-for="(item, index) in gradeGroup" :key="index" :label="item.value" :name="item.value">
                             <el-row style="padding-top: 15px">
-                                <el-col :class="(idx%4==3) ? 'mr0 course-item' : 'course-item'" v-for="(val, idx) in courseList" :key="idx" >
+                                <el-col :class="(idx%4==3) ? 'mr0 course-item' : 'course-item'" v-for="(val, idx) in courseList" :key="idx">
                                     <el-card :body-style="{ padding: '0px' }">
                                     		<div @click="courseLink(val.id)">
 	                                        <div class="coursepic-box"><img :src="val.thumb" class="course-pic" v-if="val.thumb"/>
@@ -33,6 +33,10 @@
                             </el-row>
                         </el-tab-pane>
                     </el-tabs>
+
+		                <div class="courser-not" v-else>
+				              	您还没有发布课程
+				            </div>
                     <add-course :activeName='activeName' :userInfo='userInfo' v-on:addcou='getList'>
                     </add-course>
                 </div>
@@ -73,20 +77,6 @@
 				'person-info' : personInfo
 	    },
 			methods: {
-				ajaxGetUsr() {
-	        let date = new Date();
-	        let timer = date.getTime().toString();
-	        fetch({
-	          url: '/login/getInfo?'+timer,
-	          dataType: 'json',
-	          cb:(data, msg) =>{
-	            this.userInfo = data
-	          },
-	          err:(data,msg) => {
-	            this.$message.fail(msg)
-	          }
-	        })
-	      },
 				handleClick(tab, event) {
 					this.activeName = tab.label
 					this.currentPage = 1;
@@ -119,8 +109,10 @@
 	      },
 			},
 			mounted() {
-				this.getList()
-				this.ajaxGetUsr()
+				setTimeout(() => {
+          this.getList()
+        }, 200);
+				
 			}
 
 	}

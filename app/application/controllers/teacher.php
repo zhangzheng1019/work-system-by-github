@@ -39,6 +39,7 @@ class Teacher extends CI_Controller
         $data   = array();
         $id     = $this->input->post('id');
         $status = false;
+        $this->load->model('admin_model');
         if ($id) {
             // 修改教师信息
             $teacherInfo      = $this->teacher_model->getBasicInfo(array('id' => $id));
@@ -55,7 +56,8 @@ class Teacher extends CI_Controller
             $data['realname'] = isset($_POST['name']) ? $_POST['name'] : '';
             $data['mobile']   = isset($_POST['mobile']) ? $_POST['mobile'] : '';
             $status           = $this->teacher_model->addTeacherInfo($data);
-            $status           = $status['status'];
+            $endStatus        = $this->admin_model->addEndUser('teacher', $data);
+            $status           = $status['status'] && $endStatus['status'];
             !$status && ajax_fail(false, '操作失败');
         }
 
@@ -106,4 +108,21 @@ class Teacher extends CI_Controller
         ($total > 0) ? ajax_success(false, '该邮箱已经注册过了') : ajax_success(true);
     }
 
+    public function veriInfo()
+    {
+        $data          = array();
+        $data['email'] = $this->input->post('email') ? $this->input->post('email') : '';
+        $data['pwd']   = $this->input->post('pwd') ? $this->input->post('pwd') : '';
+
+        $this->load->model("teacher_model");
+
+        $status = false;
+        $where  = array(
+            'mail'     => $data['email'],
+            'password' => $data['pwd'],
+        );
+        $teacherInfo = $this->teacher_model->getBasicInfo($where);
+
+        $teacherInfo['list'][0] ? ajax_success(true) : ajax_success(false, '登录失败');
+    }
 }

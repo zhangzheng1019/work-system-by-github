@@ -22,7 +22,8 @@ class Course extends CI_Controller
 
         $teacherId = $this->input->post('id') ? $this->input->post('id') : 0;
         if (!$teacherId) {
-            ajax_fail(false, '请登录', 20000);
+            header('HTTP/1.1 301 Moved permanently');
+            header('Location:http://dev.wg.com/login');
         }
         $gradeGroup = $this->getGradeGroup($teacherId);
         $grade      = $this->input->post('grade') ? $this->input->post('grade') : $gradeGroup[0]['value'];
@@ -107,7 +108,8 @@ class Course extends CI_Controller
         $courseList = array();
         $userId     = $this->input->post("id");
         if (!$userId) {
-            ajax_fail(false, '请登录', 20000);
+            header('HTTP/1.1 301 Moved permanently');
+            header('Location:http://dev.wg.com/login');
         }
         $userWhere = array(
             'id' => $userId,

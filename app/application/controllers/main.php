@@ -19,6 +19,10 @@ class main extends CI_Controller
     }
     public function front()
     {
+        $userrole = $_COOKIE['userrole'];
+        if($userrole){
+            header('Location: /');
+        }
         $this->load->view('main/header.html');
         $this->load->view('main/front.html');
         $this->load->view('main/footer.html');
@@ -40,7 +44,7 @@ class main extends CI_Controller
     {
         $role = $this->input->post("role");
         if (!$role) {
-            ajax_fail(false, '请登录', 20000);
+            redirect('/login', '', 302);
         }
         $param = $_POST;
 

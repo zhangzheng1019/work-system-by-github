@@ -6,37 +6,42 @@
         <el-col :span="19">
           <!--已发布的课程-->
           <el-row style="padding-top: 15px">
-              <el-col :class="(idx%4==3) ? 'mr0 course-item' : 'course-item'" v-for="(val, idx) in courseList" :key="idx" >
-                <el-card :body-style="{ padding: '0px' }">
-                  <div @click="courseLink(val.id)">
-                    <div class="coursepic-box"><img :src="val.thumb" class="course-pic" v-if="val.thumb"/>
-                    <img src="../../assets/course-default.png" class="course-pic" v-else/></div>
-                    <div class="course-detail">
-                      <p class="course-title moreline">{{ val.title }}</p>
-                      <p class="course-desc moreline" :title="val.desc">{{ val.desc }}</p>
-                    </div>
+            <el-col v-if="courseList" :class="(idx%4==3) ? 'mr0 course-item' : 'course-item'" v-for="(val, idx) in courseList" :key="idx" >
+              <el-card :body-style="{ padding: '0px' }">
+                <div @click="courseLink(val.id)">
+                  <div class="coursepic-box"><img :src="val.thumb" class="course-pic" v-if="val.thumb"/>
+                  <img src="../../assets/course-default.png" class="course-pic" v-else/></div>
+                  <div class="course-detail">
+                    <p class="course-title moreline">{{ val.title }}</p>
+                    <p class="course-desc moreline" :title="val.desc">{{ val.desc }}</p>
                   </div>
-                  <div class="course-bottom bottom clearfix">
-                    <p class="course-teacher oneline" :title="val.teacherInfo.realname">{{ val.teacherInfo.realname }}</p>
-                    <span class="course-number">已有{{ val.stuNumber }}人加入</span>
-                    <div class="add-status">
-                      <el-button type="primary" size='mini' disabled v-if="val.addStatus==1">已加入</el-button>
-                      <el-button type="primary" size='mini' v-else @click="studentAddCourse(val.id)">加入课程</el-button>
-                    </div>
+                </div>
+                <div class="course-bottom bottom clearfix">
+                  <p class="course-teacher oneline" :title="val.teacherInfo.realname">{{ val.teacherInfo.realname }}</p>
+                  <span class="course-number">已有{{ val.stuNumber }}人加入</span>
+                  <div class="add-status">
+                    <el-button type="primary" size='mini' disabled v-if="val.addStatus==1">已加入</el-button>
+                    <el-button type="primary" size='mini' v-else @click="studentAddCourse(val.id)">加入课程</el-button>
                   </div>
-                </el-card>
-              </el-col>
-            </el-row>
-            <div class="ptb10">
-                <el-pagination v-if='totalPage>0'
-                    layout="prev, pager, next"
-                    background
-                    :total="totalPage"
-                    :current-page='currentPage'
-                    @current-change='changePage'>
-                </el-pagination>
-            </div>
-        </el-col>
+                </div>
+              </el-card>
+            </el-col>
+            <el-col :span='8' :offset='8' v-else>
+              <div class="courser-not">
+                还没有你的课程
+              </div>
+            </el-col>
+          </el-row>
+          <div class="ptb10">
+              <el-pagination v-if='totalPage>0'
+                  layout="prev, pager, next"
+                  background
+                  :total="totalPage"
+                  :current-page='currentPage'
+                  @current-change='changePage'>
+              </el-pagination>
+          </div>
+      </el-col>
     </el-row>
   </div>
 </template>
@@ -100,7 +105,9 @@
       }
     },
     mounted() {
-      this.getList()
+      setTimeout(() => {
+        this.getList()
+      }, 200);
     }
   }
 </script>

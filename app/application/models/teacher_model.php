@@ -76,7 +76,7 @@ class Teacher_model extends CI_Model
             'mobile'     => $data['mobile'] ? $data['mobile'] : 0,
             'createtime' => date('Y-m-d H:i:s'),
             'mail'       => $data['mail'] ? $data['mail'] : '',
-            'password'   => md5($data['password']),
+            'password'   => $data['password'],
             'leavetime'  => "0000-00-00 00:00:00",
             'thumb'      => $data['thumb'] ? $data['thumb'] : '',
             'flag'       => 1,

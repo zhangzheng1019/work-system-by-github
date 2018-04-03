@@ -125,6 +125,7 @@
                       if (!filter.test(value)) {
                           callback(new Error('请输入正确的邮箱地址'));
                       } else {
+                        if(vm.dialogStatus == 'res'){
                           $.ajax({
                             type: 'get',
                             url: '/teacher/uniqueEmail',
@@ -135,10 +136,25 @@
                                 callback();
                                 vm.sendCodeBtn = false;
                               }else{
-                                callback(new Error('该邮箱已经注册过了'));  
+                                callback(new Error('有人使用该邮箱了呦'));  
                               }
                             }
                           })
+                        } else if(vm.dialogStatus == 'login'){
+                          $.ajax({
+                            type: 'get',
+                            url: '/teacher/uniqueEmail',
+                            data: { email:vm.loginForm.email },
+                            dataType: 'json',
+                            success: function(res) {
+                              if(res.data){
+                                callback(new Error('请先注册！'));
+                              }else{
+                                callback();  
+                              }
+                            }
+                          })
+                        }
                       }
                   }, 200);
               }
@@ -215,6 +231,20 @@
                 vm.$message.error("填写信息有误");
                 return false
               }
+              $.ajax({
+                type: 'post',
+                url: '/teacher/veriInfo',
+                dataType: 'json',
+                data: { email: vm.loginForm.email, pwd: $.md5(vm.loginForm.password) },
+                success: function(res) { 
+                  if(res.data){
+                    vm.$message.success('登录成功');
+                    vm.ajaxSetCookie();
+                  }else{
+                    vm.$message.error(res.msg)
+                  }
+                }
+              })
             })
           }else if('student' == userRole){
 

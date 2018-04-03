@@ -5,18 +5,15 @@
               <img src="../../../assets/github3.png" alt="logo" class="picb header-logo"/><span class="header-title">基于GitHub作业统计系统</span>
           </div>
           <div class="user-info">
-              <el-dropdown @command="handleCommand">
+              <el-dropdown >
                   <span class="el-dropdown-link">
                       <img :src="userInfo.thumb" alt="默认头像"  class="user-logo picb" v-if="userInfo.thumb">
                       <img src="../../../assets/github3.png" alt="默认头像"  class="user-logo picb" v-else>
                       {{ userInfo.username }}<i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
                   <el-dropdown-menu slot="dropdown">
-                      <el-dropdown-item command="person">
-                          个人信息
-                      </el-dropdown-item>
-                      <el-dropdown-item command="loginout">
-                          退出
+                      <el-dropdown-item>
+                          <a href="/login/loginout" title="">退出</a>
                       </el-dropdown-item>
                   </el-dropdown-menu>
               </el-dropdown>
@@ -25,7 +22,7 @@
     </div>
 </template>
 <script>
-
+  import { post } from '../../../utils.js'
   export default {
 		data () {
 			return {
@@ -42,17 +39,7 @@
 		methods: {
 			currentPath(){
           return this.$route.path;
-      },
-			handleCommand(command) {
-				console.log(command)
-				if(command == 'loginout'){
-				  localStorage.removeItem('ms_username')
-				  this.$router.push('/logout');
-				}
-				else if(command == 'person'){
-					window.location.href = "/#/personinfo"	
-				}
-			}
+      }
 		}
 
 	}

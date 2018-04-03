@@ -4,13 +4,13 @@
             GitHub作业统计后台系统
         </div>
         <div class="user-info">
-            <el-dropdown trigger="click" @command="handleCommand">
+            <el-dropdown trigger="click">
                 <span class="el-dropdown-link">
-                    {{ username }}
+                    {{ userInfo.username }}
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="loginout">
-                        退出
+                    <el-dropdown-item>
+                        <a href="login/loginoutEnd">退出</a>
                     </el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
@@ -18,6 +18,7 @@
     </div>
 </template>
 <script>
+import { post } from '../../../utils.js'
 export default {
   data() {
       return {
@@ -25,19 +26,11 @@ export default {
       }
   },
   props: ['userInfo'],
-  computed:{
-      username(){
-          let username = localStorage.getItem('ms_username');
-          return username ? username : this.name;
-      }
-  },
   methods:{
-      handleCommand(command) {
-          if(command == 'loginout'){
-              localStorage.removeItem('ms_username')
-              this.$router.push('/login');
-          }
-      }
+
+  },
+  created(){
+    
   }
 
 }
