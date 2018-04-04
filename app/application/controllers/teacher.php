@@ -108,6 +108,10 @@ class Teacher extends CI_Controller
         ($total > 0) ? ajax_success(false, '该邮箱已经注册过了') : ajax_success(true);
     }
 
+    /**
+     * 教师登录验证
+     * @return [type] [description]
+     */
     public function veriInfo()
     {
         $data          = array();
@@ -119,7 +123,7 @@ class Teacher extends CI_Controller
         $status = false;
         $where  = array(
             'mail'     => $data['email'],
-            'password' => $data['pwd'],
+            'password' => md5($data['pwd']),
         );
         $teacherInfo = $this->teacher_model->getBasicInfo($where);
 

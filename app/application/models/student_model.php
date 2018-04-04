@@ -81,6 +81,7 @@ class Student_model extends CI_Model
             'desc'        => $data['desc'] ? $data['desc'] : '',
             'teacher_id'  => $data['teacher_id'] ? $data['teacher_id'] : 0,
             'course_id'   => $data['course_id'] ? $data['course_id'] : 0,
+            'github_id'   => $data['github_id'] ? $data['github_id'] : 0,
             'flag'        => 1,
         );
         $this->DB->insert(self::WG_STUDENTS_TABLE, $detailData);

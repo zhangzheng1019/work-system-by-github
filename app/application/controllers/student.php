@@ -36,6 +36,9 @@ class Student extends CI_Controller
         } else {
             $list = $data['list'];
         }
+        foreach ($list as $key => $value) {
+            $list[$key]['github_info'] = json_decode($value['github_info'], true);
+        }
         $result['total'] = $this->student_model->getTotalNum($where);
         $result['grade'] = $this->getGradeArr();
         $result['list']  = $list;
@@ -79,10 +82,12 @@ class Student extends CI_Controller
         //     $status ? ajax_success($status, '操作成功') : ajax_fail(false, '你没有修改呦！');
         // } else {
         //添加
+        $githubInfo          = $this->session->userdata('gbinfo');
         $data['realname']    = isset($_POST['username']) ? $_POST['username'] : '';
-        $data['github_info'] = json_encode($this->session->userdata('gbinfo'));
+        $data['github_info'] = json_encode($githubInfo);
         $data['grade']       = isset($_POST['grade']) ? $_POST['grade'] : '';
         $data['class']       = isset($_POST['class']) ? $_POST['class'] : '';
+        $data['github_id']   = isset($githubInfo['id']) ? $githubInfo['id'] : '';
         $data['thumb']       = isset($_POST['thumb']) ? $_POST['thumb'] : '';
         $status              = $this->student_model->addStudentInfo($data);
         $status['status'] ? ajax_success($status['insertId'], '操作成功') : ajax_fail(false, '操作失败');
@@ -110,7 +115,7 @@ class Student extends CI_Controller
      * 获取年级
      * @return [type] [description]
      */
-    public function getGradeArr()
+    public function getGradeArr($retArr = true)
     {
         $this->config->load("classids", true);
         $ids   = $this->config->item('classids');
@@ -121,7 +126,7 @@ class Student extends CI_Controller
             $grade[$i]['value'] = $key;
             $i++;
         }
-        return $grade;
+        return $retArr ? $grade : ajax_success($grade);
     }
     /**
      * 获取班级

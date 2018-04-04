@@ -2,8 +2,7 @@
     <div id="end-student">
         <h1 class="title-line">
             学生名单
-            <add-student  v-on:addstu='getList'>
-            </add-student>
+            <!-- <add-student  v-on:addstu='getList'></add-student> -->
         </h1>
         <div class="mtb20">
             <el-form :inline="true" :model="selectForm" class="demo-form-inline">
@@ -53,10 +52,16 @@
                     </el-table-column>
                     <el-table-column prop="mail" label="邮箱">
                     </el-table-column>
-                    <el-table-column prop="thumb" label="头像">
+                    <el-table-column label="GitHub" >
+                      <template slot-scope="scope">
+                        <a :href="scope.row.github_info.html_url" target="_blank" title="查看GitHub">{{scope.row.github_info.login}}</a>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="头像"> 
                         <template slot-scope="scope">
                             <div class="stu-thumb">
-                                <img src="../../assets/github3.png" alt=""/>
+                                <img :src="scope.row.thumb" v-if="scope.row.thumb"/>
+                                <img src="../../assets/github3.png" v-else/>
                             </div>
                         </template>
                     </el-table-column>
@@ -163,5 +168,5 @@
     }
 </script>
 <style scoped>
-  .stu-thumb img{ width: 50px; border-radius: 100%; }
+  .stu-thumb img{ width: 50px;height: 50px; border-radius: 100%; }
 </style>

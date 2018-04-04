@@ -25,8 +25,12 @@ class Course extends CI_Controller
             header('HTTP/1.1 301 Moved permanently');
             header('Location:http://dev.wg.com/login');
         }
-        $gradeGroup = $this->getGradeGroup($teacherId);
-        $grade      = $this->input->post('grade') ? $this->input->post('grade') : $gradeGroup[0]['value'];
+        $gradeGroup = $this->getGradeGroupByTeacherId($teacherId);
+        if (!$gradeGroup) {
+            $gradeGroup = $this->course_model->courseGroupBy('grade_id', '', 4, 'grade_id desc');
+        }
+
+        $grade = $this->input->post('grade') ? $this->input->post('grade') : $gradeGroup[0]['value'];
 
         $where = array(
             'teacher_id' => $teacherId,
@@ -47,7 +51,7 @@ class Course extends CI_Controller
         $result['gradeGroup']   = $gradeGroup;
         $result['currentGrade'] = $grade;
         $result['list']         = $data;
-        ajax_success($result, "加载成功");
+        $result['list'] ? ajax_success($result, "加载成功") : ajax_success($result, '快来添加课程吧');
     }
     /**
      * 添加课程
@@ -85,7 +89,7 @@ class Course extends CI_Controller
      * 获取年级
      * @return [type] [description]
      */
-    public function getGradeGroup($teacher_id)
+    public function getGradeGroupByTeacherId($teacher_id)
     {
         if (!$teacher_id) {
             return [];
@@ -137,10 +141,19 @@ class Course extends CI_Controller
         foreach ($courseList as $key => $value) {
             $teacherInfo                     = $this->teacher_model->getBasicInfo(array('id' => $value['teacher_id']));
             $courseList[$key]['teacherInfo'] = $teacherInfo['list'][0];
-            $courseList[$key]['stuNumber']      = $this->student_model->getStudentNumByCourseId($value['id']);
+            $courseList[$key]['stuNumber']   = $this->student_model->getStudentNumByCourseId($value['id']);
         }
         $data['total'] = count($courseList);
         $data['list']  = $courseList;
         ajax_success($data, '加载成功');
+    }
+    /**
+     * 获取课程列表年级的分组（取前4）
+     * @return [type] [description]
+     */
+    public function getGrade()
+    {
+        $gradeGroup = $this->course_model->courseGroupBy('grade_id', $where, 4, 'grade_id desc');
+        ajax_success($gradeGroup);
     }
 }

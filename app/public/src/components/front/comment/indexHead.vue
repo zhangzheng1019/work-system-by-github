@@ -12,6 +12,9 @@
                       {{ userInfo.username }}<i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
                   <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item v-if="userInfo.role=='teacher'">
+                          <a href="/admin" title="">后台管理</a>
+                      </el-dropdown-item>
                       <el-dropdown-item>
                           <a href="/login/loginout" title="">退出</a>
                       </el-dropdown-item>

@@ -4,8 +4,8 @@
             <index-head :userInfo='userInfo'>
             </index-head>
             <el-main>
-                <router-view :userInfo='userInfo'>
-                </router-view>
+                <transition name="move" mode="out-in"><router-view :userInfo='userInfo'>
+                </router-view></transition>
             </el-main>
             <el-footer>
                 <p class="copyright">

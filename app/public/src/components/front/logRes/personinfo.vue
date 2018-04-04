@@ -7,6 +7,7 @@
             <p class="person-pub person-name oneline"><i class="el-icon-news">&nbsp;</i>{{ userInfo.username }}</p>
             <p class="person-pub person-desc moreline" :title="userInfo.desc"><i class="el-icon-edit-outline">&nbsp;</i>{{ userInfo.desc }}</p>
             <p class="person-pub person-email oneline"><i class="el-icon-message">&nbsp;</i>{{ userInfo.email }}</p>
+            <p class="person-pub person-github oneline" v-if="userInfo.github_url"><i class="el-icon-fa-github">&nbsp;</i><a :href="userInfo.github_url" target="_blank" title="跳转到GitHub">{{ userInfo.github_name }}</a></p>
           </div>
           <edit-person :userInfo="userInfo"></edit-person>
       </el-col>

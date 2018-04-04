@@ -34,9 +34,9 @@ export default {
           console.log(this.userInfo)
           if(msg == 'teacher'){
             window.location.href="/#/teacher"
-          }else if(msg == 'student') {
+          } else if(msg == 'student') {
             window.location.href="/#/student"
-          }else if(msg == 'admin'){
+          } else if(msg == 'admin'){
             window.location.href = '/#/end'
           }
         },

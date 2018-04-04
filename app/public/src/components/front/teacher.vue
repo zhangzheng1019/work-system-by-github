@@ -4,9 +4,9 @@
         		<person-info :userInfo="userInfo"></person-info>
             <el-col :span="19">
                 <div class="grid-content relative">
-                    <el-tabs v-model="activeName" @tab-click="handleClick"  v-if="courseList">
+                    <el-tabs v-model="activeName" @tab-click="handleClick">
                         <el-tab-pane v-for="(item, index) in gradeGroup" :key="index" :label="item.value" :name="item.value">
-                            <el-row style="padding-top: 15px">
+                            <el-row style="padding-top: 15px" v-if="courseList">
                                 <el-col :class="(idx%4==3) ? 'mr0 course-item' : 'course-item'" v-for="(val, idx) in courseList" :key="idx">
                                     <el-card :body-style="{ padding: '0px' }">
                                     		<div @click="courseLink(val.id)">
@@ -31,13 +31,17 @@
                                     </el-card>
                                 </el-col>
                             </el-row>
+                            <el-row v-else>
+                                <el-col :span='8' :offset='8'>
+									                <div class="courser-not">
+											              	您还没有发布课程
+											            </div>
+                                </el-col>
+                            </el-row>
                         </el-tab-pane>
                     </el-tabs>
 
-		                <div class="courser-not" v-else>
-				              	您还没有发布课程
-				            </div>
-                    <add-course :activeName='activeName' :userInfo='userInfo' v-on:addcou='getList'>
+                    <add-course :userInfo='userInfo' v-on:addcou='getList'>
                     </add-course>
                 </div>
                 <div class="ptb10">
@@ -120,7 +124,7 @@
 <style scoped>
 	.mr0{ margin-right: 0!important; }
   /*课程*/
-	.course-item{ width: 23%;margin-right: 2%; margin-bottom:20px;transition: all 0.2s linear 0s; -webkit-transition: all 0.2s linear 0s; -moz-transition: all 0.2s linear 0s; -ms-transition: all 0.2s linear 0s; cursor: pointer; }
+	.course-item{ width: 23%;height:14.5em;margin-right: 2%; margin-bottom:20px;transition: all 0.2s linear 0s; -webkit-transition: all 0.2s linear 0s; -moz-transition: all 0.2s linear 0s; -ms-transition: all 0.2s linear 0s; cursor: pointer; }
   .course-item:hover { box-shadow: 0 5px 10px 3px rgba(0,0,0,.1); -webkit-box-shadow: 0 5px 10px 3px rgba(0,0,0,.1); -moz-box-shadow: 0 5px 10px 3px rgba(0,0,0,.1); -ms-box-shadow: 0 5px 10px 3px rgba(0,0,0,.1); }
 	.course-pic{ width: 100%; display: block; height: 100px;}
 	.course-title{ color: #0366d6; font-size: 18px; font-weight: bold; }

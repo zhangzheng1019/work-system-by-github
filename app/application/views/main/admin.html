@@ -55,6 +55,7 @@
                 const self = this;
                 self.$refs[formName].validate(function(valid) {
                     if (valid) {
+                        self.ruleForm.password = $.md5(self.ruleForm.password)
                         $.ajax({
                             type: 'post',
                             url: '/login/endLogin',
