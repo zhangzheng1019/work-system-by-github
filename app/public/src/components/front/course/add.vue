@@ -3,8 +3,14 @@
         <el-button type="primary" icon="el-icon-plus" size="medium" @click.native='dialogVisible=true'>
             发布课程
         </el-button>
-        <el-dialog :title="grade" :visible.sync="dialogVisible">
+        <el-dialog title="添加课程" :visible.sync="dialogVisible">
             <el-form :model="addCourseForm" ref="addCourseForm" :rules="rulesForm" status-icon>
+                <el-form-item label="所属年级" :label-width="formLabelWidth" prop="grade" >
+                    <el-select v-model="addCourseForm.grade_id" placeholder="请选择年级" @change="changeGrade">
+                        <el-option v-for="item in gradeGroup" :key="item.key" :label="item.value" :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="课程名称" :label-width="formLabelWidth" prop="name">
                     <el-input type="text" v-model="addCourseForm.name" pla auto-complete="off">
                     </el-input>
@@ -47,10 +53,16 @@
     data () {
       return {
         formLabelWidth: "80px",
-        addCourseForm: { name:"", desc:"", thumb:"" },
+        addCourseForm: { grade_id:'', name:"", desc:"", thumb:"" },
         uploadImage: { name: '', path:'', width: '', height: ''},
+        gradeGroup :[],
         dialogVisible: false,
         rulesForm: {
+          grade_id: [{
+            required: true,
+            message: '请选择年级',
+            triggle: 'blur'
+          }],
           name: [{
             required: true,
             message: '请输入课程名称',
@@ -64,16 +76,14 @@
         }
       }
     },
-    props: ['activeName','userInfo'],
-    create() {
-
-    },
-    computed: {
-      grade: function() {
-        return '添加 '+this.activeName+' 级课程'
-      }
+    props: ['userInfo'],
+    mounted() {
+      this.getGrade()
     },
     methods: {
+      changeGrade(val){
+        this.addCourseForm.grade_id = val; 
+      },
       handleRemove(file, fileList) {
         // 移除上传图片
         console.log(file, fileList);
@@ -111,7 +121,7 @@
               'desc' : this.addCourseForm.desc,
               'thumb' : this.uploadImage.path,
               'teacher_id' : this.userInfo.id,
-              'grade_id' : this.activeName
+              'grade_id' : this.addCourseForm.grade_id
             }
             post({
               url:'/course/addCourse',
@@ -121,6 +131,8 @@
                 this.$message.success(msg)
                 this.dialogVisible = false;
                 this.$refs['addCourseForm'].resetFields()
+                this.uploadImage.path = ''
+                this.uploadImage.name = ''
                 this.$emit('addcou')
               },
               err:(data,msg) => {
@@ -129,6 +141,15 @@
             })
           }
         });
+      },
+      getGrade(){
+        post({
+          url: '/course/getGrade',
+          dataType:'json',
+          cb: (data, msg) => {
+            this.gradeGroup = data
+          }
+        })
       }
     },
 

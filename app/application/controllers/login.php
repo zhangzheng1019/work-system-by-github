@@ -40,7 +40,7 @@ class Login extends CI_Controller
         $this->session->set_userdata('gbinfo', $userInfo);
         set_cookie('is_github', true, self::EXPIRES);
         $where = array(
-            'github_info' => json_encode($userInfo),
+            'github_id' => $userInfo['id'],
         );
         $this->load->model("student_model");
         $stuInfo = $this->student_model->getBasicInfo($where);
@@ -88,15 +88,14 @@ class Login extends CI_Controller
 
         $this->load->model("admin_model");
 
-        $status = false;
         $where  = array(
             'name'     => $data['id'],
-            'password' => $data['pwd'],
+            'password' => md5($data['pwd']),
         );
-        $status = $this->admin_model->getInfo($where);
-        if ($status) {
-            set_cookie('userid', $data['id'], self::EXPIRES);
-            set_cookie('userrole', 'admin', self::EXPIRES);
+        $adminRes = $this->admin_model->getInfo($where);
+        if ($adminRes) {
+            set_cookie('userid', $data['id'], 3600); //保留一小时
+            set_cookie('userrole', 'admin', 3600); //保留一小时
             ajax_fail(true, 'admin');
         }
     }
@@ -109,7 +108,17 @@ class Login extends CI_Controller
         $role     = $_COOKIE['userrole'];
         $id       = $_COOKIE['userid'];
         $isGithub = $_COOKIE['is_github'];
-
+        // if (ENVIRONMENT == 'development') {
+        //     $data = array(
+        //         id       => 3,
+        //         username => '张政',
+        //         desc     => '快去介绍一下自己吧',
+        //         email    => '447590461@qq.com',
+        //         thumb    => './uploads/20180321100316.jpg',
+        //         role     => 'teacher',
+        //     );
+        //     ajax_success($data);
+        // }
         if ($role == 'admin') {
             $this->adminInfo($role, $id);
         } else {
@@ -153,17 +162,18 @@ class Login extends CI_Controller
             $where = array(
                 'id' => $id,
             );
-            $userinfo           = $this->student_model->getBasicInfo($where);
-            $userinfo           = $userinfo['list'][0];
-            $githubInfo         = json_decode($userinfo['github_info'], true);
-            $data['id']         = $userinfo['id'];
-            $data['username']   = $userinfo['realname'] ? $userinfo['realname'] : '你的姓名好像丢了呀';
-            $data['thumb']      = $userinfo['thumb'];
-            $data['desc']       = $userinfo['desc'] ? $userinfo['desc'] : '快来补充你的个人描述吧';
-            $data['email']      = $githubInfo['email'];
-            $data['github_url'] = $githubInfo['html_url'];
-            $data['github_id']  = $githubInfo['id'];
-            $data['role']       = $role;
+            $userinfo            = $this->student_model->getBasicInfo($where);
+            $userinfo            = $userinfo['list'][0];
+            $githubInfo          = json_decode($userinfo['github_info'], true);
+            $data['id']          = $userinfo['id'];
+            $data['username']    = $userinfo['realname'] ? $userinfo['realname'] : '你的姓名好像丢了呀';
+            $data['thumb']       = $userinfo['thumb'];
+            $data['desc']        = $userinfo['desc'] ? $userinfo['desc'] : '快来补充你的个人描述吧';
+            $data['email']       = $githubInfo['email'];
+            $data['github_url']  = $githubInfo['html_url'];
+            $data['github_id']   = $githubInfo['id'];
+            $data['github_name'] = $githubInfo['login'];
+            $data['role']        = $role;
         }
 
         ajax_success($data, $role);
@@ -181,7 +191,13 @@ class Login extends CI_Controller
         if (!$id) {
             redirect('/admin');
         }
-        if ($role == 'teacher') {
+        $where = array(
+            'name' => $id
+        );
+        $this->load->model("admin_model");
+
+        $adminRes = $this->admin_model->getInfo($where);
+        if (0 == $adminRes[0]['is_admin']) {
             $this->load->model("teacher_model");
             $where = array(
                 'mail' => $id,
@@ -193,7 +209,8 @@ class Login extends CI_Controller
             $data['mobile']   = $userinfo['mobile'];
             $data['email']    = $userinfo['mail'];
             $data['thumb']    = $userinfo['thumb'];
-        } else {
+            $data['role']    = 'teacher';
+        } else{
             $data['id']       = 0;
             $data['username'] = '管理员';
         }

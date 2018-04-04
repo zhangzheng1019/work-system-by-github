@@ -11,6 +11,17 @@ class main extends CI_Controller
 
     public function index()
     {
+        $role     = $_COOKIE['userrole'];
+        if(!$role){
+            redirect('/login');
+        }
+        // else if($role == 'teacher'){
+        //     redirect("/#/teacher");
+        // } else if($role == 'student') {
+        //     redirect("/#/student");
+        // } else if($role == 'admin'){
+        //     redirect("/#/end");
+        // }
         $this->load->view('main/index.html');
     }
     public function error()
@@ -19,16 +30,16 @@ class main extends CI_Controller
     }
     public function front()
     {
-        $userrole = $_COOKIE['userrole'];
-        if($userrole){
-            header('Location: /');
-        }
         $this->load->view('main/header.html');
         $this->load->view('main/front.html');
         $this->load->view('main/footer.html');
     }
     public function stuselect()
     {
+        $role     = $_COOKIE['userrole'];
+        if($role == 'student'){
+            redirect("/#/student");
+        }
         $this->load->view('main/header.html');
         $this->load->view('main/stuselect.html');
         $this->load->view('main/footer.html');
@@ -92,6 +103,19 @@ class main extends CI_Controller
         $editStatus = $this->student_model->updateStudentInfo($data['id'], $data);
 
         return $editStatus;
+    }
+
+    /**
+     * 后台菜单权限
+     * @return [type] [description]
+     */
+    public function endPurview()
+    {
+        $role = $this->input->post('role');
+        $id = $this->input->post('id');
+        $this->load->model("admin_model");
+
+        $adminRes = $this->admin_model->getInfo($where);
     }
 
 }

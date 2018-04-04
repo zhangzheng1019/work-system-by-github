@@ -21,7 +21,7 @@ class Admin_model extends CI_Model
         if ($query && $query->num_rows() > 0) {
             $result = $query->result_array();
         }
-        return $result ? true : false;
+        return $result;
     }
 
     public function addEndUser($userType = '', $data = array())

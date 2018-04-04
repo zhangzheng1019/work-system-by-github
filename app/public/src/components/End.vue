@@ -32,7 +32,7 @@ export default {
       {
         icon: 'el-icon-menu',
         index: '/end/teacher',
-        title: '教师管理'
+        title: '教师管理',
       },
       {
         icon: 'el-icon-menu',
@@ -42,15 +42,15 @@ export default {
             {index: '/end/student',title: '名单' }
         ]
       },
-      {
-        icon: 'el-icon-menu',
-        index: '3',
-        title: '课程管理',
-        subs: [
-            {index: '/end/course',title: '课程统计' },
-            {index: '/end/task',title: '任务统计' }
-        ]
-      }
+      // {
+      //   icon: 'el-icon-menu',
+      //   index: '3',
+      //   title: '课程管理',
+      //   subs: [
+      //       {index: '/end/course',title: '课程统计' },
+      //       {index: '/end/task',title: '任务统计' }
+      //   ]
+      // }
    ];
   //  fetch({
   //       url: '/user/menu',
