@@ -27,82 +27,40 @@ export default {
   },
   props:['userInfo'],
   created() {
-   var cururl = window.location.href;
-   this.levelBar = [
-      {
-        icon: 'el-icon-menu',
-        index: '/end/teacher',
-        title: '教师管理',
-      },
-      {
-        icon: 'el-icon-menu',
-        index: '2',
-        title: '学生管理',
-        subs: [
-            {index: '/end/student',title: '名单' }
-        ]
-      },
-      // {
-      //   icon: 'el-icon-menu',
-      //   index: '3',
-      //   title: '课程管理',
-      //   subs: [
-      //       {index: '/end/course',title: '课程统计' },
-      //       {index: '/end/task',title: '任务统计' }
-      //   ]
-      // }
-   ];
-  //  fetch({
-  //       url: '/user/menu',
-  //       dataType: 'json',
-  //       data: {menufromurl: cururl},
-  //       cb: (data,msg) =>  { 
-  //         this.userInfo = data;
-  //         for (let [k, mainlevel] of Object.entries(data)) {
-  //            if(k == 'menu_control'){
-  //                  for (let [key, level] of Object.entries(mainlevel)) {
-  //                       var inLevel = [];
-  //                       for(let[child,childlevel] of Object.entries(level.list)){
-  //                           inLevel.push({
-  //                                        'name':childlevel.name,
-  //                                        'index':childlevel.index,
-  //                                        'url':childlevel.url
-  //                                      });
-  //                           inLevel.concat(inLevel);
-  //                       }
-  //                       this.levelBar.push({
-  //                           'label':level.name,
-  //                           'labelIndex':level.index,
-  //                           'level':inLevel
-  //                       })
-  //                  }
-  //             }
-  //         }
-  //         },
-  //         err: (data,msg) => {
-  //              this.$message.error(msg) 
-  //         }
-  //     })
-    
+    this.getSideBar()
+  },
+  methods: {
+      getSideBar() {
+        fetch({
+          url: '/main/endPurview',
+          dataType: 'json',
+          cb: (data,msg) =>  { 
+            this.levelBar = data;
+          },
+          err: (data,msg) => {
+            this.$message.error(msg) 
+          }
+        })
+      }
    }
 }
 </script>
 <style>
     @import "../../static/css/main.css";
     @import "../../static/css/color-dark.css";
-	
-	.app-content {
-	  margin-left: 224px;
-	  min-width: 640px;
-	  overflow: scroll;
-	}
-	.header {
-	  border-bottom: 1px solid rgb(233, 233, 233);
-	}
-	.title {
-	  font-weight: 500;
-	  margin: 20px;
-	}
+  
+  .app-content {
+    margin-left: 224px;
+    min-width: 640px;
+    overflow: scroll;
+  }
+  .header {
+    border-bottom: 1px solid rgb(233, 233, 233);
+  }
+  .title {
+    font-weight: 500;
+    margin: 20px;
+  }
 
  
 </style>

@@ -111,16 +111,32 @@ class main extends CI_Controller
      */
     public function endPurview()
     {
-        $role = $this->input->post('role');
-        $id   = $this->input->post('id');
+        $role = $_COOKIE['userrole'];
+        $id   = $_COOKIE['userid'];
+        if($role != 'admin'){
+            redirect('/login');
+        }
+        if (!$id) {
+            redirect('/admin');
+        }
+
         $this->load->model("admin_model");
         $where = [
-            "name" => $id
+            "name" => $id,
         ];
         $adminRes = $this->admin_model->getInfo($where);
+        $isAdmin  = $adminRes[0]['is_admin'];
 
-        $menu = $this->load->config('endmenu');
-        var_dump($menu);
+        $this->config->load('endmenu', true);
+        $menu = $this->config->item('endmenu');
+        $menu = $menu['menu'];
+        foreach ($menu as $key => $value) {
+            $menu[$key]['is_admin'] = explode(',', $value['is_admin']);
+            if (!inArray($isAdmin, $menu[$key]['is_admin'])) {
+                unset($menu[$key]);
+            }
+        }
+        ajax_success(array_values($menu));
     }
 
 }

@@ -9,7 +9,11 @@ class Admin_model extends CI_Model
         parent::__construct();
         $this->DB = $this->load->database('default', true);
     }
-
+    /**
+     * 得到后台用户信息
+     * @param  array  $where [description]
+     * @return [type]        [description]
+     */
     public function getInfo($where = array())
     {
         $result = array();
@@ -23,11 +27,15 @@ class Admin_model extends CI_Model
         }
         return $result;
     }
-
+    /**
+     * 添加后台用户信息
+     * @param string $userType [description]
+     * @param array  $data     [description]
+     */
     public function addEndUser($userType = '', $data = array())
     {
-        $result = array();
-        $isAdmin = ($userType=='teacher') ? 0 : 1;
+        $result     = array();
+        $isAdmin    = ($userType == 'teacher') ? 1 : 0;
         $detailData = array(
             'name'     => $data['mail'] ? $data['mail'] : '',
             'password' => md5($data['password']),
