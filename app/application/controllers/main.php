@@ -11,8 +11,8 @@ class main extends CI_Controller
 
     public function index()
     {
-        $role     = $_COOKIE['userrole'];
-        if(!$role){
+        $role = $_COOKIE['userrole'];
+        if (!$role) {
             redirect('/login');
         }
         // else if($role == 'teacher'){
@@ -36,8 +36,8 @@ class main extends CI_Controller
     }
     public function stuselect()
     {
-        $role     = $_COOKIE['userrole'];
-        if($role == 'student'){
+        $role = $_COOKIE['userrole'];
+        if ($role == 'student') {
             redirect("/#/student");
         }
         $this->load->view('main/header.html');
@@ -112,10 +112,15 @@ class main extends CI_Controller
     public function endPurview()
     {
         $role = $this->input->post('role');
-        $id = $this->input->post('id');
+        $id   = $this->input->post('id');
         $this->load->model("admin_model");
-
+        $where = [
+            "name" => $id
+        ];
         $adminRes = $this->admin_model->getInfo($where);
+
+        $menu = $this->load->config('endmenu');
+        var_dump($menu);
     }
 
 }

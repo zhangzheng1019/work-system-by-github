@@ -217,6 +217,7 @@
           success: function(res) { 
             if(res.errcode == 0){
               vm.returnCode = res.data
+              vm.$message.success(res.msg)
             }else{
               vm.$message.error(res.msg)
             }

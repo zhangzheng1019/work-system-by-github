@@ -100,10 +100,6 @@ class OAuth2 extends Base
         $this->result = json_decode($this->http->ua('YurunOAuthLogin')->get($this->getUrl('user', array(
             'access_token' => null === $accessToken ? $this->accessToken : $accessToken,
         )))->body, true);
-        $this->result = json_decode($this->http->ua('YurunOAuthLogin')->get($this->getUrl('user', array(
-            'access_token' => null === $accessToken ? $this->accessToken : $accessToken,
-        )))->body, true);
-        
         if (isset($this->result['message'])) {
             throw new ApiException($this->result['message'], 0);
         } else {

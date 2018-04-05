@@ -31,6 +31,10 @@ class Email extends CI_Controller
         $subject    = '欢迎使用github作业统计系统';
         $body       = '<p style="font-size:24px">您的验证码为：' . '<font color="#409EFF">' . $code . '</font><p>';
         $sendStatus = $this->email_model->sendEmail($emailAddress, $subject, $body);
-        ajax_success($code, true);
+        if($sendStatus){
+            ajax_success($code, '发送成功');   
+        }else{
+            ajax_fail(false, '发送失败');
+        }
     }
 }
