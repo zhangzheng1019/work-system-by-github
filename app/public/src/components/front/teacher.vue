@@ -115,7 +115,7 @@
 			mounted() {
 				setTimeout(() => {
           this.getList()
-        }, 200);
+        }, 250);
 				
 			}
 
