@@ -22,8 +22,7 @@ class Course extends CI_Controller
 
         $teacherId = $this->input->post('id') ? $this->input->post('id') : 0;
         if (!$teacherId) {
-            header('HTTP/1.1 301 Moved permanently');
-            header('Location:http://dev.wg.com/login');
+            header('Location:/login');
         }
         $gradeGroup = $this->getGradeGroupByTeacherId($teacherId);
         if (!$gradeGroup) {
@@ -112,8 +111,7 @@ class Course extends CI_Controller
         $courseList = array();
         $userId     = $this->input->post("id");
         if (!$userId) {
-            header('HTTP/1.1 301 Moved permanently');
-            header('Location:http://dev.wg.com/login');
+            header('Location:/login');
         }
         $userWhere = array(
             'id' => $userId,
