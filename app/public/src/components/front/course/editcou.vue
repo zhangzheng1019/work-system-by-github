@@ -6,7 +6,7 @@
         <el-dialog title="编辑课程" :visible.sync="editDialog">
             <el-form :model="row" ref="row" :rules="rulesForm" status-icon>
                 <el-form-item label="所属年级" :label-width="formLabelWidth" prop="grade">
-                    <el-select v-model="row.grade_id" placeholder="请选择年级">
+                    <el-select v-model="row.grade_id" placeholder="请选择年级" disabled>
                         <el-option v-for="item in gradeGroup" :key="item.key" :label="item.value" :value="item.value">
                         </el-option>
                     </el-select>

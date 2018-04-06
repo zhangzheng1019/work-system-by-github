@@ -49,8 +49,11 @@ class Task_model extends CI_Model
         $detailData = array(
             'name'       => $data['name'],
             'desc'       => $data['desc'],
+            'startime'   => $data['startime'],
+            'endtime'    => $data['endtime'],
+            'course_id'  => $data['course_id'],
             'createtime' => date('Y-m-d H:i:s'),
-            'modifytime' => date('Y-m-d H:i:s'),
+            'modifytime' => '0000-00-00 00:00:00',
             'flag'       => 1,
         );
         $this->DB->insert(self::WG_TASK_TABLE, $detailData);
@@ -106,28 +109,6 @@ class Task_model extends CI_Model
         }
 
         return true;
-    }
-
-    /**
-     * 根据老师id和班级id 得到课程信息
-     * @param  [type] $teacherId [教师id]
-     * @param  [type] $gradeId   [班级id]
-     * @return [type]            [description]
-     */
-    public function getCourseByTeaIdAndGradeId($teacherId, $gradeId)
-    {
-        if (!$teacherId && !$gradeId) {
-            return [];
-        }
-
-        $this->DB->select();
-        $this->DB->where('teacher_id', $teacherId);
-        $this->DB->where('grade_id', $gradeId);
-        $query = $this->DB->get();
-        if ($query && $query->num_rows() > 0) {
-            $result = $query->result_array();
-        }
-        return $result;
     }
 
 }

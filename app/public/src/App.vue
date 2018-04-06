@@ -25,13 +25,13 @@ export default {
         cb:(data, msg) => {
           this.userInfo = data
           console.log(this.userInfo)
-          if(msg == 'teacher'){
-            window.location.href="/#/teacher"
-          } else if(msg == 'student') {
-            window.location.href="/#/student"
-          } else if(msg == 'admin'){
-            window.location.href = '/#/end'
-          }
+          // if(msg == 'teacher'){
+          //   window.location.href="/#/teacher"
+          // } else if(msg == 'student') {
+          //   window.location.href="/#/student"
+          // } else if(msg == 'admin'){
+          //   window.location.href = '/#/end'
+          // }
         },
         err:(data,msg) => {
           this.$message.error(msg)
@@ -50,7 +50,7 @@ export default {
   html{ font-family: "Microsoft YaHei","微软雅黑","Hiragino Sans GB",Arial,sans-serif; }
   *{ margin: 0;padding: 0; }
   [class^="el-icon-fa"], [class*=" el-icon-fa"] { display: inline-block; font: normal normal normal 14px/1 FontAwesome!important; font-size: inherit; text-rendering: auto; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-  div{ outline: none; }
+  div,span{ outline: none; }
   .picb{ width: 100%;display: block; }
   .clearfloat{ zoom: 1; }
   .clearfloat:after{ content:"."; display:block; height:0; clear:both; visibility:hidden; }

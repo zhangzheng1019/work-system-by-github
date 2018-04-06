@@ -27,5 +27,9 @@ module.exports = {
     '/main': {
         target: DEVHOST,
         changeOrigin: true
+    },
+    '/task': {
+        target: DEVHOST,
+        changeOrigin: true
     }
 }
