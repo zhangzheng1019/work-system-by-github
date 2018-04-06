@@ -14,14 +14,13 @@ class main extends CI_Controller
         $role = $_COOKIE['userrole'];
         if (!$role) {
             redirect('/login');
+        } else if($role == 'teacher'){
+            redirect("/#/teacher");
+        } else if($role == 'student') {
+            redirect("/#/student");
+        } else if($role == 'admin'){
+            redirect("/#/end");
         }
-        // else if($role == 'teacher'){
-        //     redirect("/#/teacher");
-        // } else if($role == 'student') {
-        //     redirect("/#/student");
-        // } else if($role == 'admin'){
-        //     redirect("/#/end");
-        // }
         $this->load->view('main/index.html');
     }
     public function error()

@@ -8,7 +8,7 @@ import endLogin from '@/components/end/Login'
 import Front from '@/components/Front'
 import Teacher from '@/components/front/teacher'
 import Student from '@/components/front/student'
-import Course from '@/components/front/student_course'
+import Course from '@/components/front/course'
 Vue.use(Router)
 var menu = [
     {
@@ -30,7 +30,7 @@ var menu = [
         children: [
             {path: '/teacher',component: Teacher},
             {path: '/student',component: Student},
-            {path: '/student_course',component: Course}
+            {path: '/Course/:id',component: Course},
         ]
     }
 ];

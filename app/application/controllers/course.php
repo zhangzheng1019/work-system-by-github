@@ -154,4 +154,30 @@ class Course extends CI_Controller
         $gradeGroup = $this->course_model->courseGroupBy('grade_id', $where, 4, 'grade_id desc');
         ajax_success($gradeGroup);
     }
+
+    /**
+     * 获取课程信息
+     * @return [type] [description]
+     */
+    public function getCourseInfo()
+    {
+        $data      = array();
+        $courseId  = $this->input->get('course_id');
+        $teacherId = $this->input->get('teacher_id');
+        if(!$teacherId){
+            redirect('/login');
+        }
+        if (!$courseId) {
+            ajax_fail(false, '无效的课程id');
+        }
+        $where = array(
+            'id' => $courseId,
+        );
+        $courseInfo         = $this->course_model->getBasicInfo($where);
+        $gradeGroup         = $this->getGradeGroupByTeacherId($teacherId);
+        $data['course']     = $courseInfo[0];
+        $data['grade'] = $gradeGroup;
+
+        ajax_success($data);
+    }
 }
