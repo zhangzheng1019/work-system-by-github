@@ -90,7 +90,7 @@ class Login extends CI_Controller
 
         $where  = array(
             'name'     => $data['id'],
-            'password' => md5($data['pwd']),
+            'password' => $data['pwd'],
         );
         $adminRes = $this->admin_model->getInfo($where);
         if ($adminRes) {
