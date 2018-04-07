@@ -19,12 +19,24 @@ export default {
   },
   methods: {
     ajaxGetUsr() {
+      let currentUrl = this.$route.fullPath
       fetch({
         url: '/login/getInfo',
         dataType: 'json',
         cb:(data, msg) => {
           this.userInfo = data
           console.log(this.userInfo)
+          if(currentUrl == '/'){
+            if(msg == 'teacher'){
+              window.location.href="/#/teacher"
+            } else if(msg == 'student') {
+              window.location.href="/#/student"
+            } else if(msg == 'admin'){
+              window.location.href = '/#/end'
+            }
+          }else{
+            window.location.href = '/#'+currentUrl
+          }
         },
         err:(data,msg) => {
           this.$message.error(msg)
