@@ -61,7 +61,7 @@ class Login extends CI_Controller
         $email = $this->input->get('email') ? $this->input->get('email') : '';
         set_cookie('userid', $email, self::EXPIRES);
         set_cookie('userrole', 'teacher', self::EXPIRES);
-        header("Location:/");
+        ajax_success(true, 'teacher');
     }
 
     /**
@@ -73,7 +73,7 @@ class Login extends CI_Controller
         $id = $this->input->get('id') ? $this->input->get('id') : '';
         set_cookie('userid', $id, self::EXPIRES);
         set_cookie('userrole', 'student', self::EXPIRES);
-        header("Location:/");
+        ajax_success(true, 'student');
     }
 
     /**
@@ -88,7 +88,7 @@ class Login extends CI_Controller
 
         $this->load->model("admin_model");
 
-        $where  = array(
+        $where = array(
             'name'     => $data['id'],
             'password' => $data['pwd'],
         );
@@ -96,7 +96,7 @@ class Login extends CI_Controller
         if ($adminRes) {
             set_cookie('userid', $data['id'], 3600); //保留一小时
             set_cookie('userrole', 'admin', 3600); //保留一小时
-            header("Location:/");
+            ajax_success(true,'admin');
         }
     }
     /**
@@ -181,12 +181,12 @@ class Login extends CI_Controller
             redirect('/admin');
         }
         $where = array(
-            'name' => $id
+            'name' => $id,
         );
         $this->load->model("admin_model");
 
         $adminRes = $this->admin_model->getInfo($where);
-        if (0 == $adminRes[0]['is_admin']) {
+        if (1 == $adminRes[0]['is_admin']) {
             $this->load->model("teacher_model");
             $where = array(
                 'mail' => $id,
@@ -194,12 +194,12 @@ class Login extends CI_Controller
             $userinfo         = $this->teacher_model->getBasicInfo($where);
             $userinfo         = $userinfo['list'][0];
             $data['id']       = $userinfo['id'];
-            $data['username'] = $userinfo['realname'];
+            $data['username'] = $userinfo['realname'] ? $userinfo['realname'] : $userinfo['mail'];
             $data['mobile']   = $userinfo['mobile'];
             $data['email']    = $userinfo['mail'];
             $data['thumb']    = $userinfo['thumb'];
-            $data['role']    = 'teacher';
-        } else{
+            $data['role']     = 'teacher';
+        } else {
             $data['id']       = 0;
             $data['username'] = '管理员';
         }
