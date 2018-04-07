@@ -168,7 +168,7 @@ class Course extends CI_Controller
             redirect('/login');
         }
         if (!$courseId) {
-            ajax_fail(false, '无效的课程id');
+            ajax_fail(false, '暂无该课程');
         }
         $where = array(
             'id' => $courseId,
