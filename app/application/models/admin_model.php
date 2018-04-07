@@ -38,7 +38,7 @@ class Admin_model extends CI_Model
         $isAdmin    = ($userType == 'teacher') ? 1 : 0;
         $detailData = array(
             'name'     => $data['mail'] ? $data['mail'] : '',
-            'password' => md5($data['password']),
+            'password' => $data['password'],
             'is_admin' => $isAdmin,
         );
         $this->DB->insert(self::WG_ENDUSER_TABLE, $detailData);

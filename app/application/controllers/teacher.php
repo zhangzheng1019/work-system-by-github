@@ -123,7 +123,7 @@ class Teacher extends CI_Controller
         $status = false;
         $where  = array(
             'mail'     => $data['email'],
-            'password' => md5($data['pwd']),
+            'password' => $data['pwd'],
         );
         $teacherInfo = $this->teacher_model->getBasicInfo($where);
 
