@@ -227,7 +227,7 @@ class Login extends CI_Controller
         delete_cookie('userid');
         delete_cookie('userrole');
         delete_cookie('is_github');
-        header('Location: /login');
+        header('Location: /');
     }
 
 }
