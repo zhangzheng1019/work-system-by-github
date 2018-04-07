@@ -61,7 +61,7 @@ class Login extends CI_Controller
         $email = $this->input->get('email') ? $this->input->get('email') : '';
         set_cookie('userid', $email, self::EXPIRES);
         set_cookie('userrole', 'teacher', self::EXPIRES);
-        ajax_success(true, 'teacher');
+        header("Location:/");
     }
 
     /**
@@ -73,7 +73,7 @@ class Login extends CI_Controller
         $id = $this->input->get('id') ? $this->input->get('id') : '';
         set_cookie('userid', $id, self::EXPIRES);
         set_cookie('userrole', 'student', self::EXPIRES);
-        ajax_success(true, 'student');
+        header("Location:/");
     }
 
     /**
@@ -96,7 +96,7 @@ class Login extends CI_Controller
         if ($adminRes) {
             set_cookie('userid', $data['id'], 3600); //保留一小时
             set_cookie('userrole', 'admin', 3600); //保留一小时
-            ajax_fail(true, 'admin');
+            header("Location:/");
         }
     }
     /**
