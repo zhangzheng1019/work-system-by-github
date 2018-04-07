@@ -12,10 +12,11 @@ class main extends CI_Controller
     public function index()
     {
         $role = $_COOKIE['userrole'];
-        if (!$role) {
-            redirect('/login');
-        } 
-        $this->load->view('main/index.html');
+        if ("" == $role) {
+            $this->front();
+        } else {
+            $this->load->view('main/index.html');
+        }
     }
     public function error()
     {
