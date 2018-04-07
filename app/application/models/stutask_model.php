@@ -46,18 +46,20 @@ class Stutask_model extends CI_Model
         $result = array();
 
         $detailData = array(
-            'name'       => $data['name'] ? $data['name'] : '',
-            'desc'       => $data['desc'] ? $data['desc'] : '',
-            'createtime' => date('Y-m-d H:i:s'),
-            'modifytime' => date('Y-m-d H:i:s'),
-            'flag'       => 1,
+            'student_id'   => $data['student_id'] ? $data['student_id'] : '',
+            'task_id'      => $data['task_id'] ? $data['task_id'] : '',
+            'course_id'    => $data['course_id'] ? $data['course_id'] : '',
+            'tea_response' => $data['tea_response'] ? $data['tea_response'] : '',
+            'createtime'   => date('Y-m-d H:i:s'),
+            'modifytime'   => '0000-00-00 00:00:00',
+            'flag'         => -1,
         );
         $this->DB->insert(self::WG_STU_TASK_TABLE, $detailData);
         if (!$this->DB->affected_rows()) {
             return [];
         }
         $result['insertId'] = $this->DB->insert_id();
-        $result['status']   = ($result['insertId'] > 0) ? true : false;
+        $result['status'] = ($result['insertId'] > 0) ? true : false;
 
         return $result;
     }

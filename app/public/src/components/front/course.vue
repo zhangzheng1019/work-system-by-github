@@ -17,47 +17,11 @@
                       <edit-course :gradeGroup="gradeGroup" :row="courseInfo" :userInfo="userInfo" v-on:editcou='getCourseInfo'></edit-course>
                     </div>
                     <div class="task-add" v-if="userInfo.role=='teacher'">
-                      <add-task :userInfo="userInfo" v-on:addtask='getCourseInfo'></add-task> 
+                      <add-task :userInfo="userInfo" v-on:addtask='getTaskList'></add-task> 
                     </div>
                   </div>
                 </div>
-                <el-collapse accordion>
-                  <el-collapse-item v-for="(val,k) in taskList" :key='k'>
-                    <template slot="title">
-                      <div class="task-name" v-html="val.name"></div>
-                    </template>
-                      <div class="task-desc" v-html="val.desc"></div>
-                      <template>
-                        <el-tabs v-model="activeName" @tab-click="handleClick">
-                            <el-tab-pane label="已完成" name="finish">
-                                已完成------Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                            </el-tab-pane>
-                            <el-tab-pane label="未完成" name="nofinish">
-                                未完成------Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                            </el-tab-pane>
-                            <el-tab-pane label="已过期" name="outdate">
-                                已完成------Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                            </el-tab-pane>
-                        </el-tabs>
-                      </template>
-                  </el-collapse-item>
-                </el-collapse>
-                
+                <task-stu-list :userInfo="userInfo" :taskList="taskList" :studentTypeList="studentTypeList"></task-stu-list>
             </el-card>
           </el-col>
           <!-- <el-col :span="8" :offset="1">
@@ -85,20 +49,22 @@
   import { fetch, post } from '../../utils.js'
   import editcou from './course/editcou'
   import addTask from './task/add'
+  import taskStuList from './task/studentList'
 
   export default {
     data () {
       return {
         courseInfo: [],
         gradeGroup: [],
-        activeName:'finish',
         taskList: [],
+        studentTypeList:[],
       }
     },
     props: ['userInfo'],
     components: {
       'edit-course' : editcou,
-      'add-task' : addTask
+      'add-task' : addTask,
+      'task-stu-list' : taskStuList
     },
     mounted() {
       setTimeout(()=>{
@@ -128,10 +94,7 @@
       },
       getTaskList() {
         let term = {
-          // 'role': this.userInfo.role,
-          // 'userid': this.userInfo.id,
           'course_id': this.$route.params.id,
-          // 'taskType': this.activeName,
         }
         post({
           url: '/task/getTaskList',
@@ -139,16 +102,14 @@
           dataType: 'json',
           cb: (data, msg) => {
             this.taskList = data.list
+            this.studentTypeList = data.tabs
           },
           err: (data, msg) => {
             this.$message.error(msg);
-            history.back();
           }
         })
       },
-      handleClick(val){
-        console.log(val)
-      }
+     
 
     }
   }
@@ -164,5 +125,4 @@
   .course-edit{ float: left; }
   .task-add{ float: right; }
   .task-desc p{ font-size: 16px; }
-  .el-collapse-item__content img{ width: 30%!important; display: block; }
 </style>
