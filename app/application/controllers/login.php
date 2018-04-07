@@ -108,17 +108,6 @@ class Login extends CI_Controller
         $role     = $_COOKIE['userrole'];
         $id       = $_COOKIE['userid'];
         $isGithub = $_COOKIE['is_github'];
-        // if (ENVIRONMENT == 'development') {
-        //     $data = array(
-        //         id       => 3,
-        //         username => '张政',
-        //         desc     => '快去介绍一下自己吧',
-        //         email    => '447590461@qq.com',
-        //         thumb    => './uploads/20180321100316.jpg',
-        //         role     => 'teacher',
-        //     );
-        //     ajax_success($data);
-        // }
         if ($role == 'admin') {
             $this->adminInfo($role, $id);
         } else {

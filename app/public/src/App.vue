@@ -25,13 +25,6 @@ export default {
         cb:(data, msg) => {
           this.userInfo = data
           console.log(this.userInfo)
-          // if(msg == 'teacher'){
-          //   window.location.href="/#/teacher"
-          // } else if(msg == 'student') {
-          //   window.location.href="/#/student"
-          // } else if(msg == 'admin'){
-          //   window.location.href = '/#/end'
-          // }
         },
         err:(data,msg) => {
           this.$message.error(msg)
