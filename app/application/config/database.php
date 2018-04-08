@@ -5,9 +5,9 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 $db['default'] = array(
-	'hostname' => '127.0.0.1',
+	'hostname' => '47.106.75.132',
 	'username' => 'root',
-	'password' => '',
+	'password' => '123456',
 	'database' => 'githubwork',
 	'dbdriver' => 'mysql',
 	'dbprefix' => '',
