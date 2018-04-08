@@ -66,6 +66,7 @@
       getList() {
         let termData = {
           id: this.userInfo.id,
+          page: this.currentPage
         }
         post({
           url:'/course/getStudentList',

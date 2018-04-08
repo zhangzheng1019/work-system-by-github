@@ -119,6 +119,10 @@ class Course extends CI_Controller
         $this->load->model("student_model");
         $userInfo      = $this->student_model->getBasicInfo($userWhere);
         $userCourseIds = $userInfo['list'][0]['course_id'];
+
+        $page   = $this->input->post('page') ? $this->input->post('page') : 1;
+        $offset = ($page - 1) * self::LIMIT;
+
         //获取学生所在年级的课程
         if (!$userCourseIds) {
             $courseWhere = array(
@@ -142,7 +146,7 @@ class Course extends CI_Controller
             $courseList[$key]['stuNumber']   = $this->student_model->getStudentNumByCourseId($value['id']);
         }
         $data['total'] = count($courseList);
-        $data['list']  = $courseList;
+        $data['list']  = array_slice($courseList,$offset, self::LIMIT);
         ajax_success($data, '加载成功');
     }
     /**
