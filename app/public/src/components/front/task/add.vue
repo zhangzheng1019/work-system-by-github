@@ -144,5 +144,4 @@
 </script>
 <style scoped>
     .preview-pic{ width: 10%; display: inline-block; margin-right: 10px; }
-    .quill-editor{ height: 250px;margin-bottom: 60px; }
 </style>
