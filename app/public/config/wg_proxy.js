@@ -1,4 +1,4 @@
-const DEVHOST = 'http://dev.wg.com/';
+const DEVHOST = 'http://47.106.75.132/';
 module.exports = {
     '/course': {
         target: DEVHOST,
