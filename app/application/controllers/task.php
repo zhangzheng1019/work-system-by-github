@@ -3,6 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Task extends CI_Controller
 {
+    const LIMIT = 10;
     public function __construct()
     {
         parent::__construct();
@@ -78,10 +79,11 @@ class Task extends CI_Controller
         $studentList = filterData($students['list'], $courseId, 'course_id');
         // 将学生存入wg_stu_task
         $addStatus = null;
+
+        $data['task_id']   = $taskId;
+        $data['course_id'] = $courseId;
         foreach ($studentList as $key => $value) {
             $data['student_id'] = $value['id'];
-            $data['task_id']    = $taskId;
-            $data['course_id']  = $courseId;
             $addStatus[$key]    = $this->stutask_model->addStuTaskInfo($data);
         }
         return $addStatus;
@@ -93,24 +95,47 @@ class Task extends CI_Controller
      */
     public function getTaskList()
     {
-        // $role     = $this->input->post('role');
-        // $userId   = $this->input->post('userid');
         $courseId = $this->input->post('course_id');
-        // $taskType = $this->input->post('taskType');
-
-        // !$userId && redirect('/login');
-
-        // $taskFlag = $this->taskType[$taskType];
-        $where = array(
+        $page     = $this->input->post('page');
+        $where    = array(
             'course_id' => $courseId,
         );
-        $taskList     = $this->task_model->getBasicInfo($where);
-        $data['list'] = $taskList;
-        $data['tabs'] = $this->taskType;
+        $taskList = $this->task_model->getBasicInfo($where);
+        foreach ($taskList as $k => $v) {
+            $taskList[$k]['typeNum'] = $this->getStuTaskNum($v['course_id'], $v['id']);
+        }
+        // 处理当前学生的任务状态
+        if ($_COOKIE['userrole'] == 'student') {
+            $studentId = $_COOKIE['userid'];
+            foreach ($taskList as $key => $value) {
+                $studentTaskList        = $this->stutask_model->getBasicInfo(array('task_id' => $value['id'], 'student_id' => $studentId));
+                $taskList[$key]['flag'] = $studentTaskList[0]['flag']; //代表学生该任务的状态
+            }
+        }
+        $offset        = ($page - 1) * self::LIMIT;
+        $data['total'] = count($taskList);
+        $data['list']  = array_slice($taskList, $offset, self::LIMIT);
         $data['list'] ? ajax_success($data, '加载成功') : ajax_fail(false, '暂无任务');
 
     }
 
+    /**
+     * 统计作业类型人数
+     * @return [type] [description]
+     */
+    public function getStuTaskNum($courseId, $taskId)
+    {
+        $where    = array(
+            'course_id' => $courseId,
+            'task_id'   => $taskId,
+        );
+        $data = $this->taskType;
+        foreach ($this->taskType as $key => $value) {
+            $where['flag']                 = $value['flag'];
+            $data[$key]['label'] = $value['label'] . '（' . $this->stutask_model->getTotalNum($where) . '）';
+        }
+        return $data;
+    }
     /**
      * 获取任务学生名单
      * @return [type] [description]
@@ -120,6 +145,7 @@ class Task extends CI_Controller
         $courseId    = $this->input->post('course_id');
         $taskId      = $this->input->post('task_id');
         $currentName = $this->input->post('active_name');
+        $page        = $this->input->post('page') ? $this->input->post('page') : 1;
         $flag        = 0;
 
         foreach ($this->taskType as $key => $value) {
@@ -132,7 +158,11 @@ class Task extends CI_Controller
             'task_id'   => $taskId,
             'flag'      => $flag,
         );
-        $stuList = $this->stutask_model->getBasicInfo($where);
+
+        $offset = ($page - 1) * self::LIMIT;
+
+        $stuList = $this->stutask_model->getBasicInfo($where, $offset, $limit);
+        // 关联学生
         $this->load->model('student_model');
         foreach ($stuList as $key => $value) {
             $studentInfo                  = $this->student_model->getBasicInfo(array('id' => $value['student_id']));
@@ -140,8 +170,58 @@ class Task extends CI_Controller
             $stuInfo['github_info']       = json_decode($stuInfo['github_info'], true);
             $stuList[$key]['studentInfo'] = $stuInfo;
         }
-        $data['list'] = $stuList;
+
+        $data['total'] = count($stuList);
+        $data['list']  = array_slice($stuList, $offset, self::LIMIT);
 
         $data['list'] ? ajax_success($data) : ajax_fail(false, '暂无学生名单');
     }
+
+    /**
+     * 学生领取任务
+     * @return [type] [description]
+     */
+    public function receiveTask()
+    {
+        $sid          = $this->input->post('sid');
+        $cid          = $this->input->post('cid');
+        $tid          = $this->input->post('tid');
+        $data['flag'] = 1;
+        $status       = $this->modifyTaskStatus($sid, $cid, $tid, $data);
+        ajax_success($status);
+
+    }
+
+    /**
+     * 学生领取任务
+     * @return [type] [description]
+     */
+    public function completeTask()
+    {
+        $sid          = $this->input->post('sid');
+        $cid          = $this->input->post('cid');
+        $tid          = $this->input->post('tid');
+        $data['flag'] = 2;
+        $status       = $this->modifyTaskStatus($sid, $cid, $tid, $data);
+        ajax_success($status);
+    }
+
+    /**
+     * 修改学生任务状态
+     * @return [type] [description]
+     */
+    public function modifyTaskStatus($studentId, $courseId, $taskId, $data)
+    {
+        $this->DB = $this->load->database('default', true);
+        $this->DB->where('student_id', $studentId);
+        $this->DB->where('course_id', $courseId);
+        $this->DB->where('task_id', $taskId);
+        $this->DB->update('wg_stu_task', $data);
+        if ($this->DB->affected_rows() <= 0) {
+            return false;
+        }
+
+        return true;
+    }
+
 }

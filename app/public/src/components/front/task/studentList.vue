@@ -6,11 +6,11 @@
             <div class="task-name" v-html="val.name"></div>
           </template>
           <div class="task-desc" v-html="val.desc"></div>
-				  <el-button type="success" size="mini" :disabled="receiveAbled" @click.native="receiveTask">领取</el-button>
-				  <el-button type="primary" size="mini" :disabled="completeAbled" @click.native="completeTask">完成</el-button>
+				  <el-button type="success" size="mini" :disabled="receiveAbled ? receiveAbled : (val.flag >=1)" @click.native="receiveTask(val.id)" v-if="userInfo.role=='student'">领取</el-button>
+				  <el-button type="primary" size="mini" :disabled="completeAbled ? completeAbled : (val.flag >=2)" @click.native="completeTask(val.id)" v-if="userInfo.role=='student'">完成</el-button>
           <template>
             <el-tabs v-model="activeName" @tab-click="handleClick">
-              <el-tab-pane v-for="(v,ko) in studentTypeList" :key='ko' :label="v.label" :name="v.name">
+              <el-tab-pane v-for="(v,ko) in val.typeNum" :key='ko' :label="v.label" :name="v.name">
                 <template>
                   <el-table :data="studentList" style="width: 100%">
                     <el-table-column type="expand">
@@ -40,6 +40,15 @@
               </el-tab-pane>
             </el-tabs>
           </template>
+          <div class="ptb10">
+              <el-pagination v-if='totalPage>0'
+                  layout="prev, pager, next"
+                  small
+                  :total="totalPage"
+                  :current-page='currentPage'
+                  @current-change='changePage'>
+              </el-pagination>
+          </div>
         </el-collapse-item>
       </el-collapse>
    </div>
@@ -56,12 +65,17 @@
         taskId: 0,
         receiveAbled: false,
         completeAbled: false,
+        totalPage:0,
+        currentPage:1,
 			}
 		},
-		props:["userInfo","taskList","studentTypeList"],
+		props:["userInfo","taskList"],
 		create() {
 
 		},
+    mounted() {
+      
+    },
 		components:{
 			'see-content': seeTask
 		},
@@ -70,7 +84,8 @@
         let term = {
           'course_id': this.$route.params.id,
           'task_id' : this.taskId,
-          'active_name': this.activeName
+          'active_name': this.activeName,
+          'page': this.currentPage
         }
         post({
           url: '/task/getTaskStuList',
@@ -78,10 +93,11 @@
           dataType: 'json',
           cb: (data, msg) => {
             this.studentList = data.list
+            this.totalPage = data.total
           },
           err: (data, msg) => {
             this.studentList = []
-            this.$message.error(msg);
+            this.totalPage = 0
           }
         })
       },
@@ -94,25 +110,58 @@
         this.activeName = val.name
         this.getTaskStuList()
       },
-      receiveTask(){
-      	this.receiveAbled = true
+      changePage(val){
+        this.currentPage = val
+        this.getTaskStuList()
       },
-      completeTask(){
+      receiveTask(task_id){
+        let term = {
+          'sid': this.userInfo.id,
+          'cid': this.$route.params.id,
+          'tid': task_id
+        }
+        post({
+          url: 'task/receiveTask',
+          data: term,
+          dataType: 'json',
+          cb: (data, msg) => {
+            this.$message.success('领取成功');
+      	    this.receiveAbled = true
+            this.getTaskStuList()
+            this.$emit('gettask')
+          },
+          err: (data, msg) => {
+
+          }
+        })
+      },
+      completeTask(task_id){
+        let term = {
+          'sid': this.userInfo.id,
+          'cid': this.$route.params.id,
+          'tid': task_id
+        }
       	this.$confirm('此操作不可逆, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '确认成功'
-          });
-      		this.completeAbled = true
+          post({
+            url: 'task/completeTask',
+            data: term,
+            dataType: 'json',
+            cb: (data, msg) => {
+              this.$message.success('确认成功');
+      		    this.completeAbled = true
+              this.getTaskStuList()
+              this.$emit('gettask')
+            },
+            err: (data, msg) => {
+
+            }
+          })
         }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          });          
+          this.$message.info('已取消');          
         });
       },
 		}
@@ -122,4 +171,5 @@
 
 <style scoped>
   .github-url{ color: #409eff; text-decoration: none; }
+  .task-desc{ margin-bottom: 15px; }
 </style>
