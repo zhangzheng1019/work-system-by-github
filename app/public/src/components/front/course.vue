@@ -21,8 +21,18 @@
                     </div>
                   </div>
                 </div>
-                <task-stu-list :userInfo="userInfo" :taskList="taskList" :studentTypeList="studentTypeList"></task-stu-list>
+                <task-stu-list :userInfo="userInfo" :taskList="taskList" v-on:gettask="getTaskList"></task-stu-list>
+                <div class="ptb10">
+                  <el-pagination v-if='totalPage>0'
+                      layout="prev, pager, next"
+                      background
+                      :total="totalPage"
+                      :current-page='currentPage'
+                      @current-change='changePage'>
+                  </el-pagination>
+                </div>
             </el-card>
+             
           </el-col>
           <!-- <el-col :span="8" :offset="1">
             <el-card class="box-card">
@@ -57,7 +67,8 @@
         courseInfo: [],
         gradeGroup: [],
         taskList: [],
-        studentTypeList:[],
+        totalPage:0,
+        currentPage:1,
       }
     },
     props: ['userInfo'],
@@ -95,6 +106,7 @@
       getTaskList() {
         let term = {
           'course_id': this.$route.params.id,
+          'page': this.currentPage
         }
         post({
           url: '/task/getTaskList',
@@ -102,12 +114,16 @@
           dataType: 'json',
           cb: (data, msg) => {
             this.taskList = data.list
-            this.studentTypeList = data.tabs
+            this.totalPage = data.total
           },
           err: (data, msg) => {
             this.$message.error(msg);
           }
         })
+      },
+      changePage(val){
+        this.currentPage = val
+        this.getTaskList()
       },
      
 

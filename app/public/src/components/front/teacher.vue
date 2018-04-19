@@ -13,7 +13,7 @@
 	                                        <div class="coursepic-box"><img :src="val.thumb" class="course-pic" v-if="val.thumb"/>
 	                                        <img src="../../assets/course-default.png" class="course-pic" v-else/></div>
 	                                        <div class="course-detail">
-	                                            <p class="course-title moreline">
+	                                            <p class="course-title oneline">
 	                                                {{ val.title }}
 	                                            </p>
 	                                            <p class="course-desc moreline" :title="val.desc">
@@ -128,7 +128,7 @@
   .course-item:hover { box-shadow: 0 5px 10px 3px rgba(0,0,0,.1); -webkit-box-shadow: 0 5px 10px 3px rgba(0,0,0,.1); -moz-box-shadow: 0 5px 10px 3px rgba(0,0,0,.1); -ms-box-shadow: 0 5px 10px 3px rgba(0,0,0,.1); }
 	.course-pic{ width: 100%; display: block; height: 100px;}
 	.course-title{ color: #0366d6; font-size: 18px; font-weight: bold; }
-	.course-desc{ margin-top: 5px;font-size: 14px; height: 2.375rem; }
+	.course-desc{ margin-top: 5px;font-size: 14px; height: 2.2rem; }
 	.course-detail{ margin: 14px; }
 	.course-bottom{ margin: 0 14px 14px; }
 	.course-number{ display: inline-block; font-size: 12px; color: #666; }

@@ -165,11 +165,11 @@ class Course extends CI_Controller
      */
     public function getCourseInfo()
     {
-        $data      = array();
-        $courseId  = $this->input->get('course_id');
-        $teacherId = $this->input->get('teacher_id');
-        if (!$teacherId) {
-            redirect('/login');
+        $data     = array();
+        $courseId = $this->input->get('course_id');
+        if ($_COOKIE['userrole'] == 'teacher') {
+            $teacherId  = $this->input->get('teacher_id');
+            $gradeGroup = $this->getGradeGroupByTeacherId($teacherId);
         }
         if (!$courseId) {
             ajax_fail(false, '暂无该课程');
@@ -178,9 +178,8 @@ class Course extends CI_Controller
             'id' => $courseId,
         );
         $courseInfo     = $this->course_model->getBasicInfo($where);
-        $gradeGroup     = $this->getGradeGroupByTeacherId($teacherId);
         $data['course'] = $courseInfo[0];
-        $data['grade']  = $gradeGroup;
+        $data['grade']  = $gradeGroup ? $gradeGroup : [];
 
         ajax_success($data);
     }
