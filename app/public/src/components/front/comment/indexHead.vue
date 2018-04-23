@@ -7,11 +7,17 @@
           <div class="user-info">
               <el-dropdown >
                   <span class="el-dropdown-link">
-                      <img :src="userInfo.thumb" alt="头像"  class="user-logo picb" v-if="userInfo.thumb">
-                      <img src="../../../assets/github3.png" alt="头像"  class="user-logo picb" v-else>
+                      <img :src="userInfo.thumb" class="user-logo picb" v-if="userInfo.thumb">
+                      <img src="../../../assets/github3.png" class="user-logo picb" v-else>
                       {{ userInfo.username }}<i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
-                  <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-menu slot="dropdown" class="my-dropdown-menu">
+                      <el-dropdown-item v-if="userInfo.role=='student'">
+                          <a href="/#/student" title="">我的主页</a>
+                      </el-dropdown-item>
+                      <el-dropdown-item v-if="userInfo.role=='teacher'">
+                          <a href="/#/teacher" title="">我的主页</a>
+                      </el-dropdown-item>
                       <el-dropdown-item v-if="userInfo.role=='teacher'">
                           <a href="/admin" title="">后台管理</a>
                       </el-dropdown-item>
@@ -60,4 +66,5 @@
   .el-dropdown{ line-height: 2.5rem; }
   .el-dropdown-menu{ padding: 0; top: 40px; }
   .el-dropdown-menu__item{text-align: center; }
+  .my-dropdown-menu a{ text-decoration: none;color: #0379e0; }
 </style>

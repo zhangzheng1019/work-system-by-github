@@ -32,7 +32,6 @@
                   </el-pagination>
                 </div>
             </el-card>
-             
           </el-col>
           <!-- <el-col :span="8" :offset="1">
             <el-card class="box-card">
