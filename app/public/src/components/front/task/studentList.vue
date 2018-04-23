@@ -3,7 +3,7 @@
     	<el-collapse accordion @change="changeTaskPannel">
         <el-collapse-item v-for="(val,k) in taskList" :key='k' :name="val.id">
           <template slot="title">
-            <div class="task-name" v-html="val.name"></div>
+            <div class="task-name">{{val.name}}&nbsp;&nbsp;&nbsp;&nbsp; 时间：<strong> {{val.startime}} —— {{val.endtime}}</strong></div>
           </template>
           <div class="task-desc" v-html="val.desc"></div>
 				  <el-button type="success" size="mini" :disabled="receiveAbled ? receiveAbled : (val.flag >=1)" @click.native="receiveTask(val.id)" v-if="userInfo.role=='student'">领取</el-button>
@@ -131,7 +131,7 @@
             this.$emit('gettask')
           },
           err: (data, msg) => {
-
+            this.$message.warning(msg)
           }
         })
       },
@@ -157,7 +157,7 @@
               this.$emit('gettask')
             },
             err: (data, msg) => {
-
+              this.$message.warning(msg)
             }
           })
         }).catch(() => {

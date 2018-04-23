@@ -102,7 +102,9 @@ class Task extends CI_Controller
         );
         $taskList = $this->task_model->getBasicInfo($where);
         foreach ($taskList as $k => $v) {
-            $taskList[$k]['typeNum'] = $this->getStuTaskNum($v['course_id'], $v['id']);
+            $taskList[$k]['startime'] = date('Y-m-d', strtotime($v['startime']));
+            $taskList[$k]['endtime']  = date('Y-m-d', strtotime($v['endtime']));
+            $taskList[$k]['typeNum']  = $this->getStuTaskNum($v['course_id'], $v['id']);
         }
         // 处理当前学生的任务状态
         if ($_COOKIE['userrole'] == 'student') {
@@ -125,13 +127,13 @@ class Task extends CI_Controller
      */
     public function getStuTaskNum($courseId, $taskId)
     {
-        $where    = array(
+        $where = array(
             'course_id' => $courseId,
             'task_id'   => $taskId,
         );
         $data = $this->taskType;
         foreach ($this->taskType as $key => $value) {
-            $where['flag']                 = $value['flag'];
+            $where['flag']       = $value['flag'];
             $data[$key]['label'] = $value['label'] . '（' . $this->stutask_model->getTotalNum($where) . '）';
         }
         return $data;
@@ -183,45 +185,50 @@ class Task extends CI_Controller
      */
     public function receiveTask()
     {
-        $sid          = $this->input->post('sid');
-        $cid          = $this->input->post('cid');
-        $tid          = $this->input->post('tid');
-        $data['flag'] = 1;
-        $status       = $this->modifyTaskStatus($sid, $cid, $tid, $data);
-        ajax_success($status);
+        $sid = $this->input->post('sid');
+        $cid = $this->input->post('cid');
+        $tid = $this->input->post('tid');
 
+        // 判断任务时间
+        $where = array(
+            'id' => $tid,
+        );
+        $taskInfo   = $this->task_model->getBasicInfo($where);
+        $now        = date('Y-m-d H:m:s');
+        $taskStatus = diff_date($now, $taskInfo[0]['startime'], $taskInfo[0]['endtime']);
+        if (!$taskStatus) {
+            ajax_fail(false, '任务已经结束,不能再领取了');
+        }
+
+        $data['flag'] = 1;
+        $status       = $this->stutask_model->modifyTaskStatus($sid, $cid, $tid, $data);
+        ajax_success($status);
     }
 
     /**
-     * 学生领取任务
+     * 学生完成任务
      * @return [type] [description]
      */
     public function completeTask()
     {
-        $sid          = $this->input->post('sid');
-        $cid          = $this->input->post('cid');
-        $tid          = $this->input->post('tid');
-        $data['flag'] = 2;
-        $status       = $this->modifyTaskStatus($sid, $cid, $tid, $data);
-        ajax_success($status);
-    }
+        $sid = $this->input->post('sid');
+        $cid = $this->input->post('cid');
+        $tid = $this->input->post('tid');
 
-    /**
-     * 修改学生任务状态
-     * @return [type] [description]
-     */
-    public function modifyTaskStatus($studentId, $courseId, $taskId, $data)
-    {
-        $this->DB = $this->load->database('default', true);
-        $this->DB->where('student_id', $studentId);
-        $this->DB->where('course_id', $courseId);
-        $this->DB->where('task_id', $taskId);
-        $this->DB->update('wg_stu_task', $data);
-        if ($this->DB->affected_rows() <= 0) {
-            return false;
+        // 判断任务时间
+        $where = array(
+            'id' => $tid,
+        );
+        $taskInfo   = $this->task_model->getBasicInfo($where);
+        $now        = date('Y-m-d H:m:s');
+        $taskStatus = diff_date($now, $taskInfo[0]['startime'], $taskInfo[0]['endtime']);
+        if (!$taskStatus) {
+            ajax_fail(false, '任务已经结束了');
         }
 
-        return true;
+        $data['flag'] = 2;
+        $status       = $this->stutask_model->modifyTaskStatus($sid, $cid, $tid, $data);
+        ajax_success($status);
     }
 
 }

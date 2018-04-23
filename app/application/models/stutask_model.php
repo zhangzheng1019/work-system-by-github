@@ -148,4 +148,21 @@ class Stutask_model extends CI_Model
         }
         return $result;
     }
+
+    /**
+     * 修改学生任务状态
+     * @return [type] [description]
+     */
+    public function modifyTaskStatus($studentId, $courseId, $taskId, $data)
+    {
+        $this->DB->where('student_id', $studentId);
+        $this->DB->where('course_id', $courseId);
+        $this->DB->where('task_id', $taskId);
+        $this->DB->update('wg_stu_task', $data);
+        if ($this->DB->affected_rows() <= 0) {
+            return false;
+        }
+
+        return true;
+    }
 }
