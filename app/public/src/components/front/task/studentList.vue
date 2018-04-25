@@ -30,9 +30,9 @@
                     </el-table-column>
                     <el-table-column prop="studentInfo.grade" label="年级"></el-table-column>
                     <el-table-column prop="studentInfo.class" label="班级"></el-table-column>
-                    <el-table-column label="操作" v-if="userInfo.role=='teacher'">
+                    <el-table-column label="操作">
                     	<template slot-scope="props">
-                    		<see-content :userInfo="userInfo" :row="props.row"></see-content>
+                    		<see-content :userInfo="userInfo" :row="props.row" v-on:stuList="getTaskStuList"></see-content>
                     	</template>
                     </el-table-column>
                   </el-table>
