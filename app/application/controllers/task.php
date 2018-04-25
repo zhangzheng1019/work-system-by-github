@@ -247,4 +247,26 @@ class Task extends CI_Controller
 
         $status ? ajax_success($status, '感谢您的评判') : ajax_fail($status, '您未做修改');
     }
+
+    /**
+     * 得到学生自己的教师评价
+     * @return [type] [description]
+     */
+    public function getMyRemark()
+    {
+        $sid = $this->input->post('sid');
+        $cid = $this->input->post('cid');
+        $tid = $this->input->post('tid');
+
+        $where = array(
+            'student_id'=>$sid,
+            'task_id'=>$tid,
+            'course_id'=>$cid
+        );
+
+        $myTaskInfo = $this->stutask_model->getBasicInfo($where);
+
+        $data['mytask'] = $myTaskInfo[0];
+        $data['mytask'] ? ajax_success($data) : ajax_success([]);
+    }
 }

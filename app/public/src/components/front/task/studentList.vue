@@ -8,6 +8,7 @@
           <div class="task-desc" v-html="val.desc"></div>
 				  <el-button type="success" size="mini" :disabled="receiveAbled ? receiveAbled : (val.flag >=1)" @click.native="receiveTask(val.id)" v-if="userInfo.role=='student'">领取</el-button>
 				  <el-button type="primary" size="mini" :disabled="completeAbled ? completeAbled : (val.flag >=2)" @click.native="completeTask(val.id)" v-if="userInfo.role=='student'">完成</el-button>
+          <my-content :row="val" :userInfo="userInfo" v-if="userInfo.role=='student'"></my-content>
           <template>
             <el-tabs v-model="activeName" @tab-click="handleClick">
               <el-tab-pane v-for="(v,ko) in val.typeNum" :key='ko' :label="v.label" :name="v.name">
@@ -56,7 +57,8 @@
 
 <script>
 	import { post } from '../../../utils.js'
-	import seeTask from './seeTask'
+  import seeTask from './seeTask'
+	import myTask from './myTask'
   export default {
 		data () {
 			return {
@@ -77,7 +79,8 @@
       
     },
 		components:{
-			'see-content': seeTask
+      'see-content': seeTask,
+			'my-content': myTask
 		},
 		methods: {
 			getTaskStuList() {
