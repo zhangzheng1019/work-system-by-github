@@ -231,4 +231,20 @@ class Task extends CI_Controller
         ajax_success($status);
     }
 
+    /**
+     * 提交评语
+     * @return [type] [description]
+     */
+    public function submitRemark()
+    {
+        $id      = $this->input->post('id');
+        $content = $this->input->post('content') ? $this->input->post('content') : '';
+
+        $data = array(
+            'tea_response' => $content,
+        );
+        $status = $this->stutask_model->updateStuTaskInfo($id, $data);
+
+        $status ? ajax_success($status, '感谢您的评判') : ajax_fail($status, '您未做修改');
+    }
 }
