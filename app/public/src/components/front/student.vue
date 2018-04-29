@@ -12,7 +12,7 @@
                   <div class="coursepic-box"><img :src="val.thumb" class="course-pic" v-if="val.thumb"/>
                   <img src="../../assets/course-default.png" class="course-pic" v-else/></div>
                   <div class="course-detail">
-                    <p class="course-title moreline">{{ val.title }}</p>
+                    <p class="course-title oneline">{{ val.title }}</p>
                     <p class="course-desc moreline" :title="val.desc">{{ val.desc }}</p>
                   </div>
                 </div>
@@ -37,6 +37,7 @@
                   layout="prev, pager, next"
                   background
                   :total="totalPage"
+                  :page-size="pageSize"
                   :current-page='currentPage'
                   @current-change='changePage'>
               </el-pagination>
@@ -55,6 +56,7 @@
       return {
         courseList: [],
         totalPage: 0,
+        pageSize: 10,
         currentPage: 1,
       }
     },
@@ -75,6 +77,7 @@
           cb: (data,msg) =>{
             this.courseList = data.list
             this.totalPage  = data.total
+            this.pageSize  = data.pageSize
           }
         })
       },

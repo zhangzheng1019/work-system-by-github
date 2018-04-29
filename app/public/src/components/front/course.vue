@@ -13,7 +13,7 @@
                     <span class="course-title oneline" v-html="courseInfo.title"></span>
                     <span class="course-desc moreline" v-html="courseInfo.desc"></span>
                     <span class="course-grade">{{ courseInfo.grade_id }}</span>
-                    <strong class="course-warning" v-html="courseInfo.repos"></strong>
+                    <strong class="course-warning" v-html="courseInfo.reposdesc"></strong>
                     <div class="course-edit" v-if="userInfo.role=='teacher'">
                       <edit-course :gradeGroup="gradeGroup" :row="courseInfo" :userInfo="userInfo" v-on:editcou='getCourseInfo'></edit-course>
                     </div>

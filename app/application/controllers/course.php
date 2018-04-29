@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Course extends CI_Controller
 {
-    const LIMIT = 10;
+    const LIMIT = 12;
 
     public function __construct()
     {
@@ -19,8 +19,11 @@ class Course extends CI_Controller
     public function getTeacherList()
     {
         $where = [];
+        $email = $_COOKIE['userid'];
+        $this->load->model('teacher_model');
+        $teacherInfo = $this->teacher_model->getBasicInfo(array('mail' => $email));
+        $teacherId   = $teacherInfo['list'][0]['id'];
 
-        $teacherId = $this->input->post('id') ? $this->input->post('id') : 0;
         if (!$teacherId) {
             header('Location:/login');
         }
@@ -47,6 +50,7 @@ class Course extends CI_Controller
         }
 
         $result['total']        = $total;
+        $result['pageSize']     = self::LIMIT;
         $result['gradeGroup']   = $gradeGroup;
         $result['currentGrade'] = $grade;
         $result['list']         = $data;
@@ -110,7 +114,7 @@ class Course extends CI_Controller
     public function getStudentList()
     {
         $courseList = array();
-        $userId     = $this->input->post("id");
+        $userId     = $_COOKIE['userid'];
         if (!$userId) {
             header('Location:/login');
         }
@@ -146,8 +150,9 @@ class Course extends CI_Controller
             $courseList[$key]['teacherInfo'] = $teacherInfo['list'][0];
             $courseList[$key]['stuNumber']   = $this->student_model->getStudentNumByCourseId($value['id']);
         }
-        $data['total'] = count($courseList);
-        $data['list']  = array_slice($courseList, $offset, self::LIMIT);
+        $data['total']    = count($courseList);
+        $data['pageSize'] = self::LIMIT;
+        $data['list']     = array_slice($courseList, $offset, self::LIMIT);
         ajax_success($data, '加载成功');
     }
     /**
@@ -178,10 +183,10 @@ class Course extends CI_Controller
         $where = array(
             'id' => $courseId,
         );
-        $courseInfo             = $this->course_model->getBasicInfo($where);
-        $courseInfo[0]['repos'] = '注意：1、请同学们务必使用&nbsp;&nbsp;<h3 class="dil font-red">' . $courseInfo[0]['repos'] . '</h3>&nbsp;&nbsp;作为仓库名称；2、仓库下文件夹命名格式：task01、task02、task12';
-        $data['course']         = $courseInfo[0];
-        $data['grade']          = $gradeGroup ? $gradeGroup : [];
+        $courseInfo                 = $this->course_model->getBasicInfo($where);
+        $courseInfo[0]['reposdesc'] = '注意：1、请同学们务必使用&nbsp;&nbsp;<h3 class="dil font-red">' . $courseInfo[0]['repos'] . '</h3>&nbsp;&nbsp;作为仓库名称；2、仓库下文件夹命名格式：task01、task02、task12';
+        $data['course']             = $courseInfo[0];
+        $data['grade']              = $gradeGroup ? $gradeGroup : [];
 
         ajax_success($data);
     }

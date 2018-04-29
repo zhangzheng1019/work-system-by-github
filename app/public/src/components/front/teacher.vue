@@ -49,6 +49,7 @@
                         layout="prev, pager, next"
                         background
                         :total="totalPage"
+                        :page-size="pageSize"
                         :current-page='currentPage'
                         @current-change='changePage'>
                     </el-pagination>
@@ -71,6 +72,7 @@
 					gradeGroup: [],
 				  activeName: '',
 				  totalPage: 0,
+				  pageSize: 10,
 	        currentPage: 1,
 				}
 			},
@@ -101,6 +103,7 @@
 							this.gradeGroup = data.gradeGroup
 							this.courseList = data.list
 							this.totalPage = data.total
+							this.pageSize = data.pageSize
 						}
 					})
 				},
