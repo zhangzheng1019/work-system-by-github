@@ -114,6 +114,10 @@ class Task extends CI_Controller
                 $studentTaskList                = $this->stutask_model->getBasicInfo(array('task_id' => $value['id'], 'student_id' => $studentId));
                 $taskList[$key]['flag']         = $studentTaskList[0]['flag']; //代表学生该任务的状态
                 $taskList[$key]['tea_response'] = $studentTaskList[0]['tea_response']; //代表学生该任务的状态
+
+                $tempList                      = $this->getTaskGhUrl($studentId, $value['id'], $courseId);
+                $taskList[$key]['studentInfo'] = $tempList['stuInfo'];
+                $taskList[$key]['gh_url']      = $tempList['gh_url'];
             }
         }
         $offset        = ($page - 1) * self::LIMIT;
@@ -166,22 +170,15 @@ class Task extends CI_Controller
         $offset  = ($page - 1) * self::LIMIT;
         $stuList = $this->stutask_model->getBasicInfo($where, $offset, $limit);
 
-        $this->load->model("course_model");
-        $courseInfo = $this->course_model->getBasicInfo(array('id' => $courseId));
-
         // 关联学生
         $this->load->model('student_model');
         $this->load->model('task_model');
         foreach ($stuList as $key => $value) {
             $stuList[$key]['tea_response'] = $value['tea_response'] ? $value['tea_response'] : '暂未给出评价';
-            $studentInfo                   = $this->student_model->getBasicInfo(array('id' => $value['student_id']));
-            $stuInfo                       = $studentInfo['list'][0];
-            $stuInfo['github_info']        = json_decode($stuInfo['github_info'], true);
-            $stuList[$key]['studentInfo']  = $stuInfo;
 
-            $taskInfo                = $this->task_model->getBasicInfo(array('id' => $value['task_id']));
-            $taskName                = trim(mb_substr($taskInfo[0]['name'], 2, mb_strlen($taskInfo[0]['name'], 'utf-8') - 2, 'utf-8'));
-            $stuList[$key]['gh_url'] = self::AUTH_DOMAIN . $stuInfo['github_info']['login'] . '/' . $courseInfo[0]['repos'] . '/tree/master/task_' . $taskName;
+            $tempList                     = $this->getTaskGhUrl($value['student_id'], $value['task_id'], $courseId);
+            $stuList[$key]['studentInfo'] = $tempList['stuInfo'];
+            $stuList[$key]['gh_url']      = $tempList['gh_url'];
         }
 
         $data['total'] = count($stuList);
@@ -190,6 +187,29 @@ class Task extends CI_Controller
         $data['list'] ? ajax_success($data) : ajax_fail(false, '暂无学生名单');
     }
 
+    /**
+     * 得到学生的github 任务地址
+     * @param  [type] $studentId [description]
+     * @param  [type] $taskId    [description]
+     * @return [type]            [description]
+     */
+    public function getTaskGhUrl($studentId, $taskId, $courseId)
+    {
+        $this->load->model("student_model");
+        $stuList                    = array();
+        $studentInfo                = $this->student_model->getBasicInfo(array('id' => $studentId));
+        $studentInfo                = $studentInfo['list'][0];
+        $studentInfo['github_info'] = json_decode($studentInfo['github_info'], true);
+        $stuList['stuInfo']         = $studentInfo;
+        $taskInfo = $this->task_model->getBasicInfo(array('id' => $taskId));
+        $taskName = trim(mb_substr($taskInfo[0]['name'], 2, mb_strlen($taskInfo[0]['name'], 'utf-8') - 2, 'utf-8'));
+
+        $this->load->model("course_model");
+        $courseInfo        = $this->course_model->getBasicInfo(array('id' => $courseId));
+        $stuList['gh_url'] = self::AUTH_DOMAIN . $studentInfo['github_info']['login'] . '/' . $courseInfo[0]['repos'] . '/tree/master/task_' . $taskName;
+
+        return $stuList;
+    }
     /**
      * 得到任务标号
      * @return [type] [description]
