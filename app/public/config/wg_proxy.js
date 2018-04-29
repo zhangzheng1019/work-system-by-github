@@ -31,5 +31,9 @@ module.exports = {
     '/task': {
         target: DEVHOST,
         changeOrigin: true
+    },
+    '/github': {
+        target: DEVHOST,
+        changeOrigin: true
     }
 }

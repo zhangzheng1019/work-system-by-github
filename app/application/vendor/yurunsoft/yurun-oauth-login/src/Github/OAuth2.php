@@ -135,4 +135,36 @@ class OAuth2 extends Base
         }
     }
 
+    /**
+     * 获取用户所有仓库
+     * @param  [string] $gh_name
+     * @param  [string] $find_repos
+     * @return array
+     */
+    public function getAllRepos($gh_name = null)
+    {
+        $this->result = json_decode($this->http->ua('YurunOAuthLogin')->get($this->getUrl('users/' . $gh_name . '/repos'))->body, true);
+        if (isset($this->result['message'])) {
+            throw new ApiException($this->result['message'], 0);
+        } else {
+            $this->openid = $this->result['id'];
+            return $this->result;
+        }
+    }
+    /**
+     * 获取具体仓库信息
+     * @param  [string] $gh_name
+     * @param  [string] $find_repos
+     * @return array
+     */
+    public function getRepos($gh_name = null, $find_repos = null)
+    {
+        $this->result = json_decode($this->http->ua('YurunOAuthLogin')->get($this->getUrl('repos/' . $gh_name . '/'.$find_repos))->body, true);
+        if (isset($this->result['message'])) {
+            throw new ApiException($this->result['message'], 0);
+        } else {
+            $this->openid = $this->result['id'];
+            return $this->result;
+        }
+    }
 }

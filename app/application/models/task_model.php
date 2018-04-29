@@ -111,4 +111,26 @@ class Task_model extends CI_Model
         return true;
     }
 
+    /**
+     * 记录总数
+     * @param  array   $where  [description]
+     * @param  string  $order  [description]
+     * @return [type]          [description]
+     */
+    public function getTotalNum($where = array(), $order = 'id desc')
+    {
+        $result = array();
+        $this->DB->from(self::WG_TASK_TABLE);
+        if (!empty($where)) {
+            $this->DB->where($where);
+        }
+
+        $this->DB->where("flag >", 0);
+
+        $this->DB->order_by($order);
+        $query = $this->DB->get();
+        $total = $query->num_rows();
+
+        return $total;
+    }
 }

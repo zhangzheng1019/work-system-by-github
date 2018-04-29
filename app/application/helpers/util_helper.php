@@ -223,6 +223,7 @@ function xcurl($url, $post = array(), $timeout = 5, $ref = null, $ua = "Mozilla/
     }
 
     $output = curl_exec($ch);
+
     if ($output === false) {
         $error = curl_error($ch);
         curl_close($ch);

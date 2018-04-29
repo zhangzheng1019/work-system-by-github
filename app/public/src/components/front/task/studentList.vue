@@ -1,14 +1,14 @@
 <template>
    <div id="taskStuList">
-    	<el-collapse accordion @change="changeTaskPannel">
+      <el-collapse accordion @change="changeTaskPannel">
         <el-collapse-item v-for="(val,k) in taskList" :key='k' :name="val.id">
           <template slot="title">
             <div class="task-name">{{val.name}}&nbsp;&nbsp;&nbsp;&nbsp; 时间：<strong> {{val.startime}} —— {{val.endtime}}</strong></div>
           </template>
           <div class="task-desc" v-html="val.desc"></div>
-				  <el-button type="success" size="mini" :disabled="receiveAbled ? receiveAbled : (val.flag >=1)" @click.native="receiveTask(val.id)" v-if="userInfo.role=='student'">领取</el-button>
-				  <el-button type="primary" size="mini" :disabled="completeAbled ? completeAbled : (val.flag >=2)" @click.native="completeTask(val.id)" v-if="userInfo.role=='student'">完成</el-button>
-          <my-content :row="val" :userInfo="userInfo" v-if="userInfo.role=='student'"></my-content>
+          <el-button type="success" size="mini" :disabled="receiveAbled ? receiveAbled : (val.flag >=1)" @click.native="receiveTask(val.id)" v-if="userInfo.role=='student'">领取</el-button>
+          <el-button type="primary" size="mini" :disabled="completeAbled ? completeAbled : (val.flag >=2)" @click.native="completeTask(val.id)" v-if="userInfo.role=='student'">完成</el-button>
+          <my-content :row="val" :repos="repos" :userInfo="userInfo" v-if="userInfo.role=='student'"></my-content>
           <template>
             <el-tabs v-model="activeName" @tab-click="handleClick">
               <el-tab-pane v-for="(v,ko) in val.typeNum" :key='ko' :label="v.label" :name="v.name">
@@ -16,11 +16,7 @@
                   <el-table :data="studentList" style="width: 100%">
                     <el-table-column type="expand">
                       <template slot-scope="props">
-                        <el-form label-position="left" inline class="demo-table-expand">
-                          <el-form-item label="学生名称">
-                            <span>{{ props.row.studentInfo.github_info.html_url }}</span>
-                          </el-form-item>
-                        </el-form>
+                        <see-content :userInfo="userInfo" :repos="repos" :row="props.row" v-on:stuList="getTaskStuList"></see-content>
                       </template>
                     </el-table-column>
                     <el-table-column label="姓名" prop="studentInfo.realname"></el-table-column>
@@ -32,9 +28,9 @@
                     <el-table-column prop="studentInfo.grade" label="年级"></el-table-column>
                     <el-table-column prop="studentInfo.class" label="班级"></el-table-column>
                     <el-table-column label="操作">
-                    	<template slot-scope="props">
-                    		<see-content :userInfo="userInfo" :row="props.row" v-on:stuList="getTaskStuList"></see-content>
-                    	</template>
+                      <template slot-scope="props">
+                        <a :href="props.row.gh_url" target="_blank"><el-button type="text" icon="el-icon-view">作业情况</el-button></a>
+                      </template>
                     </el-table-column>
                   </el-table>
                 </template>
@@ -56,12 +52,12 @@
 </template>
 
 <script>
-	import { post } from '../../../utils.js'
-  import seeTask from './seeTask'
-	import myTask from './myTask'
+  import { post } from '../../../utils.js'
+  import seeRemark from './seeRemark'
+  import myTask from './myTask'
   export default {
-		data () {
-			return {
+    data () {
+      return {
         activeName:'finish',
         studentList:[],
         taskId: 0,
@@ -69,21 +65,21 @@
         completeAbled: false,
         totalPage:0,
         currentPage:1,
-			}
-		},
-		props:["userInfo","taskList"],
-		create() {
+      }
+    },
+    props:["userInfo","taskList", "repos"],
+    create() {
 
-		},
+    },
     mounted() {
       
     },
-		components:{
-      'see-content': seeTask,
-			'my-content': myTask
-		},
-		methods: {
-			getTaskStuList() {
+    components:{
+      'see-content': seeRemark,
+      'my-content': myTask
+    },
+    methods: {
+      getTaskStuList() {
         let term = {
           'course_id': this.$route.params.id,
           'task_id' : this.taskId,
@@ -129,7 +125,7 @@
           dataType: 'json',
           cb: (data, msg) => {
             this.$message.success('领取成功');
-      	    this.receiveAbled = true
+            this.receiveAbled = true
             this.getTaskStuList()
             this.$emit('gettask')
           },
@@ -144,7 +140,7 @@
           'cid': this.$route.params.id,
           'tid': task_id
         }
-      	this.$confirm('此操作不可逆, 是否继续?', '提示', {
+        this.$confirm('此操作不可逆, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -155,7 +151,7 @@
             dataType: 'json',
             cb: (data, msg) => {
               this.$message.success('确认成功');
-      		    this.completeAbled = true
+              this.completeAbled = true
               this.getTaskStuList()
               this.$emit('gettask')
             },
@@ -166,13 +162,15 @@
         }).catch(() => {
           this.$message.info('已取消');          
         });
-      },
-		}
+      }
+    }
 
-	}
+  }
 </script>
 
 <style scoped>
   .github-url{ color: #409eff; text-decoration: none; }
   .task-desc{ margin-bottom: 15px; }
+
+  .task-tips{ text-align: center;color: #ebeef5; }
 </style>

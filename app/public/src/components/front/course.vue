@@ -13,6 +13,7 @@
                     <span class="course-title oneline" v-html="courseInfo.title"></span>
                     <span class="course-desc moreline" v-html="courseInfo.desc"></span>
                     <span class="course-grade">{{ courseInfo.grade_id }}</span>
+                    <strong class="course-warning" v-html="courseInfo.repos"></strong>
                     <div class="course-edit" v-if="userInfo.role=='teacher'">
                       <edit-course :gradeGroup="gradeGroup" :row="courseInfo" :userInfo="userInfo" v-on:editcou='getCourseInfo'></edit-course>
                     </div>
@@ -21,7 +22,7 @@
                     </div>
                   </div>
                 </div>
-                <task-stu-list :userInfo="userInfo" :taskList="taskList" v-on:gettask="getTaskList"></task-stu-list>
+                <task-stu-list :userInfo="userInfo" :repos="courseInfo.repos" :taskList="taskList" v-on:gettask="getTaskList"></task-stu-list>
                 <div class="ptb10">
                   <el-pagination v-if='totalPage>0'
                       layout="prev, pager, next"
@@ -33,24 +34,6 @@
                 </div>
             </el-card>
           </el-col>
-          <!-- <el-col :span="8" :offset="1">
-            <el-card class="box-card">
-                <div slot="header" class="clearfloat">
-                  <div class="course-thumb">
-                    <img :src="courseInfo.thumb" alt="课程封面图" v-if="courseInfo.thumb" class="picb">
-                    <img src="../../assets/course-default.png" alt="课程封面图" v-else class="picb">
-                  </div>
-                  <div class="course-right">
-                    <span class="course-title oneline" v-html="courseInfo.title"></span>
-                    <span class="course-desc moreline" v-html="courseInfo.desc"></span>
-                    <span class="course-grade">{{ courseInfo.grade_id }}</span>
-                    <div class="course-edit" v-if="userInfo.role=='teacher'">
-                      <edit-course :gradeGroup="gradeGroup" :row="courseInfo" :userInfo="userInfo" v-on:editcou='getCourseInfo'></edit-course>
-                    </div>
-                  </div>
-                </div>
-            </el-card>
-          </el-col> -->
         </el-row>
     </div>
 </template>
@@ -116,7 +99,8 @@
             this.totalPage = data.total
           },
           err: (data, msg) => {
-            this.$message.error(msg);
+            this.taskList = []
+            // this.$message.error(msg);
           }
         })
       },
@@ -137,6 +121,7 @@
   .course-title::before{ content: '课程名称：';display: inline-block; }
   .course-desc::before{ content: '课程描述：';display: inline-block; }
   .course-grade::before{ content: '所属年级：';display: inline-block; }
+  .course-warning{ display: block; color: #3648cc; vertical-align: middle;}
   .course-edit{ float: left; }
   .task-add{ float: right; }
   .task-desc p{ font-size: 16px; }

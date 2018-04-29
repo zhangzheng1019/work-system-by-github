@@ -3,7 +3,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Task extends CI_Controller
 {
-    const LIMIT = 10;
+    const LIMIT       = 10;
+    const AUTH_DOMAIN = 'https://github.com/';
     public function __construct()
     {
         parent::__construct();
@@ -110,8 +111,9 @@ class Task extends CI_Controller
         if ($_COOKIE['userrole'] == 'student') {
             $studentId = $_COOKIE['userid'];
             foreach ($taskList as $key => $value) {
-                $studentTaskList        = $this->stutask_model->getBasicInfo(array('task_id' => $value['id'], 'student_id' => $studentId));
-                $taskList[$key]['flag'] = $studentTaskList[0]['flag']; //代表学生该任务的状态
+                $studentTaskList                = $this->stutask_model->getBasicInfo(array('task_id' => $value['id'], 'student_id' => $studentId));
+                $taskList[$key]['flag']         = $studentTaskList[0]['flag']; //代表学生该任务的状态
+                $taskList[$key]['tea_response'] = $studentTaskList[0]['tea_response']; //代表学生该任务的状态
             }
         }
         $offset        = ($page - 1) * self::LIMIT;
@@ -161,22 +163,52 @@ class Task extends CI_Controller
             'flag'      => $flag,
         );
 
-        $offset = ($page - 1) * self::LIMIT;
-
+        $offset  = ($page - 1) * self::LIMIT;
         $stuList = $this->stutask_model->getBasicInfo($where, $offset, $limit);
+
+        $this->load->model("course_model");
+        $courseInfo = $this->course_model->getBasicInfo(array('id' => $courseId));
+
         // 关联学生
         $this->load->model('student_model');
+        $this->load->model('task_model');
         foreach ($stuList as $key => $value) {
-            $studentInfo                  = $this->student_model->getBasicInfo(array('id' => $value['student_id']));
-            $stuInfo                      = $studentInfo['list'][0];
-            $stuInfo['github_info']       = json_decode($stuInfo['github_info'], true);
-            $stuList[$key]['studentInfo'] = $stuInfo;
+            $stuList[$key]['tea_response'] = $value['tea_response'] ? $value['tea_response'] : '暂未给出评价';
+            $studentInfo                   = $this->student_model->getBasicInfo(array('id' => $value['student_id']));
+            $stuInfo                       = $studentInfo['list'][0];
+            $stuInfo['github_info']        = json_decode($stuInfo['github_info'], true);
+            $stuList[$key]['studentInfo']  = $stuInfo;
+
+            $taskInfo                = $this->task_model->getBasicInfo(array('id' => $value['task_id']));
+            $taskName                = trim(mb_substr($taskInfo[0]['name'], 2, mb_strlen($taskInfo[0]['name'], 'utf-8') - 2, 'utf-8'));
+            $stuList[$key]['gh_url'] = self::AUTH_DOMAIN . $stuInfo['github_info']['login'] . '/' . $courseInfo[0]['repos'] . '/tree/master/task_' . $taskName;
         }
 
         $data['total'] = count($stuList);
         $data['list']  = array_slice($stuList, $offset, self::LIMIT);
 
         $data['list'] ? ajax_success($data) : ajax_fail(false, '暂无学生名单');
+    }
+
+    /**
+     * 得到任务标号
+     * @return [type] [description]
+     */
+    public function getTaskNum()
+    {
+        $cid = $this->input->post('cid');
+
+        $where = array(
+            'course_id' => $cid,
+        );
+        $total = $this->task_model->getTotalNum($where);
+        $total++;
+
+        if ($total < 10) {
+            $total = '0' . $total;
+        }
+        $data['name'] = '任务 ' . $total;
+        ajax_success($data);
     }
 
     /**
@@ -259,9 +291,9 @@ class Task extends CI_Controller
         $tid = $this->input->post('tid');
 
         $where = array(
-            'student_id'=>$sid,
-            'task_id'=>$tid,
-            'course_id'=>$cid
+            'student_id' => $sid,
+            'task_id'    => $tid,
+            'course_id'  => $cid,
         );
 
         $myTaskInfo = $this->stutask_model->getBasicInfo($where);
@@ -269,4 +301,5 @@ class Task extends CI_Controller
         $data['mytask'] = $myTaskInfo[0];
         $data['mytask'] ? ajax_success($data) : ajax_success([]);
     }
+
 }

@@ -1,15 +1,10 @@
 <template>
     <span id="myTask">
-    	<el-button type="primary" icon="el-icon-view" size="mini" round @click.native='getTaskContent'>作业情况</el-button>
-			<el-dialog title="查看作业" :visible.sync="dialogTask" width="60%">
-					<!-- pre标签：按原样输出，保留所有的空格和换行符。 xmp: 把内部html片段当做字符串输出 -->
-					<pre class="remark-content">{{row}}</pre>
-					
-					<div class="remark">
-						<h3 class="remark-title">教师评语：</h3>
-						<p class="remark-content" v-html="mytask.tea_response"></p>
-					</div>
-			</el-dialog>
+    	<a :href="row.gh_url" target="_blank"><el-button type="primary" icon="el-icon-view" size="mini">我的作业情况</el-button></a>
+    	<el-tooltip placement="top">
+			  <div slot="content">{{tea_response}}</div>
+			  <el-button type="primary" icon="el-icon-view" size="mini">我的作业评语</el-button>
+			</el-tooltip>
     </span>
 </template>
 
@@ -18,29 +13,14 @@
   export default {
 		data () {
 			return {
-			  dialogTask: false,
-			  remark: '',
-			  mytask: [],
+
 			}
 		},
 		props: ['userInfo', 'row'],
-		methods: {
-			getTaskContent() {
-				let term = {
-					sid: this.userInfo.id,
-					cid: this.row.course_id,
-					tid: this.row.id
-				}
-				post({
-					url: '/task/getMyRemark',
-					data: term,
-					dataType: 'json',
-					cb: ( data,msg ) => {
-						this.dialogTask = true
-						this.mytask = data.mytask
-					}
-				})
-			},
+		computed: {
+			tea_response: function(){
+				return this.row.tea_response ? this.row.tea_response : '教师暂未做出评价'
+			}
 		}
 
 	}

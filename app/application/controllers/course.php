@@ -77,6 +77,7 @@ class Course extends CI_Controller
             $data['thumb']      = isset($_POST['thumb']) ? $_POST['thumb'] : '';
             $data['teacher_id'] = isset($_POST['teacher_id']) ? $_POST['teacher_id'] : '';
             $data['grade_id']   = isset($_POST['grade_id']) ? $_POST['grade_id'] : '';
+            $data['repos']      = isset($_POST['repos']) ? $_POST['repos'] : '';
             $status             = $this->course_model->addCourseInfo($data);
             $status             = $status['status'];
             !$status && ajax_fail(false, '操作失败');
@@ -177,9 +178,10 @@ class Course extends CI_Controller
         $where = array(
             'id' => $courseId,
         );
-        $courseInfo     = $this->course_model->getBasicInfo($where);
-        $data['course'] = $courseInfo[0];
-        $data['grade']  = $gradeGroup ? $gradeGroup : [];
+        $courseInfo             = $this->course_model->getBasicInfo($where);
+        $courseInfo[0]['repos'] = '注意：1、请同学们务必使用&nbsp;&nbsp;<h3 class="dil font-red">' . $courseInfo[0]['repos'] . '</h3>&nbsp;&nbsp;作为仓库名称；2、仓库下文件夹命名格式：task01、task02、task12';
+        $data['course']         = $courseInfo[0];
+        $data['grade']          = $gradeGroup ? $gradeGroup : [];
 
         ajax_success($data);
     }
