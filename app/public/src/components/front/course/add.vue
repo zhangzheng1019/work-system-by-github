@@ -16,7 +16,7 @@
                     </el-input>
                 </el-form-item>
                 <el-form-item label="GitHub仓库名称" :label-width="formLabelWidth" prop="repos">
-                    <el-input type="text" v-model="addCourseForm.repos" pla auto-complete="off">
+                    <el-input type="text" v-model="addCourseForm.repos" pla auto-complete="off" placeholder="例如：教师添加 test，学生创建 software-test 仓库">
                     </el-input>
                 </el-form-item>
                 <el-form-item label="课程描述" :label-width="formLabelWidth" prop="desc">
@@ -85,7 +85,7 @@
         }
       }
     },
-    props: ['userInfo'],
+    props: ['userInfo', 'currentTab'],
     mounted() {
       this.getGrade()
     },
@@ -130,7 +130,7 @@
               'desc' : this.addCourseForm.desc,
               'thumb' : this.uploadImage.path,
               'teacher_id' : this.userInfo.id,
-              'grade_id' : this.addCourseForm.grade_id,
+              'grade_id' : this.addCourseForm.grade_id ? this.addCourseForm.grade_id : this.currentTab,
               'repos' : this.addCourseForm.repos
             }
             post({

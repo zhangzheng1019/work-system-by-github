@@ -41,7 +41,7 @@
                         </el-tab-pane>
                     </el-tabs>
 
-                    <add-course :userInfo='userInfo' v-on:addcou='getList'>
+                    <add-course :userInfo='userInfo' :currentTab='activeName' v-on:addcou='getList'>
                     </add-course>
                 </div>
                 <div class="ptb10">

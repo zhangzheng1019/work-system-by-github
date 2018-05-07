@@ -79,7 +79,7 @@ class Course_model extends CI_Model
             'teacher_id' => $data['teacher_id'] ? $data['teacher_id'] : 0,
             'task_id'    => $data['task_id'] ? $data['task_id'] : '',
             'grade_id'   => $data['grade_id'] ? $data['grade_id'] : 0,
-            'repos'      => $data['repos'],
+            'repos'      => 'software-' . $data['repos'],
             'flag'       => 1,
         );
         $this->DB->insert(self::WG_COURSE_TABLE, $detailData);

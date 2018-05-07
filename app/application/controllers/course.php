@@ -11,7 +11,19 @@ class Course extends CI_Controller
         $this->DB = $this->load->database("default", true);
         $this->load->model("course_model");
     }
-
+    public function getGradeByConfig()
+    {
+        $this->config->load("classids", true);
+        $ids = $this->config->item('classids');
+        $i     = 0;
+        $grade = [];
+        foreach ($ids as $key => $value) {
+            $grade[$i]['key']   = $i;
+            $grade[$i]['value'] = $key;
+            $i++;
+        }
+        return $grade;
+    }
     /**
      * 获取教师课程列表
      * @return [type] [description]
@@ -30,7 +42,9 @@ class Course extends CI_Controller
         $gradeGroup = $this->getGradeGroupByTeacherId($teacherId);
         if (!$gradeGroup) {
             $gradeGroup = $this->course_model->courseGroupBy('grade_id', '', 4, 'grade_id desc');
+            // $gradeGroup = $this->getGradeByConfig();
         }
+            // $gradeGroup = $this->getGradeByConfig();
 
         $grade = $this->input->post('grade') ? $this->input->post('grade') : $gradeGroup[0]['value'];
 
@@ -184,7 +198,7 @@ class Course extends CI_Controller
             'id' => $courseId,
         );
         $courseInfo                 = $this->course_model->getBasicInfo($where);
-        $courseInfo[0]['reposdesc'] = '注意：1、请同学们务必使用&nbsp;&nbsp;<h3 class="dil font-red">' . $courseInfo[0]['repos'] . '</h3>&nbsp;&nbsp;作为仓库名称；2、仓库下文件夹命名格式：task01、task02、task12';
+        $courseInfo[0]['reposdesc'] = '注意：1、请同学们务必使用&nbsp;&nbsp;<h3 class="dil font-red">' . $courseInfo[0]['repos'] . '</h3>&nbsp;&nbsp;作为仓库名称；2、仓库下文件夹命名格式：task_01、task_02、task_12';
         $data['course']             = $courseInfo[0];
         $data['grade']              = $gradeGroup ? $gradeGroup : [];
 
