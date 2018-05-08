@@ -17,31 +17,14 @@
                       <edit-course :gradeGroup="gradeGroup" :row="courseInfo" :userInfo="userInfo" v-on:editcou='getCourseInfo'></edit-course>
                     </div>
                     <div class="task-add" v-if="userInfo.role=='teacher'">
-                      <add-task :userInfo="userInfo" v-on:addtask='getTaskList'></add-task> 
+                      <add-task :userInfo="userInfo" v-on:addtask='getTaskList'></add-task>
                     </div>
                   </div>
                 </div>
                 <task-stu-list :userInfo="userInfo" :taskList="taskList" :studentTypeList="studentTypeList"></task-stu-list>
             </el-card>
           </el-col>
-          <!-- <el-col :span="8" :offset="1">
-            <el-card class="box-card">
-                <div slot="header" class="clearfloat">
-                  <div class="course-thumb">
-                    <img :src="courseInfo.thumb" alt="课程封面图" v-if="courseInfo.thumb" class="picb">
-                    <img src="../../assets/course-default.png" alt="课程封面图" v-else class="picb">
-                  </div>
-                  <div class="course-right">
-                    <span class="course-title oneline" v-html="courseInfo.title"></span>
-                    <span class="course-desc moreline" v-html="courseInfo.desc"></span>
-                    <span class="course-grade">{{ courseInfo.grade_id }}</span>
-                    <div class="course-edit" v-if="userInfo.role=='teacher'">
-                      <edit-course :gradeGroup="gradeGroup" :row="courseInfo" :userInfo="userInfo" v-on:editcou='getCourseInfo'></edit-course>
-                    </div>
-                  </div>
-                </div>
-            </el-card>
-          </el-col> -->
+
         </el-row>
     </div>
 </template>
@@ -89,7 +72,7 @@
           err: (data, msg) => {
             this.$message.error(msg);
             history.back();
-          }  
+          }
         })
       },
       getTaskList() {
@@ -109,7 +92,7 @@
           }
         })
       },
-     
+
 
     }
   }
