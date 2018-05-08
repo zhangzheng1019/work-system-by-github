@@ -61,10 +61,15 @@ export default {
   .clearfloat:after{ content:"."; display:block; height:0; clear:both; visibility:hidden; }
   .relative{ position: relative; }
   .absolute{ position: absolute; }
+  .dil{ display: inline; }
   .oneline { overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
   .moreline { overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient: vertical; }
   .title-line{font-size: 18px;font-weight: normal;line-height: 50px;border-bottom:1px solid #ccc;margin-bottom: 20px;}
   .add{ display:inline-block;float:right; }
+
   .mtb20{ margin: 20px 0; }
   .ptb10{ padding: 10px 0; }
+  
+  /* 字体颜色 */
+  .font-red{ color: red; }
 </style>

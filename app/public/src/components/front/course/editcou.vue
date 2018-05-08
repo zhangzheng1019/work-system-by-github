@@ -3,7 +3,7 @@
         <el-button style="padding: 0" type="text" icon="el-icon-edit-outline" size="mini" @click='editDialog=true'>
             编辑
         </el-button>
-        <el-dialog title="编辑课程" :visible.sync="editDialog">
+        <el-dialog title="编辑课程" :visible.sync="editDialog" width="70%">
             <el-form :model="row" ref="row" :rules="rulesForm" status-icon>
                 <el-form-item label="所属年级" :label-width="formLabelWidth" prop="grade">
                     <el-select v-model="row.grade_id" placeholder="请选择年级" disabled>
@@ -13,6 +13,10 @@
                 </el-form-item>
                 <el-form-item label="课程名称" :label-width="formLabelWidth" prop="title">
                     <el-input type="text" v-model="row.title" pla auto-complete="off">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="GitHub仓库名称" :label-width="formLabelWidth" prop="repos">
+                    <el-input type="text" v-model="row.repos" pla auto-complete="off" disabled>
                     </el-input>
                 </el-form-item>
                 <el-form-item label="课程描述" :label-width="formLabelWidth" prop="desc">
@@ -53,7 +57,7 @@
     export default {
     data () {
       return {
-        formLabelWidth: "80px",
+        formLabelWidth: "150px",
         uploadImage: { name: '', path:'', width: '', height: ''},
         editDialog: false,
         rulesForm: {

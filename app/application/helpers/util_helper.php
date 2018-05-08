@@ -223,6 +223,7 @@ function xcurl($url, $post = array(), $timeout = 5, $ref = null, $ua = "Mozilla/
     }
 
     $output = curl_exec($ch);
+
     if ($output === false) {
         $error = curl_error($ch);
         curl_close($ch);
@@ -720,8 +721,8 @@ if (!function_exists("is_json")) {
     }
 }
 
-if (!function_exists("diff_date")) {
-    function diff_date($day1, $day2)
+if (!function_exists("diff_time")) {
+    function diff_time($day1, $day2)
     {
         $second1 = strtotime($day1);
         $second2 = strtotime($day2);
@@ -787,5 +788,15 @@ if (!function_exists("filterData")) {
             }
         }
         return $param;
+    }
+}
+
+if (!function_exists("diff_date")) {
+    function diff_date($now, $start, $end)
+    {
+        $now   = strtotime($now);
+        $start = strtotime($start);
+        $end   = strtotime($end);
+        return $now < $end;
     }
 }

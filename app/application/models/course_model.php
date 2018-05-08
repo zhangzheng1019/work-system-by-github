@@ -79,6 +79,7 @@ class Course_model extends CI_Model
             'teacher_id' => $data['teacher_id'] ? $data['teacher_id'] : 0,
             'task_id'    => $data['task_id'] ? $data['task_id'] : '',
             'grade_id'   => $data['grade_id'] ? $data['grade_id'] : 0,
+            'repos'      => 'software-' . $data['repos'],
             'flag'       => 1,
         );
         $this->DB->insert(self::WG_COURSE_TABLE, $detailData);
@@ -220,7 +221,7 @@ class Course_model extends CI_Model
      * @param  [type] $gradeId [年级id]
      * @return [type]          [description]
      */
-    public function getNotCourseByIds($ids = array(), $field = 'id',$gradeId)
+    public function getNotCourseByIds($ids = array(), $field = 'id', $gradeId)
     {
         $result = array();
         $this->DB->from(self::WG_COURSE_TABLE);
@@ -235,7 +236,6 @@ class Course_model extends CI_Model
         return $result;
     }
 
-    
     /**
      * 根据老师id和班级id 得到课程信息
      * @param  [type] $teacherId [教师id]

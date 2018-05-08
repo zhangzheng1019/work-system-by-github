@@ -3,7 +3,7 @@
         <el-button type="primary" icon="el-icon-plus" size="medium" @click.native='dialogVisible=true'>
             发布课程
         </el-button>
-        <el-dialog title="添加课程" :visible.sync="dialogVisible">
+        <el-dialog title="添加课程" :visible.sync="dialogVisible" width="70%">
             <el-form :model="addCourseForm" ref="addCourseForm" :rules="rulesForm" status-icon>
                 <el-form-item label="所属年级" :label-width="formLabelWidth" prop="grade" >
                     <el-select v-model="addCourseForm.grade_id" placeholder="请选择年级" @change="changeGrade">
@@ -13,6 +13,10 @@
                 </el-form-item>
                 <el-form-item label="课程名称" :label-width="formLabelWidth" prop="name">
                     <el-input type="text" v-model="addCourseForm.name" pla auto-complete="off">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="GitHub仓库名称" :label-width="formLabelWidth" prop="repos">
+                    <el-input type="text" v-model="addCourseForm.repos" pla auto-complete="off" placeholder="例如：教师添加 test，学生创建 software-test 仓库">
                     </el-input>
                 </el-form-item>
                 <el-form-item label="课程描述" :label-width="formLabelWidth" prop="desc">
@@ -52,8 +56,8 @@
     export default {
     data () {
       return {
-        formLabelWidth: "80px",
-        addCourseForm: { grade_id:'', name:"", desc:"", thumb:"" },
+        formLabelWidth: "150px",
+        addCourseForm: { grade_id:'', name:"",repos:"", desc:"", thumb:"" },
         uploadImage: { name: '', path:'', width: '', height: ''},
         gradeGroup :[],
         dialogVisible: false,
@@ -68,6 +72,11 @@
             message: '请输入课程名称',
             triggle: 'blur'
           }],
+          repos: [{
+            required: true,
+            message: '请输入GitHub仓库名称',
+            triggle: 'blur'
+          }],
           desc: [{
             required: true,
             message: '请输入课程描述',
@@ -76,7 +85,7 @@
         }
       }
     },
-    props: ['userInfo'],
+    props: ['userInfo', 'currentTab'],
     mounted() {
       this.getGrade()
     },
@@ -121,7 +130,8 @@
               'desc' : this.addCourseForm.desc,
               'thumb' : this.uploadImage.path,
               'teacher_id' : this.userInfo.id,
-              'grade_id' : this.addCourseForm.grade_id
+              'grade_id' : this.addCourseForm.grade_id ? this.addCourseForm.grade_id : this.currentTab,
+              'repos' : this.addCourseForm.repos
             }
             post({
               url:'/course/addCourse',

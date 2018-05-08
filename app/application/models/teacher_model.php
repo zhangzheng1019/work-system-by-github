@@ -40,8 +40,6 @@ class Teacher_model extends CI_Model
     /**
      * 记录总数
      * @param  array   $where  [description]
-     * @param  integer $offset [description]
-     * @param  integer $limit  [description]
      * @param  string  $order  [description]
      * @return [type]          [description]
      */

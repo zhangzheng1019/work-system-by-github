@@ -13,6 +13,7 @@
                     <span class="course-title oneline" v-html="courseInfo.title"></span>
                     <span class="course-desc moreline" v-html="courseInfo.desc"></span>
                     <span class="course-grade">{{ courseInfo.grade_id }}</span>
+                    <strong class="course-warning" v-html="courseInfo.reposdesc"></strong>
                     <div class="course-edit" v-if="userInfo.role=='teacher'">
                       <edit-course :gradeGroup="gradeGroup" :row="courseInfo" :userInfo="userInfo" v-on:editcou='getCourseInfo'></edit-course>
                     </div>
@@ -21,10 +22,25 @@
                     </div>
                   </div>
                 </div>
+<<<<<<< HEAD
                 <task-stu-list :userInfo="userInfo" :taskList="taskList" :studentTypeList="studentTypeList"></task-stu-list>
             </el-card>
           </el-col>
 
+=======
+                <task-stu-list :userInfo="userInfo" :repos="courseInfo.repos" :taskList="taskList" v-on:gettask="getTaskList"></task-stu-list>
+                <div class="ptb10">
+                  <el-pagination v-if='totalPage>0'
+                      layout="prev, pager, next"
+                      background
+                      :total="totalPage"
+                      :current-page='currentPage'
+                      @current-change='changePage'>
+                  </el-pagination>
+                </div>
+            </el-card>
+          </el-col>
+>>>>>>> 92f4c8de59debe1321fd005322b1b5e7a55b0a16
         </el-row>
     </div>
 </template>
@@ -40,7 +56,8 @@
         courseInfo: [],
         gradeGroup: [],
         taskList: [],
-        studentTypeList:[],
+        totalPage:0,
+        currentPage:1,
       }
     },
     props: ['userInfo'],
@@ -78,6 +95,7 @@
       getTaskList() {
         let term = {
           'course_id': this.$route.params.id,
+          'page': this.currentPage
         }
         post({
           url: '/task/getTaskList',
@@ -85,14 +103,23 @@
           dataType: 'json',
           cb: (data, msg) => {
             this.taskList = data.list
-            this.studentTypeList = data.tabs
+            this.totalPage = data.total
           },
           err: (data, msg) => {
-            this.$message.error(msg);
+            this.taskList = []
+            // this.$message.error(msg);
           }
         })
       },
+<<<<<<< HEAD
 
+=======
+      changePage(val){
+        this.currentPage = val
+        this.getTaskList()
+      },
+     
+>>>>>>> 92f4c8de59debe1321fd005322b1b5e7a55b0a16
 
     }
   }
@@ -105,6 +132,7 @@
   .course-title::before{ content: '课程名称：';display: inline-block; }
   .course-desc::before{ content: '课程描述：';display: inline-block; }
   .course-grade::before{ content: '所属年级：';display: inline-block; }
+  .course-warning{ display: block; color: #3648cc; vertical-align: middle;}
   .course-edit{ float: left; }
   .task-add{ float: right; }
   .task-desc p{ font-size: 16px; }

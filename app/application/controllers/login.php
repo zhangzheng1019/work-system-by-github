@@ -96,7 +96,7 @@ class Login extends CI_Controller
         if ($adminRes) {
             set_cookie('userid', $data['id'], 3600); //保留一小时
             set_cookie('userrole', 'admin', 3600); //保留一小时
-            ajax_success(true,'admin');
+            ajax_success(true, 'admin');
         }
     }
     /**
@@ -137,7 +137,7 @@ class Login extends CI_Controller
             $userinfo         = $this->teacher_model->getBasicInfo($where);
             $userinfo         = $userinfo['list'][0];
             $data['id']       = $userinfo['id'];
-            $data['username'] = $userinfo['realname'] ? $userinfo['realname'] : '你的姓名好像丢了呀';
+            $data['username'] = $userinfo['realname'] ? $userinfo['realname'] : '写上你的大名，让更多人认识你吧！';
             $data['mobile']   = $userinfo['mobile'] ? $userinfo['mobile'] : '快来填写手机号吧';
             $data['email']    = $userinfo['mail'];
             $data['thumb']    = $userinfo['thumb'];
@@ -155,8 +155,8 @@ class Login extends CI_Controller
             $userinfo            = $userinfo['list'][0];
             $githubInfo          = json_decode($userinfo['github_info'], true);
             $data['id']          = $userinfo['id'];
-            $data['username']    = $userinfo['realname'] ? $userinfo['realname'] : '你的姓名好像丢了呀';
-            $data['thumb']       = $userinfo['thumb'];
+            $data['username']    = $userinfo['realname'] ? $userinfo['realname'] : '写上你的大名，让更多人认识你吧！';
+            $data['thumb']       = $userinfo['thumb'] ? $userinfo['thumb'] : $githubInfo['avatar_url'];
             $data['desc']        = $userinfo['desc'] ? $userinfo['desc'] : '快来补充你的个人描述吧';
             $data['email']       = $githubInfo['email'];
             $data['github_url']  = $githubInfo['html_url'];

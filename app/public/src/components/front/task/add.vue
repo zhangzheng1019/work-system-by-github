@@ -5,8 +5,8 @@
         </el-button>
         <el-dialog title="发布任务" :visible.sync="dialogVisible" width="60%">
             <el-form :model="addTaskForm" ref="addTaskForm" :rules="rulesForm" status-icon>
-                <el-form-item label="任务主题" :label-width="formLabelWidth" prop="name">
-                    <el-input type="text" v-model="addTaskForm.name">
+                <el-form-item label="任务标号" :label-width="formLabelWidth" prop="name">
+                    <el-input type="text" v-model="addTaskForm.name" disabled>
                     </el-input>
                 </el-form-item>
                 <el-form-item label="任务描述" :label-width="formLabelWidth" prop="desc">
@@ -36,12 +36,8 @@
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">
-                    取 消
-                </el-button>
-                <el-button type="primary" @click.native="submitTask">
-                    确 定
-                </el-button>
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click.native="submitTask">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -89,7 +85,7 @@
     	'quill-editor': quillEditor
     },
     mounted() {
-      this.getGrade()
+      this.getTaskNum()
     },
     methods: {
     	onEditorChange({ editor, html, text }) {
@@ -128,6 +124,16 @@
             })
           }
         });
+      },
+      getTaskNum(){
+        post({
+          url: '/task/getTaskNum',
+          data: { 'cid': this.$route.params.id},
+          dataType:'json',
+          cb: (data, msg) => {
+            this.addTaskForm.name = data['name']
+          }
+        })
       },
       getGrade(){
         post({

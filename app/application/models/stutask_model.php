@@ -36,7 +36,26 @@ class Stutask_model extends CI_Model
         }
         return $result;
     }
-
+    /**
+     * 统计
+     * @param  array  $where [description]
+     * @param  string $order [description]
+     * @return [type]        [description]
+     */
+    public function getTotalNum($where = array(), $order = 'id desc')
+    {
+        $total = 0;
+        $this->DB->from(self::WG_STU_TASK_TABLE);
+        if (!empty($where)) {
+            $this->DB->where($where);
+        }
+        $this->DB->order_by($order);
+        $query = $this->DB->get();
+        if ($query && $query->num_rows() > 0) {
+            $total = $query->num_rows();
+        }
+        return $total;
+    }
     /**
      * 添加任务信息
      * @param array $data [description]
@@ -59,24 +78,24 @@ class Stutask_model extends CI_Model
             return [];
         }
         $result['insertId'] = $this->DB->insert_id();
-        $result['status'] = ($result['insertId'] > 0) ? true : false;
+        $result['status']   = ($result['insertId'] > 0) ? true : false;
 
         return $result;
     }
 
     /**
-     * 更新任务信息
-     * @param  integer $task_id [更新的任务 id]
+     * 更新学生任务信息
+     * @param  integer $id [更新 id]
      * @param  array   $data       [要更新的字段数据]
      * @return [boolean]              [返回更新成功、失败]
      */
-    public function updateStuTaskInfo($task_id = 0, $data = array())
+    public function updateStuTaskInfo($id = 0, $data = array())
     {
-        if (!$task_id) {
+        if (!$id) {
             return false;
         }
 
-        $this->DB->where('id', $task_id);
+        $this->DB->where('id', $id);
         $this->DB->update(self::WG_STU_TASK_TABLE, $data);
 
         if ($this->DB->affected_rows() <= 0) {
@@ -99,7 +118,7 @@ class Stutask_model extends CI_Model
         }
 
         $data['flag'] = -1;
-        $this->DB->where('id', $task_id);
+        $this->DB->where('task_id', $task_id);
         $this->DB->update(self::WG_STU_TASK_TABLE, $data);
 
         if ($this->DB->affected_rows() <= 0) {
@@ -128,5 +147,22 @@ class Stutask_model extends CI_Model
             $result = $query->result_array();
         }
         return $result;
+    }
+
+    /**
+     * 修改学生任务状态
+     * @return [type] [description]
+     */
+    public function modifyTaskStatus($studentId, $courseId, $taskId, $data)
+    {
+        $this->DB->where('student_id', $studentId);
+        $this->DB->where('course_id', $courseId);
+        $this->DB->where('task_id', $taskId);
+        $this->DB->update('wg_stu_task', $data);
+        if ($this->DB->affected_rows() <= 0) {
+            return false;
+        }
+
+        return true;
     }
 }

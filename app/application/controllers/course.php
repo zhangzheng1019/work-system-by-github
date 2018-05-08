@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Course extends CI_Controller
 {
-    const LIMIT = 10;
+    const LIMIT = 12;
 
     public function __construct()
     {
@@ -11,7 +11,19 @@ class Course extends CI_Controller
         $this->DB = $this->load->database("default", true);
         $this->load->model("course_model");
     }
-
+    public function getGradeByConfig()
+    {
+        $this->config->load("classids", true);
+        $ids = $this->config->item('classids');
+        $i     = 0;
+        $grade = [];
+        foreach ($ids as $key => $value) {
+            $grade[$i]['key']   = $i;
+            $grade[$i]['value'] = $key;
+            $i++;
+        }
+        return $grade;
+    }
     /**
      * 获取教师课程列表
      * @return [type] [description]
@@ -19,15 +31,20 @@ class Course extends CI_Controller
     public function getTeacherList()
     {
         $where = [];
+        $email = $_COOKIE['userid'];
+        $this->load->model('teacher_model');
+        $teacherInfo = $this->teacher_model->getBasicInfo(array('mail' => $email));
+        $teacherId   = $teacherInfo['list'][0]['id'];
 
-        $teacherId = $this->input->post('id') ? $this->input->post('id') : 0;
         if (!$teacherId) {
             header('Location:/login');
         }
         $gradeGroup = $this->getGradeGroupByTeacherId($teacherId);
         if (!$gradeGroup) {
             $gradeGroup = $this->course_model->courseGroupBy('grade_id', '', 4, 'grade_id desc');
+            // $gradeGroup = $this->getGradeByConfig();
         }
+            // $gradeGroup = $this->getGradeByConfig();
 
         $grade = $this->input->post('grade') ? $this->input->post('grade') : $gradeGroup[0]['value'];
 
@@ -47,6 +64,7 @@ class Course extends CI_Controller
         }
 
         $result['total']        = $total;
+        $result['pageSize']     = self::LIMIT;
         $result['gradeGroup']   = $gradeGroup;
         $result['currentGrade'] = $grade;
         $result['list']         = $data;
@@ -77,6 +95,7 @@ class Course extends CI_Controller
             $data['thumb']      = isset($_POST['thumb']) ? $_POST['thumb'] : '';
             $data['teacher_id'] = isset($_POST['teacher_id']) ? $_POST['teacher_id'] : '';
             $data['grade_id']   = isset($_POST['grade_id']) ? $_POST['grade_id'] : '';
+            $data['repos']      = isset($_POST['repos']) ? $_POST['repos'] : '';
             $status             = $this->course_model->addCourseInfo($data);
             $status             = $status['status'];
             !$status && ajax_fail(false, '操作失败');
@@ -109,7 +128,7 @@ class Course extends CI_Controller
     public function getStudentList()
     {
         $courseList = array();
-        $userId     = $this->input->post("id");
+        $userId     = $_COOKIE['userid'];
         if (!$userId) {
             header('Location:/login');
         }
@@ -145,8 +164,9 @@ class Course extends CI_Controller
             $courseList[$key]['teacherInfo'] = $teacherInfo['list'][0];
             $courseList[$key]['stuNumber']   = $this->student_model->getStudentNumByCourseId($value['id']);
         }
-        $data['total'] = count($courseList);
-        $data['list']  = array_slice($courseList, $offset, self::LIMIT);
+        $data['total']    = count($courseList);
+        $data['pageSize'] = self::LIMIT;
+        $data['list']     = array_slice($courseList, $offset, self::LIMIT);
         ajax_success($data, '加载成功');
     }
     /**
@@ -165,11 +185,11 @@ class Course extends CI_Controller
      */
     public function getCourseInfo()
     {
-        $data      = array();
-        $courseId  = $this->input->get('course_id');
-        $teacherId = $this->input->get('teacher_id');
-        if (!$teacherId) {
-            redirect('/login');
+        $data     = array();
+        $courseId = $this->input->get('course_id');
+        if ($_COOKIE['userrole'] == 'teacher') {
+            $teacherId  = $this->input->get('teacher_id');
+            $gradeGroup = $this->getGradeGroupByTeacherId($teacherId);
         }
         if (!$courseId) {
             ajax_fail(false, '暂无该课程');
@@ -177,10 +197,10 @@ class Course extends CI_Controller
         $where = array(
             'id' => $courseId,
         );
-        $courseInfo     = $this->course_model->getBasicInfo($where);
-        $gradeGroup     = $this->getGradeGroupByTeacherId($teacherId);
-        $data['course'] = $courseInfo[0];
-        $data['grade']  = $gradeGroup;
+        $courseInfo                 = $this->course_model->getBasicInfo($where);
+        $courseInfo[0]['reposdesc'] = '注意：1、请同学们务必使用&nbsp;&nbsp;<h3 class="dil font-red">' . $courseInfo[0]['repos'] . '</h3>&nbsp;&nbsp;作为仓库名称；2、仓库下文件夹命名格式：task_01、task_02、task_12';
+        $data['course']             = $courseInfo[0];
+        $data['grade']              = $gradeGroup ? $gradeGroup : [];
 
         ajax_success($data);
     }
