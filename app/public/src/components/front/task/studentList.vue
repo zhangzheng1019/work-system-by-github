@@ -124,10 +124,12 @@
           data: term,
           dataType: 'json',
           cb: (data, msg) => {
-            this.$message.success('领取成功');
-            this.receiveAbled = true
-            this.getTaskStuList()
-            this.$emit('gettask')
+            if(data){
+              this.$message.success('领取成功');
+              this.receiveAbled = true
+              this.getTaskStuList()
+              this.$emit('gettask')
+            }
           },
           err: (data, msg) => {
             this.$message.warning(msg)
@@ -150,10 +152,12 @@
             data: term,
             dataType: 'json',
             cb: (data, msg) => {
-              this.$message.success('确认成功');
-              this.completeAbled = true
-              this.getTaskStuList()
-              this.$emit('gettask')
+              if(data){
+                this.$message.success('确认成功');
+                this.completeAbled = true
+                this.getTaskStuList()
+                this.$emit('gettask') 
+              }
             },
             err: (data, msg) => {
               this.$message.warning(msg)

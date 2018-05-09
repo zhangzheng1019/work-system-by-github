@@ -201,8 +201,8 @@ class Task extends CI_Controller
         $studentInfo                = $studentInfo['list'][0];
         $studentInfo['github_info'] = json_decode($studentInfo['github_info'], true);
         $stuList['stuInfo']         = $studentInfo;
-        $taskInfo = $this->task_model->getBasicInfo(array('id' => $taskId));
-        $taskName = trim(mb_substr($taskInfo[0]['name'], 2, mb_strlen($taskInfo[0]['name'], 'utf-8') - 2, 'utf-8'));
+        $taskInfo                   = $this->task_model->getBasicInfo(array('id' => $taskId));
+        $taskName                   = trim(mb_substr($taskInfo[0]['name'], 2, mb_strlen($taskInfo[0]['name'], 'utf-8') - 2, 'utf-8'));
 
         $this->load->model("course_model");
         $courseInfo        = $this->course_model->getBasicInfo(array('id' => $courseId));
@@ -241,13 +241,9 @@ class Task extends CI_Controller
         $cid = $this->input->post('cid');
         $tid = $this->input->post('tid');
 
-        // 判断任务时间
-        $where = array(
-            'id' => $tid,
-        );
-        $taskInfo   = $this->task_model->getBasicInfo($where);
-        $now        = date('Y-m-d H:m:s');
-        $taskStatus = diff_date($now, $taskInfo[0]['startime'], $taskInfo[0]['endtime']);
+        $this->judgeStuCourse($sid, $cid, $tid);
+
+        $taskStatus = $this->judgeDate($tid);
         if (!$taskStatus) {
             ajax_fail(false, '任务已经结束,不能再领取了');
         }
@@ -267,13 +263,9 @@ class Task extends CI_Controller
         $cid = $this->input->post('cid');
         $tid = $this->input->post('tid');
 
-        // 判断任务时间
-        $where = array(
-            'id' => $tid,
-        );
-        $taskInfo   = $this->task_model->getBasicInfo($where);
-        $now        = date('Y-m-d H:m:s');
-        $taskStatus = diff_date($now, $taskInfo[0]['startime'], $taskInfo[0]['endtime']);
+        $this->judgeStuCourse($sid, $cid, $tid);
+
+        $taskStatus = $this->judgeDate($tid);
         if (!$taskStatus) {
             ajax_fail(false, '任务已经结束了');
         }
@@ -282,7 +274,36 @@ class Task extends CI_Controller
         $status       = $this->stutask_model->modifyTaskStatus($sid, $cid, $tid, $data);
         ajax_success($status);
     }
-
+    /**
+     * 判断学生是否属于该课程
+     * @param  [type] $sid [description]
+     * @param  [type] $cid [description]
+     * @param  [type] $tid [description]
+     * @return [type]      [description]
+     */
+    public function judgeStuCourse($sid, $cid, $tid)
+    {
+        $where = array(
+            'student_id' => $sid,
+            'course_id'  => $cid,
+            'task_id'    => $tid,
+        );
+        $stutaskList = $this->stutask_model->getBasicInfo($where);
+        if (!$stutaskList) {
+            ajax_fail(false, '你好像没有在该课程呦，请先加入吧');
+        }
+    }
+    public function judgeDate($tid)
+    {
+        // 判断任务时间
+        $where = array(
+            'id' => $tid,
+        );
+        $taskInfo   = $this->task_model->getBasicInfo($where);
+        $now        = date('Y-m-d H:m:s');
+        $taskStatus = diff_date($now, $taskInfo[0]['startime'], $taskInfo[0]['endtime']);
+        return $taskStatus;
+    }
     /**
      * 提交评语
      * @return [type] [description]

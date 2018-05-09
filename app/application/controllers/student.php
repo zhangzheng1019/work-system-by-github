@@ -60,7 +60,45 @@ class Student extends CI_Controller
             ajax_fail(false, '无效的课程id');
         }
         $status = $this->student_model->updateStuByStuIdAndCourseId($studentId, $courseId);
+        $this->addStuTaskByStuIdAndCourseId($studentId, $courseId);
         $status ? ajax_success($status, '加入成功，开启你的学习之路吧！') : ajax_fail(false, '加入失败了呀！');
+    }
+
+    public function addStuTaskByStuIdAndCourseId($sid, $cid)
+    {
+        $data               = array();
+        $data['student_id'] = $sid;
+        $data['course_id']  = $cid;
+        // 获取课程下所有任务id
+        $this->load->model('task_model');
+        $taskAllList = $this->task_model->getBasicInfo(array('course_id' => $cid));
+        $taskIdArr   = null;
+        if (!$taskAllList) {
+            return false;
+        }
+        foreach ($taskAllList as $key => $value) {
+            $taskIdArr[$key] = $value['id'];
+        }
+
+        // 通过stu_task表获取已加入的任务
+        $this->load->model("stutask_model");
+        $taskList = $this->stutask_model->getBasicInfo(array('course_id' => $cid));
+        if ($taskList) {
+            $tmpTaskList = null;
+            foreach ($taskList as $k => $val) {
+                $tmpTaskList[$k] = $val['task_id'];
+            }
+
+            $taskDiffList = array_diff($taskIdArr, $tmpTaskList);
+        }
+
+        $taskFormatList = $taskDiffList ? $taskDiffList : $taskIdArr;
+        
+        foreach ($taskFormatList as $key => $value) {
+            $data['task_id'] = $value;
+            $addStatus[$key] = $this->stutask_model->addStuTaskInfo($data);
+        }
+        return $addStatus;
     }
 
     /**
