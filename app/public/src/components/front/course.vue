@@ -18,10 +18,16 @@
                       <edit-course :gradeGroup="gradeGroup" :row="courseInfo" :userInfo="userInfo" v-on:editcou='getCourseInfo'></edit-course>
                     </div>
                     <div class="task-add" v-if="userInfo.role=='teacher'">
-                      <add-task :userInfo="userInfo" v-on:addtask='getTaskList'></add-task> 
+                      <add-task :userInfo="userInfo" v-on:addtask='getTaskList'></add-task>
                     </div>
                   </div>
                 </div>
+<<<<<<< HEAD
+                <task-stu-list :userInfo="userInfo" :taskList="taskList" :studentTypeList="studentTypeList"></task-stu-list>
+            </el-card>
+          </el-col>
+
+=======
                 <task-stu-list :userInfo="userInfo" :repos="courseInfo.repos" :taskList="taskList" v-on:gettask="getTaskList"></task-stu-list>
                 <div class="ptb10">
                   <el-pagination v-if='totalPage>0'
@@ -34,6 +40,7 @@
                 </div>
             </el-card>
           </el-col>
+>>>>>>> 92f4c8de59debe1321fd005322b1b5e7a55b0a16
         </el-row>
     </div>
 </template>
@@ -82,7 +89,7 @@
           err: (data, msg) => {
             this.$message.error(msg);
             history.back();
-          }  
+          }
         })
       },
       getTaskList() {
@@ -104,11 +111,15 @@
           }
         })
       },
+<<<<<<< HEAD
+
+=======
       changePage(val){
         this.currentPage = val
         this.getTaskList()
       },
      
+>>>>>>> 92f4c8de59debe1321fd005322b1b5e7a55b0a16
 
     }
   }
