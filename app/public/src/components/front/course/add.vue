@@ -16,7 +16,7 @@
                     </el-input>
                 </el-form-item>
                 <el-form-item label="GitHub仓库名称" :label-width="formLabelWidth" prop="repos">
-                    <el-input type="text" v-model="addCourseForm.repos" pla auto-complete="off" placeholder="使用用英文命名，例如：教师添加 test，学生创建 software-test 仓库">
+                    <el-input type="text" v-model="addCourseForm.repos" pla auto-complete="off" placeholder="使用英文命名，例如：教师添加 test，学生创建 software-test 仓库">
                     </el-input>
                 </el-form-item>
                 <el-form-item label="课程描述" :label-width="formLabelWidth" prop="desc">
