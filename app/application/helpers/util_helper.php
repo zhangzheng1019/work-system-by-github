@@ -800,3 +800,22 @@ if (!function_exists("diff_date")) {
         return $now < $end;
     }
 }
+/**
+ * 数组中插入不同的值
+ */
+if (!function_exists("array_push_different_id")) {
+    function array_push_different_id($strArr, $id)
+    {
+        if (empty($strArr)) {
+            $strArr = $id;
+        } else {
+            $courseArr = explode(',', $strArr);
+            if (inArray($id, $courseArr)) {
+                return false;
+            }
+            array_push($courseArr, $id);
+            $strArr = implode(',', $courseArr);
+        }
+        return $strArr;
+    }
+}

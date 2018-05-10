@@ -59,11 +59,39 @@ class Student extends CI_Controller
         if (!$courseId) {
             ajax_fail(false, '无效的课程id');
         }
-        $status = $this->student_model->updateStuByStuIdAndCourseId($studentId, $courseId);
+        $status = $this->updateStuByStuIdAndCourseId($studentId, $courseId);
         $this->addStuTaskByStuIdAndCourseId($studentId, $courseId);
         $status ? ajax_success($status, '加入成功，开启你的学习之路吧！') : ajax_fail(false, '加入失败了呀！');
     }
+    /**
+     * 根据课程id 更新学生列表(学生加入课程操作)
+     * @param  [type] $gradeId [description]
+     * @return [type]          [description]
+     */
+    public function updateStuByStuIdAndCourseId($studentId, $courseId)
+    {
+        if (!$studentId) {
+            return false;
+        }
+        $stuInfo    = $this->student_model->getBasicInfo(array('id' => $studentId));
+        $teacherIds = $stuInfo['list'][0]['teacher_id'];
+        $courseIds  = $stuInfo['list'][0]['course_id'];
+        $courseIds  = array_push_different_id($courseIds, $courseId);
 
+        $this->load->model('course_model');
+        $courseInfo = $this->course_model->getBasicInfo(array('id' => $courseId));
+        $teacherId  = $courseInfo[0]['teacher_id'];
+        $teacherIds = array_push_different_id($teacherIds, $teacherId);
+
+        $data['teacher_id'] = $teacherIds;
+        $data['course_id']  = $courseIds;
+        return $this->student_model->updateStudentInfo($studentId, $data);
+    }
+    /**
+     * 学生加入到评语表
+     * @param [type] $sid [description]
+     * @param [type] $cid [description]
+     */
     public function addStuTaskByStuIdAndCourseId($sid, $cid)
     {
         $data               = array();
@@ -93,7 +121,7 @@ class Student extends CI_Controller
         }
 
         $taskFormatList = $taskDiffList ? $taskDiffList : $taskIdArr;
-        
+
         foreach ($taskFormatList as $key => $value) {
             $data['task_id'] = $value;
             $addStatus[$key] = $this->stutask_model->addStuTaskInfo($data);
