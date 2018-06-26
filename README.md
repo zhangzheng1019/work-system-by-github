@@ -1,5 +1,5 @@
 # work-system-by-github
-[基于 GitHub 的作业统计系统 ]( http://47.106.75.132 )
+基于 GitHub 的作业统计系统 
 
 ## 两个分支：
 * develop: 程序代码
